@@ -29,6 +29,7 @@ from tasks.shadow_hand_door_open_outward import ShadowHandDoorOpenOutward
 from tasks.shadow_hand_kettle import ShadowHandKettle
 from tasks.shadow_hand_pen import ShadowHandPen
 from tasks.shadow_hand_block_stack import ShadowHandBlockStack
+from tasks.shadow_hand_switch import ShadowHandSwitch
 
 from tasks.hand_base.vec_task import VecTaskCPU, VecTaskGPU, VecTaskPython, VecTaskPythonArm
 from tasks.hand_base.multi_vec_task import MultiVecTaskPython, SingleVecTaskPythonArm

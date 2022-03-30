@@ -16,7 +16,6 @@ import numpy as np
 import copy
 
 from tasks.hand_base.base_task import BaseTask
-from tasks.hand_base.base_task import BaseTask
 
 # VecEnv Wrapper for RL training
 class MultiVecTask():
@@ -41,7 +40,6 @@ class MultiVecTask():
         print("RL device: ", rl_device)
 
         # COMPATIBILITY
-        # self.observation_space = [Box(low=np.array([-10]*self.n_agents), high=np.array([10]*self.n_agents)) for _ in range(self.n_agents)]
         self.obs_space = [spaces.Box(low=-np.Inf, high=np.Inf, shape=(self.num_observations,)) for _ in range(self.num_agents)]
         self.share_observation_space = [spaces.Box(low=-np.Inf, high=np.Inf, shape=(self.nums_share_observations,)) for _ in
                                         range(self.num_agents)]
@@ -80,28 +78,12 @@ class MultiVecTask():
                 self.agent_dof_index.append(temp1_index)
                 self.agent_actuated_dof_index.append(temp2_index)
 
-        print("self.agent_dof_index: ", self.agent_dof_index)
-        print("self.hand_actuated_dof_index_dict: ", self.agent_actuated_dof_index)
+        print("agent_dof_index: ", self.agent_dof_index)
+        print("hand_actuated_dof_index_dict: ", self.agent_actuated_dof_index)
 
         self.act_space = tuple([spaces.Box(low=np.ones(len(agent_dof_index)) * -clip_actions,
                                     high=np.ones(len(agent_dof_index)) * clip_actions) for agent_dof_index in
                                 self.agent_actuated_dof_index])
-
-
-
-    # def process_sub_agent_obs(self, agent_dof_index, agent_finger_index, obs):
-    #     sub_agent_obs = []
-    #     for i in range(len(agent_dof_index)):
-    #         sub_dof_pos = obs[:, agent_dof_index[i]]
-    #         sub_dof_vel = obs[:, [index + 24 for index in agent_dof_index[i]]]
-    #         sub_dof_force = obs[:, [index + 48 for index in agent_dof_index[i]]]
-    #         if i != 0:
-    #             sub_finger_state = obs[:, 72:72+65].reshape(self.num_envs, 5, 13)[:, agent_finger_index[i-1], :].reshape(self.num_envs, -1)
-    #             sub_finger_force = obs[:, 72+65:72+65+30].reshape(self.num_envs, 5, 6)[:, agent_finger_index[i-1], :].reshape(self.num_envs, -1)
-    #             sub_agent_obs.append(torch.cat([sub_dof_pos, sub_dof_vel, sub_dof_force, sub_finger_state, sub_finger_force], dim=1).detach().cpu().numpy())
-    #         else:
-    #             sub_agent_obs.append(torch.cat([sub_dof_pos, sub_dof_vel, sub_dof_force], dim=1).detach().cpu().numpy())
-    #     return sub_agent_obs
 
     def step(self, actions):
         raise NotImplementedError
@@ -150,9 +132,7 @@ class MultiVecTaskPython(MultiVecTask):
         a_hand_actions = actions[0]
         for i in range(1, len(actions)):
             a_hand_actions = torch.hstack((a_hand_actions, actions[i]))
-
         actions = a_hand_actions
-        # actions = torch.flatten(actions, start_dim=1, end_dim=-1)
 
         actions_tensor = torch.clamp(actions, -self.clip_actions, self.clip_actions)
 
@@ -160,7 +140,6 @@ class MultiVecTaskPython(MultiVecTask):
 
         hand_obs = []
         obs_buf = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
-        # self.process_sub_agent_obs(self.agent_dof_index, self.agent_finger_index, obs_buf)
         hand_obs.append(torch.cat([obs_buf[:, :self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
         hand_obs.append(torch.cat([obs_buf[:, self.num_hand_obs:2*self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
         state_buf = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs)

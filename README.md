@@ -1,4 +1,4 @@
-# DexterousHandEnvs
+# DexterousHands
 
 ### About this repository
 
@@ -7,6 +7,23 @@ This repository contains complex dexterous hand RL environments DexterousHandEnv
 The difficulty of our environment is not only reflected in the challenging task content but also reflected in the ultra-high-dimensional continuous space control. The state space dimension of each environment is up to 400 dimensions in total, and the action space dimension is up to 40 dimensions. A highlight of our environment is that we use five fingers and palms of each hand as a minimum unit, you can use each finger and palm as an agent, or combine any number of them as an agent by yourself.
 
 :star2::star2:**Click [here](#task) to check the environment introduction!**:star2::star2:  
+
+- [Installation](#Installation)
+  - [Pre-requisites](#Installation)
+- [Usage](#Usage)
+  - [Running the benchmarks](#Running-the-benchmarks)
+  - [Select an algorithm](#Select-an-algorithm)
+  - [Loading trained models](#Loading-trained-models)
+- [Tasks](#Tasks)
+  - [HandOver Environments](#HandOver-Environments)
+  - [HandCatchUnderarm Environments](#HandCatchUnderarm-Environments)
+  - [HandCatchOver2Underarm Environments](#HandCatchOver2Underarm-Environments)
+  - [TwoObjectCatch Environments](#TwoObjectCatch-Environments)
+  - [HandCatchAbreast Environments](#HandCatchAbreast-Environments)
+- [Building the Documentation](#Building-the-Documentation)
+- [The Team](#The-Team)
+- [License](#License)
+<br></br>
 
 ## Installation
 
@@ -30,9 +47,11 @@ Once Isaac Gym is installed and samples work within your current python environm
 pip install -e .
 ```
 
+## Getting Started
+
 ### Running the benchmarks
 
-To train your first policy, run this line:
+To train your first policy with ShadowHandOver task and PPO algorithm, run this line:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=happo
@@ -53,16 +72,23 @@ Single-Agent RL: PPO, TRPO, SAC, TD3, DDPG
 
 Multi-Agent RL: IPPO, MAPPO, MADDPG, HATRPO, HAPPO
 
-<!-- ### Loading trained models // Checkpoints
+### Loading trained models
 
-Checkpoints are saved in the folder `models/` 
+<!-- Checkpoints are saved in the folder `models/`  -->
 
 To load a trained checkpoint and only perform inference (no training), pass `--test` 
-as an argument:
+as an argument, and pass `--model_dir` to specify the trained models which you want to load.
+For single-agent reinforcement learning, you need to pass `--model_dir` to specify exactly what .pt model you want to load. An example is as follows:
 
 ```bash
-python train.py --task=ShadowHandOver --checkpoint=models/shadow_hand_over/ShadowHandOver.pth --test
-``` -->
+python train.py --task=ShadowHandOver --model_dir=logs/shadow_hand_over/ppo/ppo_seed0/model_5000.pt --test
+```
+
+For multi-agent reinforcement learning, pass `--model_dir` to specify the path to the folder where all your agent model files are saved. An example is as follows:
+
+```bash
+python train.py --task=ShadowHandOver --model_dir=logs/shadow_hand_over/happo/models_seed0 --test
+```
 
 ## <span id="task">Tasks</span>
 
@@ -70,20 +96,20 @@ Source code for tasks can be found in `dexteroushandenvs/tasks`.
 
 Until now we only suppose the following environments:
 
-| Environments | ShadowHandOver | ShadowHandCatchUnderarm | ShadowHandCatchOverarm | ShadowHandTwoCatchUnderarm | ShadowHandCatchAbreast | ShadowHandOver2Underarm | ShadowHandLiftPot | ShadowHandOrientation |
-|  :----:  | :----:  | :----:  | :----:  | :----:  | :----:  | :----:  | :----:  | :----:  |
-| Description | These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. | These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | Similar to the HandCatchUnderArm environments but now the two hands are upright, and so the throwing/catching technique that has to be employed is different. | These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand | Unlike most of these environment, this environment involve two unfixed hands and a pot in the table. We need to grab the handle of the pot with two hands and lift it up | Two-handed version of the classic shadowhand orientation environment, it need to rotate the object in the hand to a random target orientation in hand.
-| Actions Type | Continuous | Continuous | Continuous | Continuous | Continuous | Continuous | Continuous | Continuous |
-| Total Action Num | 40    | 52    | 52    | 52    | 52    | 52    | 52    | 52    |
-| Action Values     | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    |
-| Action Index and Description     | [detail](#action1)    | [detail](#action2)   | [detail](#action3)    | [detail](#action4)    | [detail](#action5)    | [detail](#action6)    | [detail](#action7)    | [detail](#action8)    |
-| Observation Shape     | (num_envs, 2, 211)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    |
-| Observation Values     | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    |
-| Observation Index and Description     | [detail](#obs1)    | [detail](#obs2)   | [detail](#obs3)    | [detail](#obs4)    | [detail](#obs4)    | [detail](#obs4)    | [detail](#obs4)    | [detail](#obs4)    |
-| State Shape     | (num_envs, 2, 398)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    |
-| State Values     | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    |
-| Rewards     | Rewards is the pose distance between object and goal. You can check out the details [here](#r1)| Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r3)    | Rewards is the pose distance between two object and  two goal, this means that both objects have to be thrown in order to be swapped over. You can check out the details [here](#r4)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    |
-| Demo     | <img src="assets/image_folder/0.gif" align="middle" width="550" border="1"/>    | <img src="assets/image_folder/4.gif" align="middle" width="140" border="1"/>    | <img src="assets/image_folder/sendpix0.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/absxx-diyx0.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    |
+| Environments | ShadowHandOver | ShadowHandCatchUnderarm | ShadowHandTwoCatchUnderarm | ShadowHandCatchAbreast | ShadowHandOver2Underarm |
+|  :----:  | :----:  | :----:  | :----:  | :----:  | :----:  |
+| Description | These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. | These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand |
+| Actions Type | Continuous | Continuous | Continuous | Continuous | Continuous |
+| Total Action Num | 40    | 52    | 52    | 52    | 52    |
+| Action Values     | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    | [-1, 1]    |
+| Action Index and Description     | [detail](#action1)    | [detail](#action2)   | [detail](#action3)    | [detail](#action4)    | [detail](#action5)    |
+| Observation Shape     | (num_envs, 2, 211)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    | (num_envs, 2, 217)    |
+| Observation Values     | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    |
+| Observation Index and Description     | [detail](#obs1)    | [detail](#obs2)   | [detail](#obs3)    | [detail](#obs4)    | [detail](#obs4)    |
+| State Shape     | (num_envs, 2, 398)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | 
+| State Values     | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    |
+| Rewards     | Rewards is the pose distance between object and goal. You can check out the details [here](#r1)| Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r3)    | Rewards is the pose distance between two object and  two goal, this means that both objects have to be thrown in order to be swapped over. You can check out the details [here](#r4)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    |
+| Demo     | <img src="assets/image_folder/0.gif" align="middle" width="550" border="1"/>    | <img src="assets/image_folder/4.gif" align="middle" width="140" border="1"/>    | <img src="assets/image_folder/sendpix0.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/2.gif" align="middle" width="130" border="1"/>    |
 
 ### HandOver Environments
 <img src="assets/image_folder/0.gif" align="middle" width="450" border="1"/>
@@ -125,7 +151,6 @@ dist_rew = goal_dist
 
 reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
-Object receives a large (250) bonus when it reaches goal. When the ball drops, it will reset the environment, but will not receive a penalty.
 
 
 ### HandCatchUnderarm Environments
@@ -174,10 +199,10 @@ dist_rew = goal_dist
 
 reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
-Object receives a large (250) bonus when it reaches goal. When the ball drops, it will reset the environment, but will not receive a penalty.
 
-### HandCatchOverarm Environments
-<img src="assets/image_folder/sendpix0.jpg" align="middle" width="450" border="1"/>
+
+### HandCatchOver2Underarm Environments
+<img src="assets/image_folder/2.gif" align="middle" width="450" border="1"/>
 
 Similar to the HandCatchUnderArm environments but now the two hands are upright, and so the throwing/catching technique that has to be employed is different. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchOverarm`
 
@@ -218,7 +243,7 @@ goal_dist = torch.norm(target_pos - object_pos, p=2, dim=-1)
 quat_diff = quat_mul(object_rot, quat_conjugate(target_rot)
 reward = (0.3 - goal_dist - quat_diff)
 ```
-Object receives a large (250) bonus when it reaches goal. When the ball drops, it will reset the environment, but will not receive a penalty.
+
 
 ### TwoObjectCatch Environments
 <img src="assets/image_folder/sendpix2.jpg" align="middle" width="450" border="1"/>
@@ -276,7 +301,7 @@ dist_rew = goal_dist
 
 reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist)) + torch.exp(-0.2*(goal_another_dist * dist_reward_scale + rot_another_dist))
 ```
-Object receives a large (250) bonus when it reaches goal. When the ball drops, it will reset the environment, but will not receive a penalty.
+
 
 ### HandCatchAbreast Environments
 <img src="assets/image_folder/1.gif" align="middle" width="450" border="1"/>
@@ -324,8 +349,34 @@ dist_rew = goal_dist
 
 reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
-Object receives a large (250) bonus when it reaches goal. When the ball drops, it will reset the environment, but will not receive a penalty.
 
-## Citing
 
-Please cite this work as:
+## Building the Documentation
+
+To build documentation in various formats, you will need [Sphinx](http://www.sphinx-doc.org) and the
+readthedocs theme.
+
+```bash
+cd docs/
+pip install -r requirements.txt
+```
+You can then build the documentation by running `make <format>` from the
+`docs/` folder. Run `make` to get a list of all available output formats.
+
+If you get a katex error run `npm install katex`.  If it persists, try
+`npm install -g katex`
+
+## The Team
+
+DexterousHands is a PKU-MARL project under the leadership of Dr. [Yaodong Yang](https://www.yangyaodong.com/), it is currently maintained by [Yuanpei Chen](https://github.com/cypypccpy) and [Shengjie Wang](https://github.com/Shengjie-bob). 
+
+It must be mentioned that in our development process, we mainly draw on the following two open source repositories: 
+
+[https://github.com/NVIDIA-Omniverse/IsaacGymEnvs](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs) 
+
+[https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL) 
+
+
+## License
+
+DexterousHands has a Apache license, as found in the [LICENSE](LICENSE) file.

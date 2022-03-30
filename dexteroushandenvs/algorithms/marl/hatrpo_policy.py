@@ -3,19 +3,19 @@ from algorithms.marl.actor_critic import Actor, Critic
 from utils.util import update_linear_schedule
 
 
-class HAPPO_Policy:
+class HATRPO_Policy:
     """
-    HAPPO Policy  class. Wraps actor and critic networks to compute actions and value function predictions.
+    HATRPO Policy  class. Wraps actor and critic networks to compute actions and value function predictions.
 
     :param args: (argparse.Namespace) arguments containing relevant model and policy information.
     :param obs_space: (gym.Space) observation space.
-    :param cent_obs_space: (gym.Space) value function input space (centralized input for HAPPO, decentralized for IPPO).
+    :param cent_obs_space: (gym.Space) value function input space .
     :param action_space: (gym.Space) action space.
     :param device: (torch.device) specifies the device to run on (cpu/gpu).
     """
 
     def __init__(self, config, obs_space, cent_obs_space, act_space, device=torch.device("cpu")):
-        self.config=config
+        self.args=config
         self.device = device
         self.lr = config["lr"]
         self.critic_lr = config["critic_lr"]
@@ -34,8 +34,6 @@ class HAPPO_Policy:
         #####   you can regard them as the same critic.                                      #####
         ##########################################################################################
         self.critic = Critic(config, self.share_obs_space, self.device)
-        print(self.actor)
-        print(self.critic)
 
         self.actor_optimizer = torch.optim.Adam(self.actor.parameters(),
                                                 lr=self.lr, eps=self.opti_eps,
@@ -113,15 +111,15 @@ class HAPPO_Policy:
         :return dist_entropy: (torch.Tensor) action distribution entropy for the given inputs.
         """
 
-        action_log_probs, dist_entropy = self.actor.evaluate_actions(obs,
-                                                                rnn_states_actor,
-                                                                action,
-                                                                masks,
-                                                                available_actions,
-                                                                active_masks)
-
+        action_log_probs, dist_entropy , action_mu, action_std, all_probs= self.actor.evaluate_actions(obs,
+                                                                    rnn_states_actor,
+                                                                    action,
+                                                                    masks,
+                                                                    available_actions,
+                                                                    active_masks)
         values, _ = self.critic(cent_obs, rnn_states_critic, masks)
-        return values, action_log_probs, dist_entropy
+        return values, action_log_probs, dist_entropy, action_mu, action_std, all_probs
+
 
 
     def act(self, obs, rnn_states_actor, masks, available_actions=None, deterministic=False):

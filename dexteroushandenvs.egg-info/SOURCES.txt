@@ -1,9 +1,0 @@
-LICENSE
-README.md
-setup.py
-dexteroushandenvs.egg-info/PKG-INFO
-dexteroushandenvs.egg-info/SOURCES.txt
-dexteroushandenvs.egg-info/dependency_links.txt
-dexteroushandenvs.egg-info/not-zip-safe
-dexteroushandenvs.egg-info/requires.txt
-dexteroushandenvs.egg-info/top_level.txt

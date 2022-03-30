@@ -113,6 +113,8 @@ def retrieve_cfg(args, use_rlg_config=False):
         return os.path.join(args.logdir, "shadow_hand_pen/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_pen.yaml"
     elif args.task == "ShadowHandBlockStack":
         return os.path.join(args.logdir, "shadow_hand_block_stack/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_block_stack.yaml"
+    elif args.task == "ShadowHandSwitch":
+        return os.path.join(args.logdir, "shadow_hand_switch/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_switch.yaml"
     else:
         warn_task_name()
 

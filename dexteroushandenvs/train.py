@@ -14,9 +14,6 @@ from utils.parse_task import parse_task
 from utils.process_sarl import *
 from utils.process_marl import process_MultiAgentRL
 
-import torch
-
-
 def train():
     print("Algorithm: ", args.algo)
     agent_index = [[[0, 1, 2, 3, 4, 5]],
@@ -35,16 +32,6 @@ def train():
             runner.eval(1000)
         else:
             runner.run()
-
-    # elif args.algo == "ppo":
-    #     task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
-    #     ppo = process_ppo(args, env, cfg_train, logdir)
-
-    #     ppo_iterations = cfg_train["learn"]["max_iterations"]
-    #     if args.max_iterations > 0:
-    #         ppo_iterations = args.max_iterations
-
-    #     ppo.run(num_learning_iterations=ppo_iterations, log_interval=cfg_train["learn"]["save_interval"])
 
     elif args.algo in ["ppo","ddpg","sac","td3","trpo"]:
         task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)

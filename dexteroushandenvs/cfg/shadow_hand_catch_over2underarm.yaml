@@ -1,6 +1,6 @@
 # if given, will override the device setting in gym. 
 env: 
-  env_name: "shadow_hand_catch_overarm"
+  env_name: "shadow_hand_catch_over2underarm"
   numEnvs: 256
   envSpacing: 1
   episodeLength: 75
