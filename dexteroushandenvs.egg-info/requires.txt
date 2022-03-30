@@ -1,0 +1,6 @@
+gym
+torch
+matplotlib==3.5.1
+tb-nightly
+tqdm
+ipdb

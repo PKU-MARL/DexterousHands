@@ -1,0 +1,15 @@
+Metadata-Version: 2.1
+Name: dexteroushandenvs
+Version: 0.1.0
+Summary: Benchmark environments for Dexterous Hand in NVIDIA IsaacGym.
+Author: 
+License: UNKNOWN
+Keywords: robotics,rl
+Platform: UNKNOWN
+Classifier: Natural Language :: English
+Classifier: Programming Language :: Python :: 3.7
+Requires-Python: >=3.6.*
+License-File: LICENSE
+
+UNKNOWN
+
