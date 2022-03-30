@@ -1,4 +1,4 @@
-# DexterousHandEnvs
+# DexterousHands
 
 ### About this repository
 
