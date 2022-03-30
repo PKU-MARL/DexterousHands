@@ -1,4 +1,4 @@
-# DexterousHands
+# Dual Dexterous Hands Manipulation
 
 ### About this repository
 
