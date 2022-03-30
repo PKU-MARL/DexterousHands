@@ -1,0 +1,1948 @@
+# if given, will override the device setting in gym. 
+
+task:
+  target: close
+  randomize: False
+  randomization_params:
+    frequency: 600   # Define how many simulation steps between generating new randomizations
+    observations:
+      range: [0, .002] # range for the white noise
+      range_correlated: [0, .001 ] # range for correlated noise, refreshed with freq `frequency`
+      operation: "additive"
+      distribution: "gaussian"
+      schedule: "linear"   # "constant" is to turn on noise after `schedule_steps` num steps
+      schedule_steps: 40000
+    actions:
+      range: [0., .05]
+      range_correlated: [0, .015] # range for correlated noise, refreshed with freq `frequency`
+      operation: "additive"
+      distribution: "gaussian"
+      schedule: "linear"  # "linear" will linearly interpolate between no rand and max rand
+      schedule_steps: 40000
+    sim_params: 
+      gravity:
+        range: [0, 0.4]
+        operation: "additive"
+        distribution: "gaussian"
+        schedule: "linear"  # "linear" will linearly interpolate between no rand and max rand
+        schedule_steps: 40000
+    actor_params:
+      hand:
+        color: True
+        tendon_properties:
+          damping:
+            range: [0.3, 3.0]
+            operation: "scaling"
+            distribution: "loguniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+          stiffness:
+            range: [0.75, 1.5]
+            operation: "scaling"
+            distribution: "loguniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+        dof_properties:
+          damping: 
+            range: [0.3, 3.0]
+            operation: "scaling"
+            distribution: "loguniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+          stiffness: 
+            range: [0.75, 1.5]
+            operation: "scaling"
+            distribution: "loguniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+          lower:
+            range: [0, 0.01]
+            operation: "additive"
+            distribution: "gaussian"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+          upper:
+            range: [0, 0.01]
+            operation: "additive"
+            distribution: "gaussian"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+        rigid_body_properties:
+          mass: 
+            range: [0.5, 1.5]
+            operation: "scaling"
+            distribution: "uniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+        rigid_shape_properties:
+          friction: 
+            num_buckets: 250
+            range: [0.7, 1.3]
+            operation: "scaling"
+            distribution: "uniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+      object:
+        scale:
+          range: [0.95, 1.05]
+          operation: "scaling"
+          distribution: "uniform"
+          schedule: "linear"  # "linear" will scale the current random sample by ``min(current num steps, schedule_steps) / schedule_steps`
+          schedule_steps: 30000
+        rigid_body_properties:
+          mass: 
+            range: [0.5, 1.5]
+            operation: "scaling"
+            distribution: "uniform"
+            schedule: "linear"  # "linear" will scale the current random sample by ``min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+        rigid_shape_properties:
+          friction:
+            num_buckets: 250
+            range: [0.7, 1.3]
+            operation: "scaling"
+            distribution: "uniform"
+            schedule: "linear"  # "linear" will scale the current random sample by `min(current num steps, schedule_steps) / schedule_steps`
+            schedule_steps: 30000
+
+env:
+  env_name: "franka_cabinet"
+  numEnvs: 1788
+  numObservations: 59
+  numActions: 9
+  envSpacing: 2.0
+  maxEpisodeLength: 256
+  actionSpeedScale: 20
+  enableDebugVis: False
+
+  contactBufferSize: 4096
+  contactMovingThreshold: 0.1
+  contactSaveSteps: 512
+  contactSavePath: "runs/cabinet/"
+
+  reset:
+    cabinet:
+      resetPositionNoise: 0.1
+      resetRotationNoise: 0.01
+      resetDofPosRandomInterval: 0.2
+      resetDofVelRandomInterval: 0.2
+    franka:
+      resetPositionNoise: 0.1
+      resetRotationNoise: 0.01
+      resetDofPosRandomInterval: 0.2
+      resetDofVelRandomInterval: 0.2
+
+  driveMode: "effort"
+  clipObservations: 5.0
+  clipActions: 1.0
+  enableCameraSensors: False
+  asset:
+    assetRoot: "../assets"
+    cabinetAssetNum: 2  # real length is 447
+    cabinetAssets:
+      35059_link_0:
+        boundingBox: dataset/one_door_cabinet/35059_link_0/bounding_box.json
+        name: 35059_link_0
+        path: dataset/one_door_cabinet/35059_link_0/mobility.urdf
+      38516_link_0:
+        boundingBox: dataset/one_door_cabinet/38516_link_0/bounding_box.json
+        name: 38516_link_0
+        path: dataset/one_door_cabinet/38516_link_0/mobility.urdf
+      40147_link_0:
+        boundingBox: dataset/one_door_cabinet/40147_link_0/bounding_box.json
+        name: 40147_link_0
+        path: dataset/one_door_cabinet/40147_link_0/mobility.urdf
+      40417_link_0:
+        boundingBox: dataset/one_door_cabinet/40417_link_0/bounding_box.json
+        name: 40417_link_0
+        path: dataset/one_door_cabinet/40417_link_0/mobility.urdf
+      40417_link_1:
+        boundingBox: dataset/one_door_cabinet/40417_link_1/bounding_box.json
+        name: 40417_link_1
+        path: dataset/one_door_cabinet/40417_link_1/mobility.urdf
+      40417_link_4:
+        boundingBox: dataset/one_door_cabinet/40417_link_4/bounding_box.json
+        name: 40417_link_4
+        path: dataset/one_door_cabinet/40417_link_4/mobility.urdf
+      40417_link_5:
+        boundingBox: dataset/one_door_cabinet/40417_link_5/bounding_box.json
+        name: 40417_link_5
+        path: dataset/one_door_cabinet/40417_link_5/mobility.urdf
+      41003_link_0:
+        boundingBox: dataset/one_door_cabinet/41003_link_0/bounding_box.json
+        name: 41003_link_0
+        path: dataset/one_door_cabinet/41003_link_0/mobility.urdf
+      41003_link_1:
+        boundingBox: dataset/one_door_cabinet/41003_link_1/bounding_box.json
+        name: 41003_link_1
+        path: dataset/one_door_cabinet/41003_link_1/mobility.urdf
+      41003_link_2:
+        boundingBox: dataset/one_door_cabinet/41003_link_2/bounding_box.json
+        name: 41003_link_2
+        path: dataset/one_door_cabinet/41003_link_2/mobility.urdf
+      41003_link_3:
+        boundingBox: dataset/one_door_cabinet/41003_link_3/bounding_box.json
+        name: 41003_link_3
+        path: dataset/one_door_cabinet/41003_link_3/mobility.urdf
+      41004_link_0:
+        boundingBox: dataset/one_door_cabinet/41004_link_0/bounding_box.json
+        name: 41004_link_0
+        path: dataset/one_door_cabinet/41004_link_0/mobility.urdf
+      41083_link_0:
+        boundingBox: dataset/one_door_cabinet/41083_link_0/bounding_box.json
+        name: 41083_link_0
+        path: dataset/one_door_cabinet/41083_link_0/mobility.urdf
+      41083_link_1:
+        boundingBox: dataset/one_door_cabinet/41083_link_1/bounding_box.json
+        name: 41083_link_1
+        path: dataset/one_door_cabinet/41083_link_1/mobility.urdf
+      41085_link_0:
+        boundingBox: dataset/one_door_cabinet/41085_link_0/bounding_box.json
+        name: 41085_link_0
+        path: dataset/one_door_cabinet/41085_link_0/mobility.urdf
+      41085_link_1:
+        boundingBox: dataset/one_door_cabinet/41085_link_1/bounding_box.json
+        name: 41085_link_1
+        path: dataset/one_door_cabinet/41085_link_1/mobility.urdf
+      41085_link_2:
+        boundingBox: dataset/one_door_cabinet/41085_link_2/bounding_box.json
+        name: 41085_link_2
+        path: dataset/one_door_cabinet/41085_link_2/mobility.urdf
+      41085_link_3:
+        boundingBox: dataset/one_door_cabinet/41085_link_3/bounding_box.json
+        name: 41085_link_3
+        path: dataset/one_door_cabinet/41085_link_3/mobility.urdf
+      41086_link_0:
+        boundingBox: dataset/one_door_cabinet/41086_link_0/bounding_box.json
+        name: 41086_link_0
+        path: dataset/one_door_cabinet/41086_link_0/mobility.urdf
+      41452_link_0:
+        boundingBox: dataset/one_door_cabinet/41452_link_0/bounding_box.json
+        name: 41452_link_0
+        path: dataset/one_door_cabinet/41452_link_0/mobility.urdf
+      41510_link_0:
+        boundingBox: dataset/one_door_cabinet/41510_link_0/bounding_box.json
+        name: 41510_link_0
+        path: dataset/one_door_cabinet/41510_link_0/mobility.urdf
+      41529_link_0:
+        boundingBox: dataset/one_door_cabinet/41529_link_0/bounding_box.json
+        name: 41529_link_0
+        path: dataset/one_door_cabinet/41529_link_0/mobility.urdf
+      44781_link_0:
+        boundingBox: dataset/one_door_cabinet/44781_link_0/bounding_box.json
+        name: 44781_link_0
+        path: dataset/one_door_cabinet/44781_link_0/mobility.urdf
+      44781_link_1:
+        boundingBox: dataset/one_door_cabinet/44781_link_1/bounding_box.json
+        name: 44781_link_1
+        path: dataset/one_door_cabinet/44781_link_1/mobility.urdf
+      44826_link_0:
+        boundingBox: dataset/one_door_cabinet/44826_link_0/bounding_box.json
+        name: 44826_link_0
+        path: dataset/one_door_cabinet/44826_link_0/mobility.urdf
+      45001_link_0:
+        boundingBox: dataset/one_door_cabinet/45001_link_0/bounding_box.json
+        name: 45001_link_0
+        path: dataset/one_door_cabinet/45001_link_0/mobility.urdf
+      45001_link_1:
+        boundingBox: dataset/one_door_cabinet/45001_link_1/bounding_box.json
+        name: 45001_link_1
+        path: dataset/one_door_cabinet/45001_link_1/mobility.urdf
+      45007_link_1:
+        boundingBox: dataset/one_door_cabinet/45007_link_1/bounding_box.json
+        name: 45007_link_1
+        path: dataset/one_door_cabinet/45007_link_1/mobility.urdf
+      45087_link_1:
+        boundingBox: dataset/one_door_cabinet/45087_link_1/bounding_box.json
+        name: 45087_link_1
+        path: dataset/one_door_cabinet/45087_link_1/mobility.urdf
+      45091_link_1:
+        boundingBox: dataset/one_door_cabinet/45091_link_1/bounding_box.json
+        name: 45091_link_1
+        path: dataset/one_door_cabinet/45091_link_1/mobility.urdf
+      45130_link_0:
+        boundingBox: dataset/one_door_cabinet/45130_link_0/bounding_box.json
+        name: 45130_link_0
+        path: dataset/one_door_cabinet/45130_link_0/mobility.urdf
+      45134_link_1:
+        boundingBox: dataset/one_door_cabinet/45134_link_1/bounding_box.json
+        name: 45134_link_1
+        path: dataset/one_door_cabinet/45134_link_1/mobility.urdf
+      45146_link_1:
+        boundingBox: dataset/one_door_cabinet/45146_link_1/bounding_box.json
+        name: 45146_link_1
+        path: dataset/one_door_cabinet/45146_link_1/mobility.urdf
+      45159_link_0:
+        boundingBox: dataset/one_door_cabinet/45159_link_0/bounding_box.json
+        name: 45159_link_0
+        path: dataset/one_door_cabinet/45159_link_0/mobility.urdf
+      45159_link_1:
+        boundingBox: dataset/one_door_cabinet/45159_link_1/bounding_box.json
+        name: 45159_link_1
+        path: dataset/one_door_cabinet/45159_link_1/mobility.urdf
+      45162_link_0:
+        boundingBox: dataset/one_door_cabinet/45162_link_0/bounding_box.json
+        name: 45162_link_0
+        path: dataset/one_door_cabinet/45162_link_0/mobility.urdf
+      45164_link_0:
+        boundingBox: dataset/one_door_cabinet/45164_link_0/bounding_box.json
+        name: 45164_link_0
+        path: dataset/one_door_cabinet/45164_link_0/mobility.urdf
+      45166_link_1:
+        boundingBox: dataset/one_door_cabinet/45166_link_1/bounding_box.json
+        name: 45166_link_1
+        path: dataset/one_door_cabinet/45166_link_1/mobility.urdf
+      45168_link_1:
+        boundingBox: dataset/one_door_cabinet/45168_link_1/bounding_box.json
+        name: 45168_link_1
+        path: dataset/one_door_cabinet/45168_link_1/mobility.urdf
+      45173_link_0:
+        boundingBox: dataset/one_door_cabinet/45173_link_0/bounding_box.json
+        name: 45173_link_0
+        path: dataset/one_door_cabinet/45173_link_0/mobility.urdf
+      45176_link_0:
+        boundingBox: dataset/one_door_cabinet/45176_link_0/bounding_box.json
+        name: 45176_link_0
+        path: dataset/one_door_cabinet/45176_link_0/mobility.urdf
+      45177_link_1:
+        boundingBox: dataset/one_door_cabinet/45177_link_1/bounding_box.json
+        name: 45177_link_1
+        path: dataset/one_door_cabinet/45177_link_1/mobility.urdf
+      45178_link_1:
+        boundingBox: dataset/one_door_cabinet/45178_link_1/bounding_box.json
+        name: 45178_link_1
+        path: dataset/one_door_cabinet/45178_link_1/mobility.urdf
+      45189_link_0:
+        boundingBox: dataset/one_door_cabinet/45189_link_0/bounding_box.json
+        name: 45189_link_0
+        path: dataset/one_door_cabinet/45189_link_0/mobility.urdf
+      45189_link_1:
+        boundingBox: dataset/one_door_cabinet/45189_link_1/bounding_box.json
+        name: 45189_link_1
+        path: dataset/one_door_cabinet/45189_link_1/mobility.urdf
+      45189_link_2:
+        boundingBox: dataset/one_door_cabinet/45189_link_2/bounding_box.json
+        name: 45189_link_2
+        path: dataset/one_door_cabinet/45189_link_2/mobility.urdf
+      45189_link_3:
+        boundingBox: dataset/one_door_cabinet/45189_link_3/bounding_box.json
+        name: 45189_link_3
+        path: dataset/one_door_cabinet/45189_link_3/mobility.urdf
+      45194_link_0:
+        boundingBox: dataset/one_door_cabinet/45194_link_0/bounding_box.json
+        name: 45194_link_0
+        path: dataset/one_door_cabinet/45194_link_0/mobility.urdf
+      45194_link_1:
+        boundingBox: dataset/one_door_cabinet/45194_link_1/bounding_box.json
+        name: 45194_link_1
+        path: dataset/one_door_cabinet/45194_link_1/mobility.urdf
+      45203_link_0:
+        boundingBox: dataset/one_door_cabinet/45203_link_0/bounding_box.json
+        name: 45203_link_0
+        path: dataset/one_door_cabinet/45203_link_0/mobility.urdf
+      45212_link_0:
+        boundingBox: dataset/one_door_cabinet/45212_link_0/bounding_box.json
+        name: 45212_link_0
+        path: dataset/one_door_cabinet/45212_link_0/mobility.urdf
+      45213_link_0:
+        boundingBox: dataset/one_door_cabinet/45213_link_0/bounding_box.json
+        name: 45213_link_0
+        path: dataset/one_door_cabinet/45213_link_0/mobility.urdf
+      45219_link_0:
+        boundingBox: dataset/one_door_cabinet/45219_link_0/bounding_box.json
+        name: 45219_link_0
+        path: dataset/one_door_cabinet/45219_link_0/mobility.urdf
+      45219_link_1:
+        boundingBox: dataset/one_door_cabinet/45219_link_1/bounding_box.json
+        name: 45219_link_1
+        path: dataset/one_door_cabinet/45219_link_1/mobility.urdf
+      45235_link_0:
+        boundingBox: dataset/one_door_cabinet/45235_link_0/bounding_box.json
+        name: 45235_link_0
+        path: dataset/one_door_cabinet/45235_link_0/mobility.urdf
+      45238_link_0:
+        boundingBox: dataset/one_door_cabinet/45238_link_0/bounding_box.json
+        name: 45238_link_0
+        path: dataset/one_door_cabinet/45238_link_0/mobility.urdf
+      45238_link_1:
+        boundingBox: dataset/one_door_cabinet/45238_link_1/bounding_box.json
+        name: 45238_link_1
+        path: dataset/one_door_cabinet/45238_link_1/mobility.urdf
+      45244_link_0:
+        boundingBox: dataset/one_door_cabinet/45244_link_0/bounding_box.json
+        name: 45244_link_0
+        path: dataset/one_door_cabinet/45244_link_0/mobility.urdf
+      45247_link_1:
+        boundingBox: dataset/one_door_cabinet/45247_link_1/bounding_box.json
+        name: 45247_link_1
+        path: dataset/one_door_cabinet/45247_link_1/mobility.urdf
+      45249_link_0:
+        boundingBox: dataset/one_door_cabinet/45249_link_0/bounding_box.json
+        name: 45249_link_0
+        path: dataset/one_door_cabinet/45249_link_0/mobility.urdf
+      45267_link_0:
+        boundingBox: dataset/one_door_cabinet/45267_link_0/bounding_box.json
+        name: 45267_link_0
+        path: dataset/one_door_cabinet/45267_link_0/mobility.urdf
+      45271_link_2:
+        boundingBox: dataset/one_door_cabinet/45271_link_2/bounding_box.json
+        name: 45271_link_2
+        path: dataset/one_door_cabinet/45271_link_2/mobility.urdf
+      45271_link_3:
+        boundingBox: dataset/one_door_cabinet/45271_link_3/bounding_box.json
+        name: 45271_link_3
+        path: dataset/one_door_cabinet/45271_link_3/mobility.urdf
+      45271_link_4:
+        boundingBox: dataset/one_door_cabinet/45271_link_4/bounding_box.json
+        name: 45271_link_4
+        path: dataset/one_door_cabinet/45271_link_4/mobility.urdf
+      45271_link_5:
+        boundingBox: dataset/one_door_cabinet/45271_link_5/bounding_box.json
+        name: 45271_link_5
+        path: dataset/one_door_cabinet/45271_link_5/mobility.urdf
+      45297_link_1:
+        boundingBox: dataset/one_door_cabinet/45297_link_1/bounding_box.json
+        name: 45297_link_1
+        path: dataset/one_door_cabinet/45297_link_1/mobility.urdf
+      45305_link_0:
+        boundingBox: dataset/one_door_cabinet/45305_link_0/bounding_box.json
+        name: 45305_link_0
+        path: dataset/one_door_cabinet/45305_link_0/mobility.urdf
+      45305_link_1:
+        boundingBox: dataset/one_door_cabinet/45305_link_1/bounding_box.json
+        name: 45305_link_1
+        path: dataset/one_door_cabinet/45305_link_1/mobility.urdf
+      45323_link_0:
+        boundingBox: dataset/one_door_cabinet/45323_link_0/bounding_box.json
+        name: 45323_link_0
+        path: dataset/one_door_cabinet/45323_link_0/mobility.urdf
+      45332_link_0:
+        boundingBox: dataset/one_door_cabinet/45332_link_0/bounding_box.json
+        name: 45332_link_0
+        path: dataset/one_door_cabinet/45332_link_0/mobility.urdf
+      45332_link_1:
+        boundingBox: dataset/one_door_cabinet/45332_link_1/bounding_box.json
+        name: 45332_link_1
+        path: dataset/one_door_cabinet/45332_link_1/mobility.urdf
+      45354_link_0:
+        boundingBox: dataset/one_door_cabinet/45354_link_0/bounding_box.json
+        name: 45354_link_0
+        path: dataset/one_door_cabinet/45354_link_0/mobility.urdf
+      45354_link_1:
+        boundingBox: dataset/one_door_cabinet/45354_link_1/bounding_box.json
+        name: 45354_link_1
+        path: dataset/one_door_cabinet/45354_link_1/mobility.urdf
+      45372_link_0:
+        boundingBox: dataset/one_door_cabinet/45372_link_0/bounding_box.json
+        name: 45372_link_0
+        path: dataset/one_door_cabinet/45372_link_0/mobility.urdf
+      45378_link_0:
+        boundingBox: dataset/one_door_cabinet/45378_link_0/bounding_box.json
+        name: 45378_link_0
+        path: dataset/one_door_cabinet/45378_link_0/mobility.urdf
+      45378_link_1:
+        boundingBox: dataset/one_door_cabinet/45378_link_1/bounding_box.json
+        name: 45378_link_1
+        path: dataset/one_door_cabinet/45378_link_1/mobility.urdf
+      45384_link_0:
+        boundingBox: dataset/one_door_cabinet/45384_link_0/bounding_box.json
+        name: 45384_link_0
+        path: dataset/one_door_cabinet/45384_link_0/mobility.urdf
+      45385_link_1:
+        boundingBox: dataset/one_door_cabinet/45385_link_1/bounding_box.json
+        name: 45385_link_1
+        path: dataset/one_door_cabinet/45385_link_1/mobility.urdf
+      45387_link_0:
+        boundingBox: dataset/one_door_cabinet/45387_link_0/bounding_box.json
+        name: 45387_link_0
+        path: dataset/one_door_cabinet/45387_link_0/mobility.urdf
+      45387_link_1:
+        boundingBox: dataset/one_door_cabinet/45387_link_1/bounding_box.json
+        name: 45387_link_1
+        path: dataset/one_door_cabinet/45387_link_1/mobility.urdf
+      45387_link_2:
+        boundingBox: dataset/one_door_cabinet/45387_link_2/bounding_box.json
+        name: 45387_link_2
+        path: dataset/one_door_cabinet/45387_link_2/mobility.urdf
+      45387_link_3:
+        boundingBox: dataset/one_door_cabinet/45387_link_3/bounding_box.json
+        name: 45387_link_3
+        path: dataset/one_door_cabinet/45387_link_3/mobility.urdf
+      45397_link_0:
+        boundingBox: dataset/one_door_cabinet/45397_link_0/bounding_box.json
+        name: 45397_link_0
+        path: dataset/one_door_cabinet/45397_link_0/mobility.urdf
+      45397_link_1:
+        boundingBox: dataset/one_door_cabinet/45397_link_1/bounding_box.json
+        name: 45397_link_1
+        path: dataset/one_door_cabinet/45397_link_1/mobility.urdf
+      45403_link_1:
+        boundingBox: dataset/one_door_cabinet/45403_link_1/bounding_box.json
+        name: 45403_link_1
+        path: dataset/one_door_cabinet/45403_link_1/mobility.urdf
+      45415_link_0:
+        boundingBox: dataset/one_door_cabinet/45415_link_0/bounding_box.json
+        name: 45415_link_0
+        path: dataset/one_door_cabinet/45415_link_0/mobility.urdf
+      45419_link_1:
+        boundingBox: dataset/one_door_cabinet/45419_link_1/bounding_box.json
+        name: 45419_link_1
+        path: dataset/one_door_cabinet/45419_link_1/mobility.urdf
+      45420_link_0:
+        boundingBox: dataset/one_door_cabinet/45420_link_0/bounding_box.json
+        name: 45420_link_0
+        path: dataset/one_door_cabinet/45420_link_0/mobility.urdf
+      45420_link_1:
+        boundingBox: dataset/one_door_cabinet/45420_link_1/bounding_box.json
+        name: 45420_link_1
+        path: dataset/one_door_cabinet/45420_link_1/mobility.urdf
+      45423_link_0:
+        boundingBox: dataset/one_door_cabinet/45423_link_0/bounding_box.json
+        name: 45423_link_0
+        path: dataset/one_door_cabinet/45423_link_0/mobility.urdf
+      45423_link_1:
+        boundingBox: dataset/one_door_cabinet/45423_link_1/bounding_box.json
+        name: 45423_link_1
+        path: dataset/one_door_cabinet/45423_link_1/mobility.urdf
+      45443_link_1:
+        boundingBox: dataset/one_door_cabinet/45443_link_1/bounding_box.json
+        name: 45443_link_1
+        path: dataset/one_door_cabinet/45443_link_1/mobility.urdf
+      45444_link_0:
+        boundingBox: dataset/one_door_cabinet/45444_link_0/bounding_box.json
+        name: 45444_link_0
+        path: dataset/one_door_cabinet/45444_link_0/mobility.urdf
+      45444_link_1:
+        boundingBox: dataset/one_door_cabinet/45444_link_1/bounding_box.json
+        name: 45444_link_1
+        path: dataset/one_door_cabinet/45444_link_1/mobility.urdf
+      45448_link_0:
+        boundingBox: dataset/one_door_cabinet/45448_link_0/bounding_box.json
+        name: 45448_link_0
+        path: dataset/one_door_cabinet/45448_link_0/mobility.urdf
+      45463_link_0:
+        boundingBox: dataset/one_door_cabinet/45463_link_0/bounding_box.json
+        name: 45463_link_0
+        path: dataset/one_door_cabinet/45463_link_0/mobility.urdf
+      45463_link_1:
+        boundingBox: dataset/one_door_cabinet/45463_link_1/bounding_box.json
+        name: 45463_link_1
+        path: dataset/one_door_cabinet/45463_link_1/mobility.urdf
+      45503_link_0:
+        boundingBox: dataset/one_door_cabinet/45503_link_0/bounding_box.json
+        name: 45503_link_0
+        path: dataset/one_door_cabinet/45503_link_0/mobility.urdf
+      45503_link_1:
+        boundingBox: dataset/one_door_cabinet/45503_link_1/bounding_box.json
+        name: 45503_link_1
+        path: dataset/one_door_cabinet/45503_link_1/mobility.urdf
+      45503_link_2:
+        boundingBox: dataset/one_door_cabinet/45503_link_2/bounding_box.json
+        name: 45503_link_2
+        path: dataset/one_door_cabinet/45503_link_2/mobility.urdf
+      45504_link_1:
+        boundingBox: dataset/one_door_cabinet/45504_link_1/bounding_box.json
+        name: 45504_link_1
+        path: dataset/one_door_cabinet/45504_link_1/mobility.urdf
+      45505_link_0:
+        boundingBox: dataset/one_door_cabinet/45505_link_0/bounding_box.json
+        name: 45505_link_0
+        path: dataset/one_door_cabinet/45505_link_0/mobility.urdf
+      45505_link_1:
+        boundingBox: dataset/one_door_cabinet/45505_link_1/bounding_box.json
+        name: 45505_link_1
+        path: dataset/one_door_cabinet/45505_link_1/mobility.urdf
+      45516_link_1:
+        boundingBox: dataset/one_door_cabinet/45516_link_1/bounding_box.json
+        name: 45516_link_1
+        path: dataset/one_door_cabinet/45516_link_1/mobility.urdf
+      45523_link_1:
+        boundingBox: dataset/one_door_cabinet/45523_link_1/bounding_box.json
+        name: 45523_link_1
+        path: dataset/one_door_cabinet/45523_link_1/mobility.urdf
+      45523_link_2:
+        boundingBox: dataset/one_door_cabinet/45523_link_2/bounding_box.json
+        name: 45523_link_2
+        path: dataset/one_door_cabinet/45523_link_2/mobility.urdf
+      45524_link_0:
+        boundingBox: dataset/one_door_cabinet/45524_link_0/bounding_box.json
+        name: 45524_link_0
+        path: dataset/one_door_cabinet/45524_link_0/mobility.urdf
+      45526_link_0:
+        boundingBox: dataset/one_door_cabinet/45526_link_0/bounding_box.json
+        name: 45526_link_0
+        path: dataset/one_door_cabinet/45526_link_0/mobility.urdf
+      45573_link_0:
+        boundingBox: dataset/one_door_cabinet/45573_link_0/bounding_box.json
+        name: 45573_link_0
+        path: dataset/one_door_cabinet/45573_link_0/mobility.urdf
+      45573_link_1:
+        boundingBox: dataset/one_door_cabinet/45573_link_1/bounding_box.json
+        name: 45573_link_1
+        path: dataset/one_door_cabinet/45573_link_1/mobility.urdf
+      45575_link_0:
+        boundingBox: dataset/one_door_cabinet/45575_link_0/bounding_box.json
+        name: 45575_link_0
+        path: dataset/one_door_cabinet/45575_link_0/mobility.urdf
+      45594_link_0:
+        boundingBox: dataset/one_door_cabinet/45594_link_0/bounding_box.json
+        name: 45594_link_0
+        path: dataset/one_door_cabinet/45594_link_0/mobility.urdf
+      45594_link_1:
+        boundingBox: dataset/one_door_cabinet/45594_link_1/bounding_box.json
+        name: 45594_link_1
+        path: dataset/one_door_cabinet/45594_link_1/mobility.urdf
+      45600_link_1:
+        boundingBox: dataset/one_door_cabinet/45600_link_1/bounding_box.json
+        name: 45600_link_1
+        path: dataset/one_door_cabinet/45600_link_1/mobility.urdf
+      45606_link_0:
+        boundingBox: dataset/one_door_cabinet/45606_link_0/bounding_box.json
+        name: 45606_link_0
+        path: dataset/one_door_cabinet/45606_link_0/mobility.urdf
+      45612_link_0:
+        boundingBox: dataset/one_door_cabinet/45612_link_0/bounding_box.json
+        name: 45612_link_0
+        path: dataset/one_door_cabinet/45612_link_0/mobility.urdf
+      45612_link_1:
+        boundingBox: dataset/one_door_cabinet/45612_link_1/bounding_box.json
+        name: 45612_link_1
+        path: dataset/one_door_cabinet/45612_link_1/mobility.urdf
+      45612_link_2:
+        boundingBox: dataset/one_door_cabinet/45612_link_2/bounding_box.json
+        name: 45612_link_2
+        path: dataset/one_door_cabinet/45612_link_2/mobility.urdf
+      45612_link_3:
+        boundingBox: dataset/one_door_cabinet/45612_link_3/bounding_box.json
+        name: 45612_link_3
+        path: dataset/one_door_cabinet/45612_link_3/mobility.urdf
+      45621_link_0:
+        boundingBox: dataset/one_door_cabinet/45621_link_0/bounding_box.json
+        name: 45621_link_0
+        path: dataset/one_door_cabinet/45621_link_0/mobility.urdf
+      45622_link_0:
+        boundingBox: dataset/one_door_cabinet/45622_link_0/bounding_box.json
+        name: 45622_link_0
+        path: dataset/one_door_cabinet/45622_link_0/mobility.urdf
+      45622_link_1:
+        boundingBox: dataset/one_door_cabinet/45622_link_1/bounding_box.json
+        name: 45622_link_1
+        path: dataset/one_door_cabinet/45622_link_1/mobility.urdf
+      45623_link_0:
+        boundingBox: dataset/one_door_cabinet/45623_link_0/bounding_box.json
+        name: 45623_link_0
+        path: dataset/one_door_cabinet/45623_link_0/mobility.urdf
+      45632_link_0:
+        boundingBox: dataset/one_door_cabinet/45632_link_0/bounding_box.json
+        name: 45632_link_0
+        path: dataset/one_door_cabinet/45632_link_0/mobility.urdf
+      45632_link_1:
+        boundingBox: dataset/one_door_cabinet/45632_link_1/bounding_box.json
+        name: 45632_link_1
+        path: dataset/one_door_cabinet/45632_link_1/mobility.urdf
+      45633_link_1:
+        boundingBox: dataset/one_door_cabinet/45633_link_1/bounding_box.json
+        name: 45633_link_1
+        path: dataset/one_door_cabinet/45633_link_1/mobility.urdf
+      45636_link_0:
+        boundingBox: dataset/one_door_cabinet/45636_link_0/bounding_box.json
+        name: 45636_link_0
+        path: dataset/one_door_cabinet/45636_link_0/mobility.urdf
+      45636_link_1:
+        boundingBox: dataset/one_door_cabinet/45636_link_1/bounding_box.json
+        name: 45636_link_1
+        path: dataset/one_door_cabinet/45636_link_1/mobility.urdf
+      45638_link_0:
+        boundingBox: dataset/one_door_cabinet/45638_link_0/bounding_box.json
+        name: 45638_link_0
+        path: dataset/one_door_cabinet/45638_link_0/mobility.urdf
+      45645_link_0:
+        boundingBox: dataset/one_door_cabinet/45645_link_0/bounding_box.json
+        name: 45645_link_0
+        path: dataset/one_door_cabinet/45645_link_0/mobility.urdf
+      45661_link_0:
+        boundingBox: dataset/one_door_cabinet/45661_link_0/bounding_box.json
+        name: 45661_link_0
+        path: dataset/one_door_cabinet/45661_link_0/mobility.urdf
+      45662_link_0:
+        boundingBox: dataset/one_door_cabinet/45662_link_0/bounding_box.json
+        name: 45662_link_0
+        path: dataset/one_door_cabinet/45662_link_0/mobility.urdf
+      45662_link_1:
+        boundingBox: dataset/one_door_cabinet/45662_link_1/bounding_box.json
+        name: 45662_link_1
+        path: dataset/one_door_cabinet/45662_link_1/mobility.urdf
+      45667_link_1:
+        boundingBox: dataset/one_door_cabinet/45667_link_1/bounding_box.json
+        name: 45667_link_1
+        path: dataset/one_door_cabinet/45667_link_1/mobility.urdf
+      45670_link_0:
+        boundingBox: dataset/one_door_cabinet/45670_link_0/bounding_box.json
+        name: 45670_link_0
+        path: dataset/one_door_cabinet/45670_link_0/mobility.urdf
+      45670_link_1:
+        boundingBox: dataset/one_door_cabinet/45670_link_1/bounding_box.json
+        name: 45670_link_1
+        path: dataset/one_door_cabinet/45670_link_1/mobility.urdf
+      45671_link_1:
+        boundingBox: dataset/one_door_cabinet/45671_link_1/bounding_box.json
+        name: 45671_link_1
+        path: dataset/one_door_cabinet/45671_link_1/mobility.urdf
+      45676_link_0:
+        boundingBox: dataset/one_door_cabinet/45676_link_0/bounding_box.json
+        name: 45676_link_0
+        path: dataset/one_door_cabinet/45676_link_0/mobility.urdf
+      45687_link_0:
+        boundingBox: dataset/one_door_cabinet/45687_link_0/bounding_box.json
+        name: 45687_link_0
+        path: dataset/one_door_cabinet/45687_link_0/mobility.urdf
+      45689_link_0:
+        boundingBox: dataset/one_door_cabinet/45689_link_0/bounding_box.json
+        name: 45689_link_0
+        path: dataset/one_door_cabinet/45689_link_0/mobility.urdf
+      45690_link_0:
+        boundingBox: dataset/one_door_cabinet/45690_link_0/bounding_box.json
+        name: 45690_link_0
+        path: dataset/one_door_cabinet/45690_link_0/mobility.urdf
+      45691_link_0:
+        boundingBox: dataset/one_door_cabinet/45691_link_0/bounding_box.json
+        name: 45691_link_0
+        path: dataset/one_door_cabinet/45691_link_0/mobility.urdf
+      45693_link_1:
+        boundingBox: dataset/one_door_cabinet/45693_link_1/bounding_box.json
+        name: 45693_link_1
+        path: dataset/one_door_cabinet/45693_link_1/mobility.urdf
+      45694_link_0:
+        boundingBox: dataset/one_door_cabinet/45694_link_0/bounding_box.json
+        name: 45694_link_0
+        path: dataset/one_door_cabinet/45694_link_0/mobility.urdf
+      45696_link_0:
+        boundingBox: dataset/one_door_cabinet/45696_link_0/bounding_box.json
+        name: 45696_link_0
+        path: dataset/one_door_cabinet/45696_link_0/mobility.urdf
+      45696_link_1:
+        boundingBox: dataset/one_door_cabinet/45696_link_1/bounding_box.json
+        name: 45696_link_1
+        path: dataset/one_door_cabinet/45696_link_1/mobility.urdf
+      45696_link_2:
+        boundingBox: dataset/one_door_cabinet/45696_link_2/bounding_box.json
+        name: 45696_link_2
+        path: dataset/one_door_cabinet/45696_link_2/mobility.urdf
+      45696_link_3:
+        boundingBox: dataset/one_door_cabinet/45696_link_3/bounding_box.json
+        name: 45696_link_3
+        path: dataset/one_door_cabinet/45696_link_3/mobility.urdf
+      45699_link_1:
+        boundingBox: dataset/one_door_cabinet/45699_link_1/bounding_box.json
+        name: 45699_link_1
+        path: dataset/one_door_cabinet/45699_link_1/mobility.urdf
+      45717_link_1:
+        boundingBox: dataset/one_door_cabinet/45717_link_1/bounding_box.json
+        name: 45717_link_1
+        path: dataset/one_door_cabinet/45717_link_1/mobility.urdf
+      45725_link_0:
+        boundingBox: dataset/one_door_cabinet/45725_link_0/bounding_box.json
+        name: 45725_link_0
+        path: dataset/one_door_cabinet/45725_link_0/mobility.urdf
+      45725_link_1:
+        boundingBox: dataset/one_door_cabinet/45725_link_1/bounding_box.json
+        name: 45725_link_1
+        path: dataset/one_door_cabinet/45725_link_1/mobility.urdf
+      45725_link_2:
+        boundingBox: dataset/one_door_cabinet/45725_link_2/bounding_box.json
+        name: 45725_link_2
+        path: dataset/one_door_cabinet/45725_link_2/mobility.urdf
+      45725_link_3:
+        boundingBox: dataset/one_door_cabinet/45725_link_3/bounding_box.json
+        name: 45725_link_3
+        path: dataset/one_door_cabinet/45725_link_3/mobility.urdf
+      45725_link_4:
+        boundingBox: dataset/one_door_cabinet/45725_link_4/bounding_box.json
+        name: 45725_link_4
+        path: dataset/one_door_cabinet/45725_link_4/mobility.urdf
+      45725_link_5:
+        boundingBox: dataset/one_door_cabinet/45725_link_5/bounding_box.json
+        name: 45725_link_5
+        path: dataset/one_door_cabinet/45725_link_5/mobility.urdf
+      45725_link_6:
+        boundingBox: dataset/one_door_cabinet/45725_link_6/bounding_box.json
+        name: 45725_link_6
+        path: dataset/one_door_cabinet/45725_link_6/mobility.urdf
+      45725_link_7:
+        boundingBox: dataset/one_door_cabinet/45725_link_7/bounding_box.json
+        name: 45725_link_7
+        path: dataset/one_door_cabinet/45725_link_7/mobility.urdf
+      45747_link_0:
+        boundingBox: dataset/one_door_cabinet/45747_link_0/bounding_box.json
+        name: 45747_link_0
+        path: dataset/one_door_cabinet/45747_link_0/mobility.urdf
+      45747_link_1:
+        boundingBox: dataset/one_door_cabinet/45747_link_1/bounding_box.json
+        name: 45747_link_1
+        path: dataset/one_door_cabinet/45747_link_1/mobility.urdf
+      45749_link_0:
+        boundingBox: dataset/one_door_cabinet/45749_link_0/bounding_box.json
+        name: 45749_link_0
+        path: dataset/one_door_cabinet/45749_link_0/mobility.urdf
+      45749_link_1:
+        boundingBox: dataset/one_door_cabinet/45749_link_1/bounding_box.json
+        name: 45749_link_1
+        path: dataset/one_door_cabinet/45749_link_1/mobility.urdf
+      45749_link_2:
+        boundingBox: dataset/one_door_cabinet/45749_link_2/bounding_box.json
+        name: 45749_link_2
+        path: dataset/one_door_cabinet/45749_link_2/mobility.urdf
+      45749_link_3:
+        boundingBox: dataset/one_door_cabinet/45749_link_3/bounding_box.json
+        name: 45749_link_3
+        path: dataset/one_door_cabinet/45749_link_3/mobility.urdf
+      45759_link_0:
+        boundingBox: dataset/one_door_cabinet/45759_link_0/bounding_box.json
+        name: 45759_link_0
+        path: dataset/one_door_cabinet/45759_link_0/mobility.urdf
+      45759_link_1:
+        boundingBox: dataset/one_door_cabinet/45759_link_1/bounding_box.json
+        name: 45759_link_1
+        path: dataset/one_door_cabinet/45759_link_1/mobility.urdf
+      45759_link_2:
+        boundingBox: dataset/one_door_cabinet/45759_link_2/bounding_box.json
+        name: 45759_link_2
+        path: dataset/one_door_cabinet/45759_link_2/mobility.urdf
+      45767_link_0:
+        boundingBox: dataset/one_door_cabinet/45767_link_0/bounding_box.json
+        name: 45767_link_0
+        path: dataset/one_door_cabinet/45767_link_0/mobility.urdf
+      45767_link_1:
+        boundingBox: dataset/one_door_cabinet/45767_link_1/bounding_box.json
+        name: 45767_link_1
+        path: dataset/one_door_cabinet/45767_link_1/mobility.urdf
+      45776_link_0:
+        boundingBox: dataset/one_door_cabinet/45776_link_0/bounding_box.json
+        name: 45776_link_0
+        path: dataset/one_door_cabinet/45776_link_0/mobility.urdf
+      45779_link_1:
+        boundingBox: dataset/one_door_cabinet/45779_link_1/bounding_box.json
+        name: 45779_link_1
+        path: dataset/one_door_cabinet/45779_link_1/mobility.urdf
+      45780_link_0:
+        boundingBox: dataset/one_door_cabinet/45780_link_0/bounding_box.json
+        name: 45780_link_0
+        path: dataset/one_door_cabinet/45780_link_0/mobility.urdf
+      45780_link_1:
+        boundingBox: dataset/one_door_cabinet/45780_link_1/bounding_box.json
+        name: 45780_link_1
+        path: dataset/one_door_cabinet/45780_link_1/mobility.urdf
+      45783_link_0:
+        boundingBox: dataset/one_door_cabinet/45783_link_0/bounding_box.json
+        name: 45783_link_0
+        path: dataset/one_door_cabinet/45783_link_0/mobility.urdf
+      45784_link_0:
+        boundingBox: dataset/one_door_cabinet/45784_link_0/bounding_box.json
+        name: 45784_link_0
+        path: dataset/one_door_cabinet/45784_link_0/mobility.urdf
+      45790_link_0:
+        boundingBox: dataset/one_door_cabinet/45790_link_0/bounding_box.json
+        name: 45790_link_0
+        path: dataset/one_door_cabinet/45790_link_0/mobility.urdf
+      45850_link_1:
+        boundingBox: dataset/one_door_cabinet/45850_link_1/bounding_box.json
+        name: 45850_link_1
+        path: dataset/one_door_cabinet/45850_link_1/mobility.urdf
+      45853_link_0:
+        boundingBox: dataset/one_door_cabinet/45853_link_0/bounding_box.json
+        name: 45853_link_0
+        path: dataset/one_door_cabinet/45853_link_0/mobility.urdf
+      45908_link_1:
+        boundingBox: dataset/one_door_cabinet/45908_link_1/bounding_box.json
+        name: 45908_link_1
+        path: dataset/one_door_cabinet/45908_link_1/mobility.urdf
+      45915_link_1:
+        boundingBox: dataset/one_door_cabinet/45915_link_1/bounding_box.json
+        name: 45915_link_1
+        path: dataset/one_door_cabinet/45915_link_1/mobility.urdf
+      45916_link_0:
+        boundingBox: dataset/one_door_cabinet/45916_link_0/bounding_box.json
+        name: 45916_link_0
+        path: dataset/one_door_cabinet/45916_link_0/mobility.urdf
+      45922_link_1:
+        boundingBox: dataset/one_door_cabinet/45922_link_1/bounding_box.json
+        name: 45922_link_1
+        path: dataset/one_door_cabinet/45922_link_1/mobility.urdf
+      45936_link_0:
+        boundingBox: dataset/one_door_cabinet/45936_link_0/bounding_box.json
+        name: 45936_link_0
+        path: dataset/one_door_cabinet/45936_link_0/mobility.urdf
+      45937_link_0:
+        boundingBox: dataset/one_door_cabinet/45937_link_0/bounding_box.json
+        name: 45937_link_0
+        path: dataset/one_door_cabinet/45937_link_0/mobility.urdf
+      45940_link_0:
+        boundingBox: dataset/one_door_cabinet/45940_link_0/bounding_box.json
+        name: 45940_link_0
+        path: dataset/one_door_cabinet/45940_link_0/mobility.urdf
+      45940_link_1:
+        boundingBox: dataset/one_door_cabinet/45940_link_1/bounding_box.json
+        name: 45940_link_1
+        path: dataset/one_door_cabinet/45940_link_1/mobility.urdf
+      45948_link_0:
+        boundingBox: dataset/one_door_cabinet/45948_link_0/bounding_box.json
+        name: 45948_link_0
+        path: dataset/one_door_cabinet/45948_link_0/mobility.urdf
+      45948_link_1:
+        boundingBox: dataset/one_door_cabinet/45948_link_1/bounding_box.json
+        name: 45948_link_1
+        path: dataset/one_door_cabinet/45948_link_1/mobility.urdf
+      45948_link_2:
+        boundingBox: dataset/one_door_cabinet/45948_link_2/bounding_box.json
+        name: 45948_link_2
+        path: dataset/one_door_cabinet/45948_link_2/mobility.urdf
+      45948_link_3:
+        boundingBox: dataset/one_door_cabinet/45948_link_3/bounding_box.json
+        name: 45948_link_3
+        path: dataset/one_door_cabinet/45948_link_3/mobility.urdf
+      45949_link_0:
+        boundingBox: dataset/one_door_cabinet/45949_link_0/bounding_box.json
+        name: 45949_link_0
+        path: dataset/one_door_cabinet/45949_link_0/mobility.urdf
+      45949_link_1:
+        boundingBox: dataset/one_door_cabinet/45949_link_1/bounding_box.json
+        name: 45949_link_1
+        path: dataset/one_door_cabinet/45949_link_1/mobility.urdf
+      45950_link_0:
+        boundingBox: dataset/one_door_cabinet/45950_link_0/bounding_box.json
+        name: 45950_link_0
+        path: dataset/one_door_cabinet/45950_link_0/mobility.urdf
+      45961_link_0:
+        boundingBox: dataset/one_door_cabinet/45961_link_0/bounding_box.json
+        name: 45961_link_0
+        path: dataset/one_door_cabinet/45961_link_0/mobility.urdf
+      45963_link_0:
+        boundingBox: dataset/one_door_cabinet/45963_link_0/bounding_box.json
+        name: 45963_link_0
+        path: dataset/one_door_cabinet/45963_link_0/mobility.urdf
+      45963_link_1:
+        boundingBox: dataset/one_door_cabinet/45963_link_1/bounding_box.json
+        name: 45963_link_1
+        path: dataset/one_door_cabinet/45963_link_1/mobility.urdf
+      45964_link_0:
+        boundingBox: dataset/one_door_cabinet/45964_link_0/bounding_box.json
+        name: 45964_link_0
+        path: dataset/one_door_cabinet/45964_link_0/mobility.urdf
+      45984_link_0:
+        boundingBox: dataset/one_door_cabinet/45984_link_0/bounding_box.json
+        name: 45984_link_0
+        path: dataset/one_door_cabinet/45984_link_0/mobility.urdf
+      46002_link_0:
+        boundingBox: dataset/one_door_cabinet/46002_link_0/bounding_box.json
+        name: 46002_link_0
+        path: dataset/one_door_cabinet/46002_link_0/mobility.urdf
+      46002_link_1:
+        boundingBox: dataset/one_door_cabinet/46002_link_1/bounding_box.json
+        name: 46002_link_1
+        path: dataset/one_door_cabinet/46002_link_1/mobility.urdf
+      46002_link_2:
+        boundingBox: dataset/one_door_cabinet/46002_link_2/bounding_box.json
+        name: 46002_link_2
+        path: dataset/one_door_cabinet/46002_link_2/mobility.urdf
+      46002_link_3:
+        boundingBox: dataset/one_door_cabinet/46002_link_3/bounding_box.json
+        name: 46002_link_3
+        path: dataset/one_door_cabinet/46002_link_3/mobility.urdf
+      46019_link_0:
+        boundingBox: dataset/one_door_cabinet/46019_link_0/bounding_box.json
+        name: 46019_link_0
+        path: dataset/one_door_cabinet/46019_link_0/mobility.urdf
+      46019_link_1:
+        boundingBox: dataset/one_door_cabinet/46019_link_1/bounding_box.json
+        name: 46019_link_1
+        path: dataset/one_door_cabinet/46019_link_1/mobility.urdf
+      46029_link_0:
+        boundingBox: dataset/one_door_cabinet/46029_link_0/bounding_box.json
+        name: 46029_link_0
+        path: dataset/one_door_cabinet/46029_link_0/mobility.urdf
+      46033_link_0:
+        boundingBox: dataset/one_door_cabinet/46033_link_0/bounding_box.json
+        name: 46033_link_0
+        path: dataset/one_door_cabinet/46033_link_0/mobility.urdf
+      46037_link_0:
+        boundingBox: dataset/one_door_cabinet/46037_link_0/bounding_box.json
+        name: 46037_link_0
+        path: dataset/one_door_cabinet/46037_link_0/mobility.urdf
+      46037_link_1:
+        boundingBox: dataset/one_door_cabinet/46037_link_1/bounding_box.json
+        name: 46037_link_1
+        path: dataset/one_door_cabinet/46037_link_1/mobility.urdf
+      46044_link_1:
+        boundingBox: dataset/one_door_cabinet/46044_link_1/bounding_box.json
+        name: 46044_link_1
+        path: dataset/one_door_cabinet/46044_link_1/mobility.urdf
+      46045_link_0:
+        boundingBox: dataset/one_door_cabinet/46045_link_0/bounding_box.json
+        name: 46045_link_0
+        path: dataset/one_door_cabinet/46045_link_0/mobility.urdf
+      46057_link_1:
+        boundingBox: dataset/one_door_cabinet/46057_link_1/bounding_box.json
+        name: 46057_link_1
+        path: dataset/one_door_cabinet/46057_link_1/mobility.urdf
+      46084_link_0:
+        boundingBox: dataset/one_door_cabinet/46084_link_0/bounding_box.json
+        name: 46084_link_0
+        path: dataset/one_door_cabinet/46084_link_0/mobility.urdf
+      46084_link_1:
+        boundingBox: dataset/one_door_cabinet/46084_link_1/bounding_box.json
+        name: 46084_link_1
+        path: dataset/one_door_cabinet/46084_link_1/mobility.urdf
+      46092_link_0:
+        boundingBox: dataset/one_door_cabinet/46092_link_0/bounding_box.json
+        name: 46092_link_0
+        path: dataset/one_door_cabinet/46092_link_0/mobility.urdf
+      46108_link_0:
+        boundingBox: dataset/one_door_cabinet/46108_link_0/bounding_box.json
+        name: 46108_link_0
+        path: dataset/one_door_cabinet/46108_link_0/mobility.urdf
+      46108_link_1:
+        boundingBox: dataset/one_door_cabinet/46108_link_1/bounding_box.json
+        name: 46108_link_1
+        path: dataset/one_door_cabinet/46108_link_1/mobility.urdf
+      46108_link_2:
+        boundingBox: dataset/one_door_cabinet/46108_link_2/bounding_box.json
+        name: 46108_link_2
+        path: dataset/one_door_cabinet/46108_link_2/mobility.urdf
+      46108_link_3:
+        boundingBox: dataset/one_door_cabinet/46108_link_3/bounding_box.json
+        name: 46108_link_3
+        path: dataset/one_door_cabinet/46108_link_3/mobility.urdf
+      46117_link_1:
+        boundingBox: dataset/one_door_cabinet/46117_link_1/bounding_box.json
+        name: 46117_link_1
+        path: dataset/one_door_cabinet/46117_link_1/mobility.urdf
+      46120_link_0:
+        boundingBox: dataset/one_door_cabinet/46120_link_0/bounding_box.json
+        name: 46120_link_0
+        path: dataset/one_door_cabinet/46120_link_0/mobility.urdf
+      46120_link_1:
+        boundingBox: dataset/one_door_cabinet/46120_link_1/bounding_box.json
+        name: 46120_link_1
+        path: dataset/one_door_cabinet/46120_link_1/mobility.urdf
+      46134_link_0:
+        boundingBox: dataset/one_door_cabinet/46134_link_0/bounding_box.json
+        name: 46134_link_0
+        path: dataset/one_door_cabinet/46134_link_0/mobility.urdf
+      46134_link_1:
+        boundingBox: dataset/one_door_cabinet/46134_link_1/bounding_box.json
+        name: 46134_link_1
+        path: dataset/one_door_cabinet/46134_link_1/mobility.urdf
+      46145_link_0:
+        boundingBox: dataset/one_door_cabinet/46145_link_0/bounding_box.json
+        name: 46145_link_0
+        path: dataset/one_door_cabinet/46145_link_0/mobility.urdf
+      46145_link_1:
+        boundingBox: dataset/one_door_cabinet/46145_link_1/bounding_box.json
+        name: 46145_link_1
+        path: dataset/one_door_cabinet/46145_link_1/mobility.urdf
+      46145_link_2:
+        boundingBox: dataset/one_door_cabinet/46145_link_2/bounding_box.json
+        name: 46145_link_2
+        path: dataset/one_door_cabinet/46145_link_2/mobility.urdf
+      46145_link_3:
+        boundingBox: dataset/one_door_cabinet/46145_link_3/bounding_box.json
+        name: 46145_link_3
+        path: dataset/one_door_cabinet/46145_link_3/mobility.urdf
+      46166_link_1:
+        boundingBox: dataset/one_door_cabinet/46166_link_1/bounding_box.json
+        name: 46166_link_1
+        path: dataset/one_door_cabinet/46166_link_1/mobility.urdf
+      46166_link_2:
+        boundingBox: dataset/one_door_cabinet/46166_link_2/bounding_box.json
+        name: 46166_link_2
+        path: dataset/one_door_cabinet/46166_link_2/mobility.urdf
+      46179_link_0:
+        boundingBox: dataset/one_door_cabinet/46179_link_0/bounding_box.json
+        name: 46179_link_0
+        path: dataset/one_door_cabinet/46179_link_0/mobility.urdf
+      46180_link_0:
+        boundingBox: dataset/one_door_cabinet/46180_link_0/bounding_box.json
+        name: 46180_link_0
+        path: dataset/one_door_cabinet/46180_link_0/mobility.urdf
+      46197_link_0:
+        boundingBox: dataset/one_door_cabinet/46197_link_0/bounding_box.json
+        name: 46197_link_0
+        path: dataset/one_door_cabinet/46197_link_0/mobility.urdf
+      46199_link_0:
+        boundingBox: dataset/one_door_cabinet/46199_link_0/bounding_box.json
+        name: 46199_link_0
+        path: dataset/one_door_cabinet/46199_link_0/mobility.urdf
+      46199_link_1:
+        boundingBox: dataset/one_door_cabinet/46199_link_1/bounding_box.json
+        name: 46199_link_1
+        path: dataset/one_door_cabinet/46199_link_1/mobility.urdf
+      46236_link_0:
+        boundingBox: dataset/one_door_cabinet/46236_link_0/bounding_box.json
+        name: 46236_link_0
+        path: dataset/one_door_cabinet/46236_link_0/mobility.urdf
+      46277_link_0:
+        boundingBox: dataset/one_door_cabinet/46277_link_0/bounding_box.json
+        name: 46277_link_0
+        path: dataset/one_door_cabinet/46277_link_0/mobility.urdf
+      46277_link_1:
+        boundingBox: dataset/one_door_cabinet/46277_link_1/bounding_box.json
+        name: 46277_link_1
+        path: dataset/one_door_cabinet/46277_link_1/mobility.urdf
+      46401_link_0:
+        boundingBox: dataset/one_door_cabinet/46401_link_0/bounding_box.json
+        name: 46401_link_0
+        path: dataset/one_door_cabinet/46401_link_0/mobility.urdf
+      46408_link_0:
+        boundingBox: dataset/one_door_cabinet/46408_link_0/bounding_box.json
+        name: 46408_link_0
+        path: dataset/one_door_cabinet/46408_link_0/mobility.urdf
+      46417_link_0:
+        boundingBox: dataset/one_door_cabinet/46417_link_0/bounding_box.json
+        name: 46417_link_0
+        path: dataset/one_door_cabinet/46417_link_0/mobility.urdf
+      46427_link_0:
+        boundingBox: dataset/one_door_cabinet/46427_link_0/bounding_box.json
+        name: 46427_link_0
+        path: dataset/one_door_cabinet/46427_link_0/mobility.urdf
+      46430_link_1:
+        boundingBox: dataset/one_door_cabinet/46430_link_1/bounding_box.json
+        name: 46430_link_1
+        path: dataset/one_door_cabinet/46430_link_1/mobility.urdf
+      46437_link_0:
+        boundingBox: dataset/one_door_cabinet/46437_link_0/bounding_box.json
+        name: 46437_link_0
+        path: dataset/one_door_cabinet/46437_link_0/mobility.urdf
+      46437_link_1:
+        boundingBox: dataset/one_door_cabinet/46437_link_1/bounding_box.json
+        name: 46437_link_1
+        path: dataset/one_door_cabinet/46437_link_1/mobility.urdf
+      46452_link_0:
+        boundingBox: dataset/one_door_cabinet/46452_link_0/bounding_box.json
+        name: 46452_link_0
+        path: dataset/one_door_cabinet/46452_link_0/mobility.urdf
+      46456_link_0:
+        boundingBox: dataset/one_door_cabinet/46456_link_0/bounding_box.json
+        name: 46456_link_0
+        path: dataset/one_door_cabinet/46456_link_0/mobility.urdf
+      46456_link_1:
+        boundingBox: dataset/one_door_cabinet/46456_link_1/bounding_box.json
+        name: 46456_link_1
+        path: dataset/one_door_cabinet/46456_link_1/mobility.urdf
+      46480_link_0:
+        boundingBox: dataset/one_door_cabinet/46480_link_0/bounding_box.json
+        name: 46480_link_0
+        path: dataset/one_door_cabinet/46480_link_0/mobility.urdf
+      46480_link_1:
+        boundingBox: dataset/one_door_cabinet/46480_link_1/bounding_box.json
+        name: 46480_link_1
+        path: dataset/one_door_cabinet/46480_link_1/mobility.urdf
+      46481_link_0:
+        boundingBox: dataset/one_door_cabinet/46481_link_0/bounding_box.json
+        name: 46481_link_0
+        path: dataset/one_door_cabinet/46481_link_0/mobility.urdf
+      46481_link_1:
+        boundingBox: dataset/one_door_cabinet/46481_link_1/bounding_box.json
+        name: 46481_link_1
+        path: dataset/one_door_cabinet/46481_link_1/mobility.urdf
+      46490_link_0:
+        boundingBox: dataset/one_door_cabinet/46490_link_0/bounding_box.json
+        name: 46490_link_0
+        path: dataset/one_door_cabinet/46490_link_0/mobility.urdf
+      46490_link_1:
+        boundingBox: dataset/one_door_cabinet/46490_link_1/bounding_box.json
+        name: 46490_link_1
+        path: dataset/one_door_cabinet/46490_link_1/mobility.urdf
+      46563_link_0:
+        boundingBox: dataset/one_door_cabinet/46563_link_0/bounding_box.json
+        name: 46563_link_0
+        path: dataset/one_door_cabinet/46563_link_0/mobility.urdf
+      46563_link_1:
+        boundingBox: dataset/one_door_cabinet/46563_link_1/bounding_box.json
+        name: 46563_link_1
+        path: dataset/one_door_cabinet/46563_link_1/mobility.urdf
+      46598_link_0:
+        boundingBox: dataset/one_door_cabinet/46598_link_0/bounding_box.json
+        name: 46598_link_0
+        path: dataset/one_door_cabinet/46598_link_0/mobility.urdf
+      46598_link_1:
+        boundingBox: dataset/one_door_cabinet/46598_link_1/bounding_box.json
+        name: 46598_link_1
+        path: dataset/one_door_cabinet/46598_link_1/mobility.urdf
+      46616_link_0:
+        boundingBox: dataset/one_door_cabinet/46616_link_0/bounding_box.json
+        name: 46616_link_0
+        path: dataset/one_door_cabinet/46616_link_0/mobility.urdf
+      46655_link_0:
+        boundingBox: dataset/one_door_cabinet/46655_link_0/bounding_box.json
+        name: 46655_link_0
+        path: dataset/one_door_cabinet/46655_link_0/mobility.urdf
+      46655_link_1:
+        boundingBox: dataset/one_door_cabinet/46655_link_1/bounding_box.json
+        name: 46655_link_1
+        path: dataset/one_door_cabinet/46655_link_1/mobility.urdf
+      46700_link_0:
+        boundingBox: dataset/one_door_cabinet/46700_link_0/bounding_box.json
+        name: 46700_link_0
+        path: dataset/one_door_cabinet/46700_link_0/mobility.urdf
+      46700_link_1:
+        boundingBox: dataset/one_door_cabinet/46700_link_1/bounding_box.json
+        name: 46700_link_1
+        path: dataset/one_door_cabinet/46700_link_1/mobility.urdf
+      46732_link_0:
+        boundingBox: dataset/one_door_cabinet/46732_link_0/bounding_box.json
+        name: 46732_link_0
+        path: dataset/one_door_cabinet/46732_link_0/mobility.urdf
+      46732_link_1:
+        boundingBox: dataset/one_door_cabinet/46732_link_1/bounding_box.json
+        name: 46732_link_1
+        path: dataset/one_door_cabinet/46732_link_1/mobility.urdf
+      46741_link_0:
+        boundingBox: dataset/one_door_cabinet/46741_link_0/bounding_box.json
+        name: 46741_link_0
+        path: dataset/one_door_cabinet/46741_link_0/mobility.urdf
+      46744_link_1:
+        boundingBox: dataset/one_door_cabinet/46744_link_1/bounding_box.json
+        name: 46744_link_1
+        path: dataset/one_door_cabinet/46744_link_1/mobility.urdf
+      46787_link_1:
+        boundingBox: dataset/one_door_cabinet/46787_link_1/bounding_box.json
+        name: 46787_link_1
+        path: dataset/one_door_cabinet/46787_link_1/mobility.urdf
+      46801_link_0:
+        boundingBox: dataset/one_door_cabinet/46801_link_0/bounding_box.json
+        name: 46801_link_0
+        path: dataset/one_door_cabinet/46801_link_0/mobility.urdf
+      46801_link_1:
+        boundingBox: dataset/one_door_cabinet/46801_link_1/bounding_box.json
+        name: 46801_link_1
+        path: dataset/one_door_cabinet/46801_link_1/mobility.urdf
+      46825_link_0:
+        boundingBox: dataset/one_door_cabinet/46825_link_0/bounding_box.json
+        name: 46825_link_0
+        path: dataset/one_door_cabinet/46825_link_0/mobility.urdf
+      46825_link_1:
+        boundingBox: dataset/one_door_cabinet/46825_link_1/bounding_box.json
+        name: 46825_link_1
+        path: dataset/one_door_cabinet/46825_link_1/mobility.urdf
+      46839_link_0:
+        boundingBox: dataset/one_door_cabinet/46839_link_0/bounding_box.json
+        name: 46839_link_0
+        path: dataset/one_door_cabinet/46839_link_0/mobility.urdf
+      46839_link_1:
+        boundingBox: dataset/one_door_cabinet/46839_link_1/bounding_box.json
+        name: 46839_link_1
+        path: dataset/one_door_cabinet/46839_link_1/mobility.urdf
+      46847_link_0:
+        boundingBox: dataset/one_door_cabinet/46847_link_0/bounding_box.json
+        name: 46847_link_0
+        path: dataset/one_door_cabinet/46847_link_0/mobility.urdf
+      46856_link_0:
+        boundingBox: dataset/one_door_cabinet/46856_link_0/bounding_box.json
+        name: 46856_link_0
+        path: dataset/one_door_cabinet/46856_link_0/mobility.urdf
+      46856_link_1:
+        boundingBox: dataset/one_door_cabinet/46856_link_1/bounding_box.json
+        name: 46856_link_1
+        path: dataset/one_door_cabinet/46856_link_1/mobility.urdf
+      46859_link_0:
+        boundingBox: dataset/one_door_cabinet/46859_link_0/bounding_box.json
+        name: 46859_link_0
+        path: dataset/one_door_cabinet/46859_link_0/mobility.urdf
+      46874_link_0:
+        boundingBox: dataset/one_door_cabinet/46874_link_0/bounding_box.json
+        name: 46874_link_0
+        path: dataset/one_door_cabinet/46874_link_0/mobility.urdf
+      46874_link_1:
+        boundingBox: dataset/one_door_cabinet/46874_link_1/bounding_box.json
+        name: 46874_link_1
+        path: dataset/one_door_cabinet/46874_link_1/mobility.urdf
+      46889_link_0:
+        boundingBox: dataset/one_door_cabinet/46889_link_0/bounding_box.json
+        name: 46889_link_0
+        path: dataset/one_door_cabinet/46889_link_0/mobility.urdf
+      46906_link_1:
+        boundingBox: dataset/one_door_cabinet/46906_link_1/bounding_box.json
+        name: 46906_link_1
+        path: dataset/one_door_cabinet/46906_link_1/mobility.urdf
+      46922_link_0:
+        boundingBox: dataset/one_door_cabinet/46922_link_0/bounding_box.json
+        name: 46922_link_0
+        path: dataset/one_door_cabinet/46922_link_0/mobility.urdf
+      46944_link_0:
+        boundingBox: dataset/one_door_cabinet/46944_link_0/bounding_box.json
+        name: 46944_link_0
+        path: dataset/one_door_cabinet/46944_link_0/mobility.urdf
+      46955_link_0:
+        boundingBox: dataset/one_door_cabinet/46955_link_0/bounding_box.json
+        name: 46955_link_0
+        path: dataset/one_door_cabinet/46955_link_0/mobility.urdf
+      46955_link_1:
+        boundingBox: dataset/one_door_cabinet/46955_link_1/bounding_box.json
+        name: 46955_link_1
+        path: dataset/one_door_cabinet/46955_link_1/mobility.urdf
+      46955_link_2:
+        boundingBox: dataset/one_door_cabinet/46955_link_2/bounding_box.json
+        name: 46955_link_2
+        path: dataset/one_door_cabinet/46955_link_2/mobility.urdf
+      46955_link_3:
+        boundingBox: dataset/one_door_cabinet/46955_link_3/bounding_box.json
+        name: 46955_link_3
+        path: dataset/one_door_cabinet/46955_link_3/mobility.urdf
+      46966_link_0:
+        boundingBox: dataset/one_door_cabinet/46966_link_0/bounding_box.json
+        name: 46966_link_0
+        path: dataset/one_door_cabinet/46966_link_0/mobility.urdf
+      46981_link_0:
+        boundingBox: dataset/one_door_cabinet/46981_link_0/bounding_box.json
+        name: 46981_link_0
+        path: dataset/one_door_cabinet/46981_link_0/mobility.urdf
+      46981_link_1:
+        boundingBox: dataset/one_door_cabinet/46981_link_1/bounding_box.json
+        name: 46981_link_1
+        path: dataset/one_door_cabinet/46981_link_1/mobility.urdf
+      47021_link_0:
+        boundingBox: dataset/one_door_cabinet/47021_link_0/bounding_box.json
+        name: 47021_link_0
+        path: dataset/one_door_cabinet/47021_link_0/mobility.urdf
+      47024_link_0:
+        boundingBox: dataset/one_door_cabinet/47024_link_0/bounding_box.json
+        name: 47024_link_0
+        path: dataset/one_door_cabinet/47024_link_0/mobility.urdf
+      47088_link_0:
+        boundingBox: dataset/one_door_cabinet/47088_link_0/bounding_box.json
+        name: 47088_link_0
+        path: dataset/one_door_cabinet/47088_link_0/mobility.urdf
+      47088_link_1:
+        boundingBox: dataset/one_door_cabinet/47088_link_1/bounding_box.json
+        name: 47088_link_1
+        path: dataset/one_door_cabinet/47088_link_1/mobility.urdf
+      47099_link_0:
+        boundingBox: dataset/one_door_cabinet/47099_link_0/bounding_box.json
+        name: 47099_link_0
+        path: dataset/one_door_cabinet/47099_link_0/mobility.urdf
+      47099_link_1:
+        boundingBox: dataset/one_door_cabinet/47099_link_1/bounding_box.json
+        name: 47099_link_1
+        path: dataset/one_door_cabinet/47099_link_1/mobility.urdf
+      47133_link_1:
+        boundingBox: dataset/one_door_cabinet/47133_link_1/bounding_box.json
+        name: 47133_link_1
+        path: dataset/one_door_cabinet/47133_link_1/mobility.urdf
+      47180_link_1:
+        boundingBox: dataset/one_door_cabinet/47180_link_1/bounding_box.json
+        name: 47180_link_1
+        path: dataset/one_door_cabinet/47180_link_1/mobility.urdf
+      47182_link_0:
+        boundingBox: dataset/one_door_cabinet/47182_link_0/bounding_box.json
+        name: 47182_link_0
+        path: dataset/one_door_cabinet/47182_link_0/mobility.urdf
+      47185_link_0:
+        boundingBox: dataset/one_door_cabinet/47185_link_0/bounding_box.json
+        name: 47185_link_0
+        path: dataset/one_door_cabinet/47185_link_0/mobility.urdf
+      47187_link_0:
+        boundingBox: dataset/one_door_cabinet/47187_link_0/bounding_box.json
+        name: 47187_link_0
+        path: dataset/one_door_cabinet/47187_link_0/mobility.urdf
+      47227_link_0:
+        boundingBox: dataset/one_door_cabinet/47227_link_0/bounding_box.json
+        name: 47227_link_0
+        path: dataset/one_door_cabinet/47227_link_0/mobility.urdf
+      47227_link_1:
+        boundingBox: dataset/one_door_cabinet/47227_link_1/bounding_box.json
+        name: 47227_link_1
+        path: dataset/one_door_cabinet/47227_link_1/mobility.urdf
+      47227_link_2:
+        boundingBox: dataset/one_door_cabinet/47227_link_2/bounding_box.json
+        name: 47227_link_2
+        path: dataset/one_door_cabinet/47227_link_2/mobility.urdf
+      47227_link_3:
+        boundingBox: dataset/one_door_cabinet/47227_link_3/bounding_box.json
+        name: 47227_link_3
+        path: dataset/one_door_cabinet/47227_link_3/mobility.urdf
+      47238_link_0:
+        boundingBox: dataset/one_door_cabinet/47238_link_0/bounding_box.json
+        name: 47238_link_0
+        path: dataset/one_door_cabinet/47238_link_0/mobility.urdf
+      47238_link_1:
+        boundingBox: dataset/one_door_cabinet/47238_link_1/bounding_box.json
+        name: 47238_link_1
+        path: dataset/one_door_cabinet/47238_link_1/mobility.urdf
+      47252_link_0:
+        boundingBox: dataset/one_door_cabinet/47252_link_0/bounding_box.json
+        name: 47252_link_0
+        path: dataset/one_door_cabinet/47252_link_0/mobility.urdf
+      47252_link_1:
+        boundingBox: dataset/one_door_cabinet/47252_link_1/bounding_box.json
+        name: 47252_link_1
+        path: dataset/one_door_cabinet/47252_link_1/mobility.urdf
+      47254_link_0:
+        boundingBox: dataset/one_door_cabinet/47254_link_0/bounding_box.json
+        name: 47254_link_0
+        path: dataset/one_door_cabinet/47254_link_0/mobility.urdf
+      47278_link_0:
+        boundingBox: dataset/one_door_cabinet/47278_link_0/bounding_box.json
+        name: 47278_link_0
+        path: dataset/one_door_cabinet/47278_link_0/mobility.urdf
+      47278_link_1:
+        boundingBox: dataset/one_door_cabinet/47278_link_1/bounding_box.json
+        name: 47278_link_1
+        path: dataset/one_door_cabinet/47278_link_1/mobility.urdf
+      47281_link_0:
+        boundingBox: dataset/one_door_cabinet/47281_link_0/bounding_box.json
+        name: 47281_link_0
+        path: dataset/one_door_cabinet/47281_link_0/mobility.urdf
+      47290_link_0:
+        boundingBox: dataset/one_door_cabinet/47290_link_0/bounding_box.json
+        name: 47290_link_0
+        path: dataset/one_door_cabinet/47290_link_0/mobility.urdf
+      47290_link_1:
+        boundingBox: dataset/one_door_cabinet/47290_link_1/bounding_box.json
+        name: 47290_link_1
+        path: dataset/one_door_cabinet/47290_link_1/mobility.urdf
+      47290_link_2:
+        boundingBox: dataset/one_door_cabinet/47290_link_2/bounding_box.json
+        name: 47290_link_2
+        path: dataset/one_door_cabinet/47290_link_2/mobility.urdf
+      47290_link_3:
+        boundingBox: dataset/one_door_cabinet/47290_link_3/bounding_box.json
+        name: 47290_link_3
+        path: dataset/one_door_cabinet/47290_link_3/mobility.urdf
+      47290_link_4:
+        boundingBox: dataset/one_door_cabinet/47290_link_4/bounding_box.json
+        name: 47290_link_4
+        path: dataset/one_door_cabinet/47290_link_4/mobility.urdf
+      47290_link_5:
+        boundingBox: dataset/one_door_cabinet/47290_link_5/bounding_box.json
+        name: 47290_link_5
+        path: dataset/one_door_cabinet/47290_link_5/mobility.urdf
+      47315_link_0:
+        boundingBox: dataset/one_door_cabinet/47315_link_0/bounding_box.json
+        name: 47315_link_0
+        path: dataset/one_door_cabinet/47315_link_0/mobility.urdf
+      47316_link_0:
+        boundingBox: dataset/one_door_cabinet/47316_link_0/bounding_box.json
+        name: 47316_link_0
+        path: dataset/one_door_cabinet/47316_link_0/mobility.urdf
+      47388_link_0:
+        boundingBox: dataset/one_door_cabinet/47388_link_0/bounding_box.json
+        name: 47388_link_0
+        path: dataset/one_door_cabinet/47388_link_0/mobility.urdf
+      47419_link_1:
+        boundingBox: dataset/one_door_cabinet/47419_link_1/bounding_box.json
+        name: 47419_link_1
+        path: dataset/one_door_cabinet/47419_link_1/mobility.urdf
+      47443_link_0:
+        boundingBox: dataset/one_door_cabinet/47443_link_0/bounding_box.json
+        name: 47443_link_0
+        path: dataset/one_door_cabinet/47443_link_0/mobility.urdf
+      47443_link_1:
+        boundingBox: dataset/one_door_cabinet/47443_link_1/bounding_box.json
+        name: 47443_link_1
+        path: dataset/one_door_cabinet/47443_link_1/mobility.urdf
+      47514_link_1:
+        boundingBox: dataset/one_door_cabinet/47514_link_1/bounding_box.json
+        name: 47514_link_1
+        path: dataset/one_door_cabinet/47514_link_1/mobility.urdf
+      47529_link_0:
+        boundingBox: dataset/one_door_cabinet/47529_link_0/bounding_box.json
+        name: 47529_link_0
+        path: dataset/one_door_cabinet/47529_link_0/mobility.urdf
+      47570_link_0:
+        boundingBox: dataset/one_door_cabinet/47570_link_0/bounding_box.json
+        name: 47570_link_0
+        path: dataset/one_door_cabinet/47570_link_0/mobility.urdf
+      47577_link_0:
+        boundingBox: dataset/one_door_cabinet/47577_link_0/bounding_box.json
+        name: 47577_link_0
+        path: dataset/one_door_cabinet/47577_link_0/mobility.urdf
+      47577_link_1:
+        boundingBox: dataset/one_door_cabinet/47577_link_1/bounding_box.json
+        name: 47577_link_1
+        path: dataset/one_door_cabinet/47577_link_1/mobility.urdf
+      47585_link_0:
+        boundingBox: dataset/one_door_cabinet/47585_link_0/bounding_box.json
+        name: 47585_link_0
+        path: dataset/one_door_cabinet/47585_link_0/mobility.urdf
+      47595_link_0:
+        boundingBox: dataset/one_door_cabinet/47595_link_0/bounding_box.json
+        name: 47595_link_0
+        path: dataset/one_door_cabinet/47595_link_0/mobility.urdf
+      47595_link_1:
+        boundingBox: dataset/one_door_cabinet/47595_link_1/bounding_box.json
+        name: 47595_link_1
+        path: dataset/one_door_cabinet/47595_link_1/mobility.urdf
+      47595_link_2:
+        boundingBox: dataset/one_door_cabinet/47595_link_2/bounding_box.json
+        name: 47595_link_2
+        path: dataset/one_door_cabinet/47595_link_2/mobility.urdf
+      47595_link_3:
+        boundingBox: dataset/one_door_cabinet/47595_link_3/bounding_box.json
+        name: 47595_link_3
+        path: dataset/one_door_cabinet/47595_link_3/mobility.urdf
+      47601_link_1:
+        boundingBox: dataset/one_door_cabinet/47601_link_1/bounding_box.json
+        name: 47601_link_1
+        path: dataset/one_door_cabinet/47601_link_1/mobility.urdf
+      47613_link_0:
+        boundingBox: dataset/one_door_cabinet/47613_link_0/bounding_box.json
+        name: 47613_link_0
+        path: dataset/one_door_cabinet/47613_link_0/mobility.urdf
+      47613_link_1:
+        boundingBox: dataset/one_door_cabinet/47613_link_1/bounding_box.json
+        name: 47613_link_1
+        path: dataset/one_door_cabinet/47613_link_1/mobility.urdf
+      47632_link_1:
+        boundingBox: dataset/one_door_cabinet/47632_link_1/bounding_box.json
+        name: 47632_link_1
+        path: dataset/one_door_cabinet/47632_link_1/mobility.urdf
+      47648_link_0:
+        boundingBox: dataset/one_door_cabinet/47648_link_0/bounding_box.json
+        name: 47648_link_0
+        path: dataset/one_door_cabinet/47648_link_0/mobility.urdf
+      47648_link_1:
+        boundingBox: dataset/one_door_cabinet/47648_link_1/bounding_box.json
+        name: 47648_link_1
+        path: dataset/one_door_cabinet/47648_link_1/mobility.urdf
+      47648_link_2:
+        boundingBox: dataset/one_door_cabinet/47648_link_2/bounding_box.json
+        name: 47648_link_2
+        path: dataset/one_door_cabinet/47648_link_2/mobility.urdf
+      47648_link_3:
+        boundingBox: dataset/one_door_cabinet/47648_link_3/bounding_box.json
+        name: 47648_link_3
+        path: dataset/one_door_cabinet/47648_link_3/mobility.urdf
+      47651_link_1:
+        boundingBox: dataset/one_door_cabinet/47651_link_1/bounding_box.json
+        name: 47651_link_1
+        path: dataset/one_door_cabinet/47651_link_1/mobility.urdf
+      47669_link_0:
+        boundingBox: dataset/one_door_cabinet/47669_link_0/bounding_box.json
+        name: 47669_link_0
+        path: dataset/one_door_cabinet/47669_link_0/mobility.urdf
+      47669_link_1:
+        boundingBox: dataset/one_door_cabinet/47669_link_1/bounding_box.json
+        name: 47669_link_1
+        path: dataset/one_door_cabinet/47669_link_1/mobility.urdf
+      47669_link_2:
+        boundingBox: dataset/one_door_cabinet/47669_link_2/bounding_box.json
+        name: 47669_link_2
+        path: dataset/one_door_cabinet/47669_link_2/mobility.urdf
+      47669_link_3:
+        boundingBox: dataset/one_door_cabinet/47669_link_3/bounding_box.json
+        name: 47669_link_3
+        path: dataset/one_door_cabinet/47669_link_3/mobility.urdf
+      47669_link_4:
+        boundingBox: dataset/one_door_cabinet/47669_link_4/bounding_box.json
+        name: 47669_link_4
+        path: dataset/one_door_cabinet/47669_link_4/mobility.urdf
+      47669_link_5:
+        boundingBox: dataset/one_door_cabinet/47669_link_5/bounding_box.json
+        name: 47669_link_5
+        path: dataset/one_door_cabinet/47669_link_5/mobility.urdf
+      47686_link_0:
+        boundingBox: dataset/one_door_cabinet/47686_link_0/bounding_box.json
+        name: 47686_link_0
+        path: dataset/one_door_cabinet/47686_link_0/mobility.urdf
+      47701_link_0:
+        boundingBox: dataset/one_door_cabinet/47701_link_0/bounding_box.json
+        name: 47701_link_0
+        path: dataset/one_door_cabinet/47701_link_0/mobility.urdf
+      47701_link_1:
+        boundingBox: dataset/one_door_cabinet/47701_link_1/bounding_box.json
+        name: 47701_link_1
+        path: dataset/one_door_cabinet/47701_link_1/mobility.urdf
+      47701_link_2:
+        boundingBox: dataset/one_door_cabinet/47701_link_2/bounding_box.json
+        name: 47701_link_2
+        path: dataset/one_door_cabinet/47701_link_2/mobility.urdf
+      47701_link_3:
+        boundingBox: dataset/one_door_cabinet/47701_link_3/bounding_box.json
+        name: 47701_link_3
+        path: dataset/one_door_cabinet/47701_link_3/mobility.urdf
+      47729_link_1:
+        boundingBox: dataset/one_door_cabinet/47729_link_1/bounding_box.json
+        name: 47729_link_1
+        path: dataset/one_door_cabinet/47729_link_1/mobility.urdf
+      47742_link_0:
+        boundingBox: dataset/one_door_cabinet/47742_link_0/bounding_box.json
+        name: 47742_link_0
+        path: dataset/one_door_cabinet/47742_link_0/mobility.urdf
+      47747_link_0:
+        boundingBox: dataset/one_door_cabinet/47747_link_0/bounding_box.json
+        name: 47747_link_0
+        path: dataset/one_door_cabinet/47747_link_0/mobility.urdf
+      47747_link_1:
+        boundingBox: dataset/one_door_cabinet/47747_link_1/bounding_box.json
+        name: 47747_link_1
+        path: dataset/one_door_cabinet/47747_link_1/mobility.urdf
+      47808_link_0:
+        boundingBox: dataset/one_door_cabinet/47808_link_0/bounding_box.json
+        name: 47808_link_0
+        path: dataset/one_door_cabinet/47808_link_0/mobility.urdf
+      47808_link_1:
+        boundingBox: dataset/one_door_cabinet/47808_link_1/bounding_box.json
+        name: 47808_link_1
+        path: dataset/one_door_cabinet/47808_link_1/mobility.urdf
+      47817_link_1:
+        boundingBox: dataset/one_door_cabinet/47817_link_1/bounding_box.json
+        name: 47817_link_1
+        path: dataset/one_door_cabinet/47817_link_1/mobility.urdf
+      47853_link_0:
+        boundingBox: dataset/one_door_cabinet/47853_link_0/bounding_box.json
+        name: 47853_link_0
+        path: dataset/one_door_cabinet/47853_link_0/mobility.urdf
+      47853_link_1:
+        boundingBox: dataset/one_door_cabinet/47853_link_1/bounding_box.json
+        name: 47853_link_1
+        path: dataset/one_door_cabinet/47853_link_1/mobility.urdf
+      47853_link_2:
+        boundingBox: dataset/one_door_cabinet/47853_link_2/bounding_box.json
+        name: 47853_link_2
+        path: dataset/one_door_cabinet/47853_link_2/mobility.urdf
+      47926_link_0:
+        boundingBox: dataset/one_door_cabinet/47926_link_0/bounding_box.json
+        name: 47926_link_0
+        path: dataset/one_door_cabinet/47926_link_0/mobility.urdf
+      47926_link_1:
+        boundingBox: dataset/one_door_cabinet/47926_link_1/bounding_box.json
+        name: 47926_link_1
+        path: dataset/one_door_cabinet/47926_link_1/mobility.urdf
+      47926_link_2:
+        boundingBox: dataset/one_door_cabinet/47926_link_2/bounding_box.json
+        name: 47926_link_2
+        path: dataset/one_door_cabinet/47926_link_2/mobility.urdf
+      47926_link_3:
+        boundingBox: dataset/one_door_cabinet/47926_link_3/bounding_box.json
+        name: 47926_link_3
+        path: dataset/one_door_cabinet/47926_link_3/mobility.urdf
+      47944_link_0:
+        boundingBox: dataset/one_door_cabinet/47944_link_0/bounding_box.json
+        name: 47944_link_0
+        path: dataset/one_door_cabinet/47944_link_0/mobility.urdf
+      47944_link_1:
+        boundingBox: dataset/one_door_cabinet/47944_link_1/bounding_box.json
+        name: 47944_link_1
+        path: dataset/one_door_cabinet/47944_link_1/mobility.urdf
+      47976_link_0:
+        boundingBox: dataset/one_door_cabinet/47976_link_0/bounding_box.json
+        name: 47976_link_0
+        path: dataset/one_door_cabinet/47976_link_0/mobility.urdf
+      47976_link_1:
+        boundingBox: dataset/one_door_cabinet/47976_link_1/bounding_box.json
+        name: 47976_link_1
+        path: dataset/one_door_cabinet/47976_link_1/mobility.urdf
+      47976_link_2:
+        boundingBox: dataset/one_door_cabinet/47976_link_2/bounding_box.json
+        name: 47976_link_2
+        path: dataset/one_door_cabinet/47976_link_2/mobility.urdf
+      47976_link_3:
+        boundingBox: dataset/one_door_cabinet/47976_link_3/bounding_box.json
+        name: 47976_link_3
+        path: dataset/one_door_cabinet/47976_link_3/mobility.urdf
+      48013_link_0:
+        boundingBox: dataset/one_door_cabinet/48013_link_0/bounding_box.json
+        name: 48013_link_0
+        path: dataset/one_door_cabinet/48013_link_0/mobility.urdf
+      48013_link_1:
+        boundingBox: dataset/one_door_cabinet/48013_link_1/bounding_box.json
+        name: 48013_link_1
+        path: dataset/one_door_cabinet/48013_link_1/mobility.urdf
+      48018_link_0:
+        boundingBox: dataset/one_door_cabinet/48018_link_0/bounding_box.json
+        name: 48018_link_0
+        path: dataset/one_door_cabinet/48018_link_0/mobility.urdf
+      48018_link_1:
+        boundingBox: dataset/one_door_cabinet/48018_link_1/bounding_box.json
+        name: 48018_link_1
+        path: dataset/one_door_cabinet/48018_link_1/mobility.urdf
+      48018_link_2:
+        boundingBox: dataset/one_door_cabinet/48018_link_2/bounding_box.json
+        name: 48018_link_2
+        path: dataset/one_door_cabinet/48018_link_2/mobility.urdf
+      48018_link_3:
+        boundingBox: dataset/one_door_cabinet/48018_link_3/bounding_box.json
+        name: 48018_link_3
+        path: dataset/one_door_cabinet/48018_link_3/mobility.urdf
+      48023_link_1:
+        boundingBox: dataset/one_door_cabinet/48023_link_1/bounding_box.json
+        name: 48023_link_1
+        path: dataset/one_door_cabinet/48023_link_1/mobility.urdf
+      48036_link_1:
+        boundingBox: dataset/one_door_cabinet/48036_link_1/bounding_box.json
+        name: 48036_link_1
+        path: dataset/one_door_cabinet/48036_link_1/mobility.urdf
+      48063_link_0:
+        boundingBox: dataset/one_door_cabinet/48063_link_0/bounding_box.json
+        name: 48063_link_0
+        path: dataset/one_door_cabinet/48063_link_0/mobility.urdf
+      48063_link_1:
+        boundingBox: dataset/one_door_cabinet/48063_link_1/bounding_box.json
+        name: 48063_link_1
+        path: dataset/one_door_cabinet/48063_link_1/mobility.urdf
+      48167_link_0:
+        boundingBox: dataset/one_door_cabinet/48167_link_0/bounding_box.json
+        name: 48167_link_0
+        path: dataset/one_door_cabinet/48167_link_0/mobility.urdf
+      48177_link_0:
+        boundingBox: dataset/one_door_cabinet/48177_link_0/bounding_box.json
+        name: 48177_link_0
+        path: dataset/one_door_cabinet/48177_link_0/mobility.urdf
+      48177_link_1:
+        boundingBox: dataset/one_door_cabinet/48177_link_1/bounding_box.json
+        name: 48177_link_1
+        path: dataset/one_door_cabinet/48177_link_1/mobility.urdf
+      48243_link_1:
+        boundingBox: dataset/one_door_cabinet/48243_link_1/bounding_box.json
+        name: 48243_link_1
+        path: dataset/one_door_cabinet/48243_link_1/mobility.urdf
+      48271_link_0:
+        boundingBox: dataset/one_door_cabinet/48271_link_0/bounding_box.json
+        name: 48271_link_0
+        path: dataset/one_door_cabinet/48271_link_0/mobility.urdf
+      48356_link_0:
+        boundingBox: dataset/one_door_cabinet/48356_link_0/bounding_box.json
+        name: 48356_link_0
+        path: dataset/one_door_cabinet/48356_link_0/mobility.urdf
+      48356_link_1:
+        boundingBox: dataset/one_door_cabinet/48356_link_1/bounding_box.json
+        name: 48356_link_1
+        path: dataset/one_door_cabinet/48356_link_1/mobility.urdf
+      48356_link_2:
+        boundingBox: dataset/one_door_cabinet/48356_link_2/bounding_box.json
+        name: 48356_link_2
+        path: dataset/one_door_cabinet/48356_link_2/mobility.urdf
+      48356_link_3:
+        boundingBox: dataset/one_door_cabinet/48356_link_3/bounding_box.json
+        name: 48356_link_3
+        path: dataset/one_door_cabinet/48356_link_3/mobility.urdf
+      48379_link_0:
+        boundingBox: dataset/one_door_cabinet/48379_link_0/bounding_box.json
+        name: 48379_link_0
+        path: dataset/one_door_cabinet/48379_link_0/mobility.urdf
+      48379_link_1:
+        boundingBox: dataset/one_door_cabinet/48379_link_1/bounding_box.json
+        name: 48379_link_1
+        path: dataset/one_door_cabinet/48379_link_1/mobility.urdf
+      48381_link_0:
+        boundingBox: dataset/one_door_cabinet/48381_link_0/bounding_box.json
+        name: 48381_link_0
+        path: dataset/one_door_cabinet/48381_link_0/mobility.urdf
+      48381_link_2:
+        boundingBox: dataset/one_door_cabinet/48381_link_2/bounding_box.json
+        name: 48381_link_2
+        path: dataset/one_door_cabinet/48381_link_2/mobility.urdf
+      48413_link_1:
+        boundingBox: dataset/one_door_cabinet/48413_link_1/bounding_box.json
+        name: 48413_link_1
+        path: dataset/one_door_cabinet/48413_link_1/mobility.urdf
+      48452_link_0:
+        boundingBox: dataset/one_door_cabinet/48452_link_0/bounding_box.json
+        name: 48452_link_0
+        path: dataset/one_door_cabinet/48452_link_0/mobility.urdf
+      48467_link_1:
+        boundingBox: dataset/one_door_cabinet/48467_link_1/bounding_box.json
+        name: 48467_link_1
+        path: dataset/one_door_cabinet/48467_link_1/mobility.urdf
+      48490_link_1:
+        boundingBox: dataset/one_door_cabinet/48490_link_1/bounding_box.json
+        name: 48490_link_1
+        path: dataset/one_door_cabinet/48490_link_1/mobility.urdf
+      48513_link_0:
+        boundingBox: dataset/one_door_cabinet/48513_link_0/bounding_box.json
+        name: 48513_link_0
+        path: dataset/one_door_cabinet/48513_link_0/mobility.urdf
+      48519_link_1:
+        boundingBox: dataset/one_door_cabinet/48519_link_1/bounding_box.json
+        name: 48519_link_1
+        path: dataset/one_door_cabinet/48519_link_1/mobility.urdf
+      48623_link_0:
+        boundingBox: dataset/one_door_cabinet/48623_link_0/bounding_box.json
+        name: 48623_link_0
+        path: dataset/one_door_cabinet/48623_link_0/mobility.urdf
+      48623_link_1:
+        boundingBox: dataset/one_door_cabinet/48623_link_1/bounding_box.json
+        name: 48623_link_1
+        path: dataset/one_door_cabinet/48623_link_1/mobility.urdf
+      48623_link_2:
+        boundingBox: dataset/one_door_cabinet/48623_link_2/bounding_box.json
+        name: 48623_link_2
+        path: dataset/one_door_cabinet/48623_link_2/mobility.urdf
+      48623_link_3:
+        boundingBox: dataset/one_door_cabinet/48623_link_3/bounding_box.json
+        name: 48623_link_3
+        path: dataset/one_door_cabinet/48623_link_3/mobility.urdf
+      48623_link_4:
+        boundingBox: dataset/one_door_cabinet/48623_link_4/bounding_box.json
+        name: 48623_link_4
+        path: dataset/one_door_cabinet/48623_link_4/mobility.urdf
+      48623_link_5:
+        boundingBox: dataset/one_door_cabinet/48623_link_5/bounding_box.json
+        name: 48623_link_5
+        path: dataset/one_door_cabinet/48623_link_5/mobility.urdf
+      48700_link_0:
+        boundingBox: dataset/one_door_cabinet/48700_link_0/bounding_box.json
+        name: 48700_link_0
+        path: dataset/one_door_cabinet/48700_link_0/mobility.urdf
+      48700_link_1:
+        boundingBox: dataset/one_door_cabinet/48700_link_1/bounding_box.json
+        name: 48700_link_1
+        path: dataset/one_door_cabinet/48700_link_1/mobility.urdf
+      48721_link_0:
+        boundingBox: dataset/one_door_cabinet/48721_link_0/bounding_box.json
+        name: 48721_link_0
+        path: dataset/one_door_cabinet/48721_link_0/mobility.urdf
+      48797_link_0:
+        boundingBox: dataset/one_door_cabinet/48797_link_0/bounding_box.json
+        name: 48797_link_0
+        path: dataset/one_door_cabinet/48797_link_0/mobility.urdf
+      48797_link_1:
+        boundingBox: dataset/one_door_cabinet/48797_link_1/bounding_box.json
+        name: 48797_link_1
+        path: dataset/one_door_cabinet/48797_link_1/mobility.urdf
+      48797_link_2:
+        boundingBox: dataset/one_door_cabinet/48797_link_2/bounding_box.json
+        name: 48797_link_2
+        path: dataset/one_door_cabinet/48797_link_2/mobility.urdf
+      48855_link_1:
+        boundingBox: dataset/one_door_cabinet/48855_link_1/bounding_box.json
+        name: 48855_link_1
+        path: dataset/one_door_cabinet/48855_link_1/mobility.urdf
+      48855_link_2:
+        boundingBox: dataset/one_door_cabinet/48855_link_2/bounding_box.json
+        name: 48855_link_2
+        path: dataset/one_door_cabinet/48855_link_2/mobility.urdf
+      48859_link_0:
+        boundingBox: dataset/one_door_cabinet/48859_link_0/bounding_box.json
+        name: 48859_link_0
+        path: dataset/one_door_cabinet/48859_link_0/mobility.urdf
+      48859_link_1:
+        boundingBox: dataset/one_door_cabinet/48859_link_1/bounding_box.json
+        name: 48859_link_1
+        path: dataset/one_door_cabinet/48859_link_1/mobility.urdf
+      48878_link_1:
+        boundingBox: dataset/one_door_cabinet/48878_link_1/bounding_box.json
+        name: 48878_link_1
+        path: dataset/one_door_cabinet/48878_link_1/mobility.urdf
+      49025_link_0:
+        boundingBox: dataset/one_door_cabinet/49025_link_0/bounding_box.json
+        name: 49025_link_0
+        path: dataset/one_door_cabinet/49025_link_0/mobility.urdf
+      49025_link_1:
+        boundingBox: dataset/one_door_cabinet/49025_link_1/bounding_box.json
+        name: 49025_link_1
+        path: dataset/one_door_cabinet/49025_link_1/mobility.urdf
+      49025_link_2:
+        boundingBox: dataset/one_door_cabinet/49025_link_2/bounding_box.json
+        name: 49025_link_2
+        path: dataset/one_door_cabinet/49025_link_2/mobility.urdf
+      49025_link_3:
+        boundingBox: dataset/one_door_cabinet/49025_link_3/bounding_box.json
+        name: 49025_link_3
+        path: dataset/one_door_cabinet/49025_link_3/mobility.urdf
+      49038_link_1:
+        boundingBox: dataset/one_door_cabinet/49038_link_1/bounding_box.json
+        name: 49038_link_1
+        path: dataset/one_door_cabinet/49038_link_1/mobility.urdf
+      49038_link_2:
+        boundingBox: dataset/one_door_cabinet/49038_link_2/bounding_box.json
+        name: 49038_link_2
+        path: dataset/one_door_cabinet/49038_link_2/mobility.urdf
+      49042_link_0:
+        boundingBox: dataset/one_door_cabinet/49042_link_0/bounding_box.json
+        name: 49042_link_0
+        path: dataset/one_door_cabinet/49042_link_0/mobility.urdf
+      49042_link_1:
+        boundingBox: dataset/one_door_cabinet/49042_link_1/bounding_box.json
+        name: 49042_link_1
+        path: dataset/one_door_cabinet/49042_link_1/mobility.urdf
+      49062_link_0:
+        boundingBox: dataset/one_door_cabinet/49062_link_0/bounding_box.json
+        name: 49062_link_0
+        path: dataset/one_door_cabinet/49062_link_0/mobility.urdf
+      49062_link_1:
+        boundingBox: dataset/one_door_cabinet/49062_link_1/bounding_box.json
+        name: 49062_link_1
+        path: dataset/one_door_cabinet/49062_link_1/mobility.urdf
+      49062_link_2:
+        boundingBox: dataset/one_door_cabinet/49062_link_2/bounding_box.json
+        name: 49062_link_2
+        path: dataset/one_door_cabinet/49062_link_2/mobility.urdf
+      49062_link_3:
+        boundingBox: dataset/one_door_cabinet/49062_link_3/bounding_box.json
+        name: 49062_link_3
+        path: dataset/one_door_cabinet/49062_link_3/mobility.urdf
+      49062_link_4:
+        boundingBox: dataset/one_door_cabinet/49062_link_4/bounding_box.json
+        name: 49062_link_4
+        path: dataset/one_door_cabinet/49062_link_4/mobility.urdf
+      49062_link_5:
+        boundingBox: dataset/one_door_cabinet/49062_link_5/bounding_box.json
+        name: 49062_link_5
+        path: dataset/one_door_cabinet/49062_link_5/mobility.urdf
+      49132_link_0:
+        boundingBox: dataset/one_door_cabinet/49132_link_0/bounding_box.json
+        name: 49132_link_0
+        path: dataset/one_door_cabinet/49132_link_0/mobility.urdf
+      49132_link_1:
+        boundingBox: dataset/one_door_cabinet/49132_link_1/bounding_box.json
+        name: 49132_link_1
+        path: dataset/one_door_cabinet/49132_link_1/mobility.urdf
+      49133_link_0:
+        boundingBox: dataset/one_door_cabinet/49133_link_0/bounding_box.json
+        name: 49133_link_0
+        path: dataset/one_door_cabinet/49133_link_0/mobility.urdf
+      49133_link_1:
+        boundingBox: dataset/one_door_cabinet/49133_link_1/bounding_box.json
+        name: 49133_link_1
+        path: dataset/one_door_cabinet/49133_link_1/mobility.urdf
+      49182_link_0:
+        boundingBox: dataset/one_door_cabinet/49182_link_0/bounding_box.json
+        name: 49182_link_0
+        path: dataset/one_door_cabinet/49182_link_0/mobility.urdf
+      49182_link_1:
+        boundingBox: dataset/one_door_cabinet/49182_link_1/bounding_box.json
+        name: 49182_link_1
+        path: dataset/one_door_cabinet/49182_link_1/mobility.urdf
+      49188_link_0:
+        boundingBox: dataset/one_door_cabinet/49188_link_0/bounding_box.json
+        name: 49188_link_0
+        path: dataset/one_door_cabinet/49188_link_0/mobility.urdf
+      49188_link_1:
+        boundingBox: dataset/one_door_cabinet/49188_link_1/bounding_box.json
+        name: 49188_link_1
+        path: dataset/one_door_cabinet/49188_link_1/mobility.urdf
+      49188_link_2:
+        boundingBox: dataset/one_door_cabinet/49188_link_2/bounding_box.json
+        name: 49188_link_2
+        path: dataset/one_door_cabinet/49188_link_2/mobility.urdf
+      49188_link_3:
+        boundingBox: dataset/one_door_cabinet/49188_link_3/bounding_box.json
+        name: 49188_link_3
+        path: dataset/one_door_cabinet/49188_link_3/mobility.urdf
+      49188_link_4:
+        boundingBox: dataset/one_door_cabinet/49188_link_4/bounding_box.json
+        name: 49188_link_4
+        path: dataset/one_door_cabinet/49188_link_4/mobility.urdf
+      49188_link_5:
+        boundingBox: dataset/one_door_cabinet/49188_link_5/bounding_box.json
+        name: 49188_link_5
+        path: dataset/one_door_cabinet/49188_link_5/mobility.urdf
+
+sim:
+  substeps: 2
+  physx:
+    num_threads: 4
+    solver_type: 1  # 0: pgs, 1: tgs
+    num_position_iterations: 8
+    num_velocity_iterations: 0
+    contact_offset: 0.002
+    rest_offset: 0.0
+    bounce_threshold_velocity: 0.2
+    max_depenetration_velocity: 1000.0
+    default_buffer_size_multiplier: 5.0
+  flex:
+    num_outer_iterations: 5
+    num_inner_iterations: 20
+    warm_start: 0.8
+    relaxation: 0.75
