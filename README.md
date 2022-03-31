@@ -1,4 +1,4 @@
-# Bi-DexMani: A Benchmark for Learning Bimanual Dexterous Manipulation
+# Bimanual Dexterous Manipulation via Multi-Agent Reinforcement Learning
 
 ### About this repository
 
@@ -75,9 +75,9 @@ python train.py --task=ShadowHandOver --algo=hatrpo
 
 Currently, we support the following algorithms: 
 
-Single-Agent RL: PPO, TRPO, SAC, TD3, DDPG 
+Single-Agent RL: **PPO, TRPO, SAC, TD3, DDPG** 
 
-Multi-Agent RL: IPPO, MAPPO, MADDPG, HATRPO, HAPPO
+Multi-Agent RL: **IPPO, MAPPO, MADDPG, HATRPO, HAPPO**
 
 ### Loading trained models
 
