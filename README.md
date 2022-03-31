@@ -1,4 +1,4 @@
-# Bimanual Dexterous Manipulation via Multi-Agent Reinforcement Learning
+# Bimanual Dexterous Manipulation via <br /> Multi-Agent Reinforcement Learning
 
 ### About this repository
 
