@@ -178,9 +178,12 @@ For more details about these environments please refer to [here](./docs/environm
 ## Enviroments Performance]
 
 ### Demos
-<center class="half">
-  <img src="assets/image_folder/0.gif" align="middle" width="700"/><img src="assets/image_folder/3.gif" align="middle" width="700"/>
-</center> 
+
+#### ShadowHandOver Environment
+<img src="assets/image_folder/0.gif" align="center" width="700"/>
+
+#### ShadowHandLiftUnderarm Environment
+<img src="assets/image_folder/3.gif" align="center" width="700"/>
 
 For more demos please refer to [here](./docs/environments.md)
 
