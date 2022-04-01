@@ -1,10 +1,14 @@
-
-
+# Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
-****
-# Bimanual Dexterous Manipulation via Multi-Agent RL
+**Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. It consists of three main features:
+- talk about issac gym, fast. 
+- talk about enabling marl,
+- talk about geenralisation, objects
+- talk about the level to humans
 
+- TorchOpt provides functional optimizer which enables [JAX-like](https://github.com/google/jax) composable functional optimizer for PyTorch. With TorchOpt, we can easily conduct neural network optimization in PyTorch with functional style optimizer, just like [Optax](https://github.com/deepmind/optax) in JAX. 
+- Thanks to functional programing, TorchOpt provides efficient, flexible, and easy-to-implement differentiable optimizer for gradient-based Meta-Learning research. It largely reduces the efforts required to implement complex Meta-Learning algorithms.
 
 Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of reinforcement learning and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study machine intelligence. 
 
