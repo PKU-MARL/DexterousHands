@@ -1,3 +1,0 @@
-link_0 hinge rotation_door
-link_1 hinge rotation_door
-link_2 heavy furniture_body

@@ -1,0 +1,39 @@
+env_name: maddpg
+algorithm_name: maddpg
+experiment_name: check
+run_dir: ./logs
+num_env_steps: 50000000
+episode_length: 8
+n_rollout_threads: 80
+n_eval_rollout_threads: 1
+use_linear_lr_decay: False
+hidden_size: [1024, 1024, 512]
+activation: elu # can be elu, relu, selu, crelu, lrelu, tanh, sigmoid
+use_render: False
+
+save_interval: 1
+use_eval: False
+eval_interval: 25
+log_interval: 25
+eval_episodes: 10000
+
+
+# rollout params
+max_iterations: 1000000
+
+# ddpg 参数
+cliprange: 0.2
+nsteps: 8
+noptepochs: 5
+num_mini_batch: 1 # this is per agent #TODO: too small
+num_learning_epochs: 50
+replay_size: 100
+batch_size: 16
+polyak: 0.995
+learning_rate: 0.001
+max_grad_norm: 1
+gamma: 0.99
+act_noise: 0.1
+target_noise: 0.2
+noise_clip: 0.5
+sampler: random
