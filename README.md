@@ -2,6 +2,7 @@
 
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
+****
 ### About this repository
 
 Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of reinforcement learning and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study machine intelligence. 
@@ -27,7 +28,7 @@ The difficulty of our environment is not only reflected in the challenging task 
 - [The Team](#The-Team)
 - [License](#License)
 <br></br>
-
+****
 ## Installation
 
 Details regarding installation of IsaacGym can be found [here](https://developer.nvidia.com/isaac-gym). **We currently support the `Preview Release 3` version of IsaacGym.**
