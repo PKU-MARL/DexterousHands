@@ -1,6 +1,6 @@
 
 
-<img src="assets/image_folder/coverv2.png" width="1000" border="1"/>
+<img src="assets/image_folder/coverv1.png" width="1000" border="1"/>
 
 ****
 # Bimanual Dexterous Manipulation via Multi-Agent RL
