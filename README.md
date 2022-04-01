@@ -15,8 +15,8 @@ The potential application of this platform mainly is to become an important tool
 
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
-- [Introduction to Bi-DetMani](#Introduction-to-Bi-DetMani)
-  - [What is Bi-DetMani](#What-is-Bi-DetMani)
+- [Introduction to Bi-DexMani](#Introduction-to-Bi-DexMani)
+  - [What is Bi-DexMani](#What-is-Bi-DexMani)
   - [System design](#System-design)
   - [Summary](#Summary)
 - [File Structure](#File-Structure)
@@ -56,7 +56,7 @@ Once Isaac Gym is installed and samples work within your current python environm
 pip install -e .
 ```
 
-## Introduction to Bi-DetMani
+## Introduction to Bi-DexMani
 
 Bi-DexMani is a collection of environments and algorithms for learning bimanual dexterous manipulation. 
 
