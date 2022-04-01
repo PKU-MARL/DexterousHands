@@ -17,13 +17,20 @@ The difficulty of our environment is not only reflected in the challenging task 
 
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
-- [Usage](#Usage)
+- [Introduction to Bi-DetMani](#Introduction-to-Bi-DetMani)
+  - [What is Bi-DetMani](#What-is-Bi-DetMani)
   - [System design](#System-design)
+  - [Supports](#Supports)
+- [File Structure](#File-Structure)
+- [Overview of Environments](#Overview-of-Environments)
+- [Overview of Algorithms](#Overview-of-Algorithms)
+- [Getting Started](#Getting-Started)
   - [Running the benchmarks](#Running-the-benchmarks)
   - [Select an algorithm](#Select-an-algorithm)
   - [Loading trained models](#Loading-trained-models)
-- [Tasks](#Tasks)
-  - [HandCatchUnderarm Environments](#HandCatchUnderarm-Environments)
+- [Enviroments Performance](#Enviroments-Performance)
+  - [Demos](#Demos)
+  - [Figures](#Figures)
 - [Building the Documentation](#Building-the-Documentation)
 - [The Team](#The-Team)
 - [License](#License)
@@ -50,6 +57,9 @@ Once Isaac Gym is installed and samples work within your current python environm
 ```bash
 pip install -e .
 ```
+
+## Getting Started
+
 
 ## Getting Started
 
