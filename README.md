@@ -13,9 +13,6 @@
 
 The potential application of this platform mainly is to become an important tool to evaluate the peroformance of  RL-based algorithms for the community of robotics. 
 
-
-:star2::star2:**Click [here](#task) to check the environment introduction!**:star2::star2:  
-
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
 - [Introduction to Bi-DetMani](#Introduction-to-Bi-DetMani)
@@ -156,7 +153,7 @@ $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-s
 
 ## <span id="task">Tasks</span>
 
-Source code for tasks can be found in `dexteroushandenvs/tasks`. 
+Source code for tasks can be found in `envs/tasks`. 
 
 Until now we only suppose the following environments:
 
@@ -175,7 +172,7 @@ Until now we only suppose the following environments:
 
 For more details about these environments please refer to [here](./docs/environments.md)
 
-## Enviroments Performance]
+## Enviroments Performance
 
 ### Demos
 
