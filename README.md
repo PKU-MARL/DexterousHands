@@ -1,22 +1,20 @@
 # Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
-**Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. It consists of three main features:
-- talk about issac gym, fast. 
-- talk about enabling marl,
-- talk about geenralisation, objects
-- talk about the level to humans
 
-- TorchOpt provides functional optimizer which enables [JAX-like](https://github.com/google/jax) composable functional optimizer for PyTorch. With TorchOpt, we can easily conduct neural network optimization in PyTorch with functional style optimizer, just like [Optax](https://github.com/deepmind/optax) in JAX. 
-- Thanks to functional programing, TorchOpt provides efficient, flexible, and easy-to-implement differentiable optimizer for gradient-based Meta-Learning research. It largely reduces the efforts required to implement complex Meta-Learning algorithms.
+**Motivation**: Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of RL and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study the problem in the context of machine intelligence. 
 
-Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of reinforcement learning and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study machine intelligence. 
 
-Bi-DexMani is a collection of environments and algorithms for learning bimanual dexterous manipulation. 
+**Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. Diverse scenarios in Bi-DexMani are developed with the following features:
+- **High dimensionality**: we provides the robotic environments with high dimensional state-action spaces (state: more than 400 dim; action: 52 dim), thus bringing a new challenge for model-free reinforcement learning. 
+- **Cooperation**: we supports two types of interface, single-agent and multi-agent modes. Meanwhile, our multi-agent setting is heterogeneous unlike SMAC where agents share parameters. Particularly, the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
+- **Availability**: we implemented some single-agent and multi-agent algorithms, whose performances demonstrate our tasks are able to be solved to some extent, as shown in our experimental performance section.
+- **Efficiency**: we supports running thousands of environments simultaneously based on Isaac Gym. The results illustrate the mean FPS (frame per second) of 2048 parallel environments in Bi-DexMani is about 40000 on a single NVIDIA RTX3090 GPU.
+- **Generalization**: we introduces a variety of objects from the YCB and SAPIEN dataset (more than 2000 objects) and a large number of tasks (more than 20 tasks), thus allowing meta-RL and multi-task RL algorithms to learn general skills and generalize to unseen scenarios. 
+- **Cognition**: we provides some underlying relationships between our dexterous tasks and the movements of children from different ages. It will facilitate researchers on infant behavior and development to validate some hypotheses.
 
-This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+The potential application of this platform mainly is to become an important tool to evaluate the peroformance of  RL-based algorithms for the community of robotics. 
 
-The difficulty of our environment is not only reflected in the challenging task content but also reflected in the ultra-high-dimensional continuous space control. The state space dimension of each environment is up to 400 dimensions in total, and the action space dimension is up to 40 dimensions. A highlight of our environment is that we use five fingers and palms of each hand as a minimum unit, you can use each finger and palm as an agent, or combine any number of them as an agent by yourself.
 
 :star2::star2:**Click [here](#task) to check the environment introduction!**:star2::star2:  
 
@@ -57,6 +55,12 @@ pip install -e .
 ```
 
 ## Getting Started
+
+### Introduction to Bi-DexMani
+
+This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+
+The difficulty of our environment is not only reflected in the challenging task content but also reflected in the ultra-high-dimensional continuous space control. The state space dimension of each environment is up to 400 dimensions in total, and the action space dimension is up to 40 dimensions. A highlight of our environment is that we use five fingers and palms of each hand as a minimum unit, you can use each finger and palm as an agent, or combine any number of them as an agent by yourself.
 
 ### System design
 
