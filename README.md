@@ -174,6 +174,7 @@ For more demos please refer to [here](./docs/environments.md)
 
 ### Figures
 
+For more figures please refer to [here](./docs/figures.md)
 
 ## Building the Documentation
 
