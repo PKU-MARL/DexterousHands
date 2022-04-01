@@ -3,7 +3,7 @@
 
 **Motivation**: Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of RL and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study the problem in the context of machine intelligence. 
 
-**Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. Diverse scenarios in Bi-DexHands are developed with the following features:
+**Bi-DexMani** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. Diverse scenarios in Bi-DexMani are developed with the following features:
 - **High dimensionality**: we provide the robotic environments with high dimensional state-action spaces (state: more than 400 dim; action: 52 dim), thus bringing a new challenge for model-free reinforcement learning. 
 - **Cooperation**: we support two types of interface, single-agent and multi-agent modes. Meanwhile, our multi-agent setting is heterogeneous unlike [SMAC](https://github.com/oxwhirl/smac) where agents share parameters. Particularly, the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
 - **Availability**: we implement some single-agent and multi-agent algorithms, whose performances demonstrate our tasks are able to be solved to some extent, as shown in our experimental performance section.
