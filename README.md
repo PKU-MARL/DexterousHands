@@ -58,25 +58,13 @@ pip install -e .
 
 ## Introduction to Bi-DetMani
 
-### What is Bi-DetMani
-
 Bi-DexMani is a collection of environments and algorithms for learning bimanual dexterous manipulation. 
-
-This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
-
-The difficulty of our environment is not only reflected in the challenging task content but also reflected in the ultra-high-dimensional continuous space control. The state space dimension of each environment is up to 400 dimensions in total, and the action space dimension is up to 40 dimensions. A highlight of our environment is that we use five fingers and palms of each hand as a minimum unit, you can use each finger and palm as an agent, or combine any number of them as an agent by yourself.
-
-### Introduction to Bi-DexMani
-
-This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
-
-The difficulty of our environment is not only reflected in the challenging task content but also reflected in the ultra-high-dimensional continuous space control. The state space dimension of each environment is up to 400 dimensions in total, and the action space dimension is up to 40 dimensions. A highlight of our environment is that we use five fingers and palms of each hand as a minimum unit, you can use each finger and palm as an agent, or combine any number of them as an agent by yourself.
 
 ### System design
 
 <img src="assets/image_folder/fig2-page-001.jpg" align="right" width="350" border="2"/>
 
-The core of Dual Dexterous Hands Manipulation is to build up a learning framework for two shadow hands capable of diverse and general skills, such as reach, throw, catch, pick and place. Apart from that, these skills should take the cooperation between two hands into account. To be specific, Bi-DetMani consists of three components, worlds, tasks and learning algorithms. Varying worlds provide a large number of basic settings for robots, including the configuration of robotic hands and objects. Meanwhile, a variety of tasks between two robotic hands make a single agent or multiple agents handle how to perform cooperative tasks.
+The core of Bi-DexMani is to build up a learning framework for two shadow hands capable of diverse and general skills, such as reach, throw, catch, pick and place. Apart from that, these skills should take the cooperation between two hands into account. To be specific, Bi-DetMani consists of three components, worlds, tasks and learning algorithms. Varying worlds provide a large number of basic settings for robots, including the configuration of robotic hands and objects. Meanwhile, a variety of tasks between two robotic hands make a single agent or multiple agents handle how to perform cooperative tasks.
 
 ### Summary
 
