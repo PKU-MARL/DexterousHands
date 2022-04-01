@@ -6,12 +6,12 @@
 
 
 **Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. Diverse scenarios in Bi-DexMani are developed with the following features:
-- **High dimensionality**: we provides the robotic environments with high dimensional state-action spaces (state: more than 400 dim; action: 52 dim), thus bringing a new challenge for model-free reinforcement learning. 
-- **Cooperation**: we supports two types of interface, single-agent and multi-agent modes. Meanwhile, our multi-agent setting is heterogeneous unlike SMAC where agents share parameters. Particularly, the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
-- **Availability**: we implemented some single-agent and multi-agent algorithms, whose performances demonstrate our tasks are able to be solved to some extent, as shown in our experimental performance section.
-- **Efficiency**: we supports running thousands of environments simultaneously based on Isaac Gym. The results illustrate the mean FPS (frame per second) of 2048 parallel environments in Bi-DexMani is about 40000 on a single NVIDIA RTX3090 GPU.
-- **Generalization**: we introduces a variety of objects from the YCB and SAPIEN dataset (more than 2000 objects) and a large number of tasks (more than 20 tasks), thus allowing meta-RL and multi-task RL algorithms to learn general skills and generalize to unseen scenarios. 
-- **Cognition**: we provides some underlying relationships between our dexterous tasks and the movements of children from different ages. It will facilitate researchers on infant behavior and development to validate some hypotheses.
+- **High dimensionality**: we provide the robotic environments with high dimensional state-action spaces (state: more than 400 dim; action: 52 dim), thus bringing a new challenge for model-free reinforcement learning. 
+- **Cooperation**: we support two types of interface, single-agent and multi-agent modes. Meanwhile, our multi-agent setting is heterogeneous unlike SMAC where agents share parameters. Particularly, the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
+- **Availability**: we implement some single-agent and multi-agent algorithms, whose performances demonstrate our tasks are able to be solved to some extent, as shown in our experimental performance section.
+- **Efficiency**: we support running thousands of environments simultaneously based on Isaac Gym. The results illustrate the mean FPS (frame per second) of 2048 parallel environments in Bi-DexMani is about 40000 on a single NVIDIA RTX3090 GPU.
+- **Generalization**: we introduce a variety of objects from the YCB and SAPIEN dataset (more than 2000 objects) and a large number of tasks (more than 20 tasks), thus allowing meta-RL and multi-task RL algorithms to learn general skills and generalize to unseen scenarios. 
+- **Cognition**: we provide some underlying relationships between our dexterous tasks and the movements of children from different ages. It will facilitate researchers on infant behavior and development to validate some hypotheses.
 
 The potential application of this platform mainly is to become an important tool to evaluate the peroformance of  RL-based algorithms for the community of robotics. 
 
