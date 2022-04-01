@@ -1,0 +1,33 @@
+## Algorithms
+
+We give a brief introduction to the single/multi-agent reforcement learning algorithm here. For more details, please refer to the original paper.
+
+### Single-agent reinforcement learning algorithms
+
+#### Trust Region Policy Optimization
+
+TRPO is a basic policy optimization algorithm, with theoretically justified monotonic improvement. Based on the theorem1 in the original paper by John Schulman et. al.
+$\eta(\pi_{new})\geq L_{old}(\pi_{new})-\frac{
+4\epsilon \gamma}{(1-\gamma)^2}\alpha^2$,where$\epsilon = \mathop{\max}\limits_{s,a}|A_{\pi}(s,a)|$,$\eta$ is the objective function and $L_{old}$ is a surrogate objective: $L_{\pi}(\hat{\pi}) = \eta(\pi)+E_{s \sim \rho_{\pi},a\sim \pi}(A_{\pi}(s,a))$, providing feasible approximation of $\eta$ according to the theorem. To empirically allow for larger update steps, the optimization problem is adjusted to $\pi_{\theta_{new}} = \mathop{\max}\limits_{\theta}L_{\theta_{old}}(\theta)$ subject to $D_{KL}^{max}(\theta_{old},\theta) \leq \delta$. To yield a practical algorithm,TRPO made several approximations including 
+solving the optimization problem with conjugate gradient algorithm followed by a line search
+
+
+#### Proximal Policy Optimization
+PPO is a policy optimization algorithm enjoying simpler implementation, more general application and better sample complexity over TRPO. Based on the surrogate objective in TRPO: $L^{CPI}(\theta) = \hat{E}_t[r_t(\theta)\hat{A}_t]$, PPO proposed a new approximate surrogate function $L^{CLIP}(\theta) = \hat{E}_t[min(r_t(\theta)\hat{A}_t,clip(r_t(\theta),1-\epsilon,1+\epsilon)\hat{A}_t)]$, which restricts policy optimization step by removing the incentive for $r_t$ to move outside of the interval $[1 - \epsilon,1 + \epsilon]$. Another alternative surrogate objective is given by incorporating a penalty on KL divergence, and adapting the penalty coefficient. During traning, PPO uses a combined objective, consisting of surrogate objective for the policy, value function loss for the critic and a bonus entropy term: $L^{CLIP+VF+S}(\theta) = \hat{E}_t[L_t^{CLIP}(\theta)-c_1 L_t^{VF}(\theta)+c_2S[\pi_{\theta}](s_t)]$
+
+#### Deep Deterministic Policy Gradient
+DDPG, based on the DPG algorithm, is a model-free, off-policy actor-critic algorithm using deep function approximators that can learn policies in high-dimensional, continuous action spaces. It uses a copy of the actor and critic networks $Q^{\prime}(s,a|\theta^{Q^{\prime}})$ and  $\mu^{\prime}(s|\theta^{\mu^{\prime}})$ to calculate the target values, and use "soft" target updates to update the target networks more stably by having them slowly track the learned networks: $\theta^{\prime} \leftarrow \tau\theta+(1-\tau)\theta^{\prime}$ with $\tau\ll 1$. It follows an exploration policy  $\mu^{\prime}$ by adding noise sampled from a noise process $\mathbf{N}$: $\mu^{\prime}(S_t) = \mu(s_t|\theta_t^{\mu}) + \mathbf{N}_t$. 
+The critic is updated by minimizing the loss: $L=\frac{1}{N}\sum_i(y_i -Q(s_i,a_i|\theta^{Q}))^2$ where $y_i=r_i+\gamma Q^{\prime}(s_{i+1},\mu^{\prime}(s_{i+1}|\theta^{\mu^{\prime}})|\theta^{Q^{\prime}})$, and the actor is updated using sampled policy gradient: 
+$\nabla_{\theta\mu}J\approx\frac{1}{N}\sum_i\nabla_{\alpha}Q(s,a|\theta^{Q})|_{s=s_i,a=\mu(s_i)}\nabla_{\theta\mu}\mu(s|\theta^{\mu})|_{s_i}$.
+
+#### Twin Delayed Deep Deterministic policy gradient
+TD3 is an actor-critic algorithm which applies its modifications to the state of the art actor-critic method for continuous control, DDPG. It focused on two outcomes that occur as the result of estimation error, overestimation bias and a high variance build-up. It uses Clipped Double Q-learning method to reduce overestimation bias: $y \leftarrow r+\gamma min_{i=1,2}Q_{\theta_i^{\prime}}(s^{\prime},\tilde{a})$, where $\tilde{a} \leftarrow \pi_{\phi^{\prime}}(s)+\epsilon,\epsilon \sim clip(\mathbf{N}(0, \tilde{\sigma}),-c,c)$, which uses target policy smoothing regularization to avoid overfitting and enforce the value similarity between similar actions, It uses delayed policy and target network updates to ensure small value error.
+
+### Multi-agent reinforcement learning algorithms
+
+#### Heterogeneous-Agent Proximal Policy Optimisation
+HAPPO is a multi-agent policy optimization algorithm that follows the centralized training decentralized execution (CTDE) paradigm. HAPPO doesn't assume homogeneous agents and doesn't require decomposibility of the joint value function. The theoretical core of extending PPO to multi-agent settings is the advantage decomposition lemma(Lemma 1 in the original paper). As a result of it, similar to single agent PPO, we have a theoretical monotonic improvement guarantee for the multi-agent setting: $J(\overline{\pi}) \geq J(\pi) + \sigma_{m=1}^{n}[L_{\pi}^{i_{1:m}}(\overline{\pi}^{i_{1:m-1}},\overline{\pi}^{i_m})-CD^{max}_{KL}(\pi^{i_m},\overline{\pi}^{i_m})]$(Lemma 2 in the original paper). This lemma yields a similar policy optimization iteration: $\pi^{i_m}_{k+1} = arg \mathop{\max}\limits_{\pi^{i_m}}[L_{\pi}^{i_{1:m}}({\pi}^{i_{1:m-1}},{\pi}^{i_m})-CD^{max}_{KL}(\pi^{i_m},{\pi}^{i_m})]$. To avoid maintaining value functions for each single agent, the following proposition is used: $E
+[A^{i_m}_{\pi}(s,a^{i_{1:m-1}},a^{i_m})]=E[(\dfrac{\hat{\pi}^{i_m}(a^{i_m}|s)}{\pi^{i_m}(a^{i_m}|s)}-1)\dfrac{\overline{\pi}^{i_{1:m-1}}(a^{i_{1:m-1}}|s)}{{\pi}^{i_{1:m-1}}(a^{i_{1:m-1}}|s)}A_{\pi}(s,a)])$, so that it only need to keep one value function $A_{\pi}(s,a)$ for all agents.Finally, it uses the clipping trick similar to single agent PPO, obtaining the final practical policy iteration.
+
+#### Multi-Agent Proximal Policy Optimization
+MAPPO (Multi-Agent PPO) is an application of the actor-critic single-agent PPO algorithm to multi-agent tasks. It follows the CTDE structure. Each agent i follows a shared policy $\pi_\theta(a_i|o_i)$ based on local observation $o_i=O(s;i)$ at global state $s$, takes its action $a_i$ and optimizes its reward $J(\theta)=E_{a^t,s^t}[\sum_t \gamma^t R(s^t, a^t)]$. The actor network maximizes: $L(\theta)=[\frac{1}{Bn}\sum_{i=1}^{B}\sum_{k=1}^{n} min(r_{\theta,i}^{(k)}A_i^{(k)}, clip(r_{\theta,i}^{(k)}, 1-\epsilon, 1+\epsilon)A_i^{(k)})]+\sigma\frac{1}{Bn}\sum_{i=1}^{B}\sum_{k=1}^n S[\pi_{\theta}(o_i^{(k)})]$, where $n$ refers to the agent number, $A_I^{(k)}$ is computed using GAE method, $S$ is policy entropy and $\sigma$ is entropy coefficient hyper-parameter. The critic network minimizes: $L(\phi)=\frac{1}{Bn}\sum_{i=1}^{B}\sum_{k=1}^{n}(max[(V_{\phi}(s_i^{(k)})-\hat{R_i})^2, (clip(V_{\phi}(s_i^{(k)}),V_{\phi_{old}}(s_i^{(k)})-\epsilon, V_{\phi_{old}}(s_i^{(k)})+\epsilon)-\hat{R_i})^2])$, where $\hat{R_i}$ is reward-to-go.
