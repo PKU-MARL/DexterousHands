@@ -1,6 +1,6 @@
 # Bimanual Dexterous Manipulation via <br /> Multi-Agent Reinforcement Learning
 
-<img src="assets/image_folder/cover.jpg" align="middle" width="500" border="1"/>
+<img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
 ### About this repository
 
