@@ -160,7 +160,7 @@ Until now we only suppose the following environments:
 
 For more details about these environments please refer to [here](./docs/environments.md)
 
-## Enviroments Performance
+## Enviroment Performance
 
 ### Demos
 
