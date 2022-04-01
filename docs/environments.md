@@ -15,12 +15,12 @@ We provide a detailed description of the environment here. For single-agent rein
 | State Shape     | (num_envs, 2, 398)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | (num_envs, 2, 422)    | 
 | State Values     | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    | [-5, 5]    |
 | Rewards     | Rewards is the pose distance between object and goal. You can check out the details [here](#r1)| Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r3)    | Rewards is the pose distance between two object and  two goal, this means that both objects have to be thrown in order to be swapped over. You can check out the details [here](#r4)    | Rewards is the pose distance between object and goal. You can check out the details [here](#r2)    |
-| Demo     | <img src="assets/image_folder/0.gif" align="middle" width="550" border="1"/>    | <img src="assets/image_folder/4.gif" align="middle" width="140" border="1"/>    | <img src="assets/image_folder/sendpix0.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="assets/image_folder/2.gif" align="middle" width="130" border="1"/>    |
+| Demo     | <img src="../assets/image_folder/0.gif" align="middle" width="550" border="1"/>    | <img src="../assets/image_folder/4.gif" align="middle" width="140" border="1"/>    | <img src="../assets/image_folder/sendpix0.gif" align="middle" width="130" border="1"/>    | <img src="../assets/image_folder/1.gif" align="middle" width="130" border="1"/>    | <img src="../assets/image_folder/2.gif" align="middle" width="130" border="1"/>    |
 
 
 
 ### HandOver Environments
-<img src="assets/image_folder/0.gif" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/0.gif" align="middle" width="450" border="1"/>
 
 These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. To use the HandOver environment, pass `--task=ShadowHandOver`
 
@@ -60,7 +60,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
 
 ### HandCatchUnderarm Environments
-<img src="assets/image_folder/1.gif" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/1.gif" align="middle" width="450" border="1"/>
 
 These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchUnderarm`
 
@@ -107,7 +107,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
 
 ### HandCatchOverarm Environments
-<img src="assets/image_folder/sendpix0.jpg" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/sendpix0.jpg" align="middle" width="450" border="1"/>
 
 Similar to the HandCatchUnderArm environments but now the two hands are upright, and so the throwing/catching technique that has to be employed is different. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchOverarm`
 
@@ -150,7 +150,7 @@ reward = (0.3 - goal_dist - quat_diff)
 ```
 
 ### TwoObjectCatch Environments
-<img src="assets/image_folder/sendpix2.jpg" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/sendpix2.jpg" align="middle" width="450" border="1"/>
 
 These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). This is necessary since each object's goal can only be reached by the other hand. To use the HandCatchUnderarm environment, pass `--task=ShadowHandTwoCatchUnderarm`
 
@@ -207,7 +207,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist)) + torch.exp(-
 ```
 
 ### HandCatchAbreast Environments
-<img src="assets/image_folder/1.gif" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/1.gif" align="middle" width="450" border="1"/>
 
 These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchAbreast`
 
