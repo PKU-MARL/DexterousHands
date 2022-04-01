@@ -5,7 +5,6 @@
 ****
 # Bimanual Dexterous Manipulation via Multi-Agent RL
 
-### About this repository
 
 Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of reinforcement learning and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study machine intelligence. 
 
