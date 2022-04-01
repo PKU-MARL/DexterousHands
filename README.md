@@ -1,6 +1,5 @@
 # Bimanual Dexterous Manipulation via Reinforcement Learning
-
-<img src="assets/image_folder/cover.jpg" width="900" border="1"/>
+<img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
 **Bi-DexHands** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. It consists of three main features:
 - talk about issac gym, fast. 
