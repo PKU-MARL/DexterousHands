@@ -1,5 +1,7 @@
 ## Environments
 
+This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+
 We provide a detailed description of the environment here. For single-agent reinforcement learning, all states and actions are used. For multi-agent reinforcement learning, we use the most common one: each hand as an agent, and a total of two agents as an example to illustrate.
 
 | Environments | ShadowHandOver | ShadowHandCatchUnderarm | ShadowHandTwoCatchUnderarm | ShadowHandCatchAbreast | ShadowHandOver2Underarm |
