@@ -61,16 +61,7 @@ Bi-DexMani is a collection of environments and algorithms for learning bimanual 
 
 <img src="assets/image_folder/fig2-page-001.jpg" align="right" width="350" border="2"/>
 
-The core of Bi-DexMani is to build up a learning framework for two shadow hands capable of diverse and general skills, such as reach, throw, catch, pick and place. Apart from that, these skills should take the cooperation between two hands into account. To be specific, Bi-DetMani consists of three components, worlds, tasks and learning algorithms. Varying worlds provide a large number of basic settings for robots, including the configuration of robotic hands and objects. Meanwhile, a variety of tasks between two robotic hands make a single agent or multiple agents handle how to perform cooperative tasks.
-
-### Summary
-
-In general, our contributions can be summarized into four-folds.
-
-- We designed a large number of scenarios on bimanual dexterous manipulation. More importantly, these proposed tasks have been proved be solvable by model-free reinforcement learning algorithms.
-- We provided two types of interface, single-agent and multi-agent modes, and implemented the mainstream algorithms respectively. It is worthy of noting that the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
-- To improve the generalized ability of algorithms, we introduced a variety of objects from the YCB and SAPIEN dataset, thus allowing meta-RL and multi-task RL algorithms to learn general skills and generalize to unseen scenarios.
-- Thanks to the GPU accelerating simulation on Isaac Gym, our benchmark support running thousands of environments simultaneously, and results illustrate the characteristic benefits for the learning of on-policy algorithms. 
+The core of Bi-DexMani is to build up a learning framework for two shadow hands capable of diverse and general skills, such as **reach, throw, catch, pick and place**. To develop these skills, an agent must take cooperation between two hands into account. Bi-DexMani consists of three components, world, tasks and learning algorithms. Different worlds provide different  settings for robots, including the configuration of robotic hands and target objects. 
 
 ## Getting Started
 
