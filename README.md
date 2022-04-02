@@ -3,12 +3,12 @@
 
 **Bi-DexMani** provides a collection of bimanual dexterous manipulations tasks and (multi-agent) reinforcement learning algorithms for solving them. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics practices. To better help the community study this problem, Bi-DexMani are developed with the following key features:
-- **Efficiency**: Bi-DexMani is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously on one single GPU. For example, on one NVIDIA RTX 3090 GPU, Bi-DexMani can reach the mean FPS of 40,000+ by running  2048  environments in parallel. 
-- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environments with high dimensional continuous state-action spaces for (multi-agent) reinforcement learning practitioners, along with a comprehensive benchmark for exsiting model-free RL methods. 
-- **Cooperation**: we support two types of RL interface, single-agent and multi-agent modes. In our multi-agent settings, agents are genuinely  **heterogeneous** (i.e, each finger has its own use); this is very different from common multi-agent environment such as [SMAC](https://github.com/oxwhirl/smac) environment where agents can simply share parameters to solve the task. 
-- **Generalization**: we introduce a variety of objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (more than 2,000 objects), thus allows meta-RL and multi-task RL algorithms to be explored. 
+- **Efficiency**: Bi-DexMani is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexMani can reach the mean FPS of 40,000+ by running  2,048  environments in parallel. 
+- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for (multi-agent) reinforcement learning practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. 
+- **Heterogeneous-agents Cooperation**: we support two types of RL interfaces, single-agent and multi-agent modes. In the multi-agent setting, agents are genuinely heterogeneous (i.e, each finger has its own use); this is very different from common multi-agent environment such as [SMAC](https://github.com/oxwhirl/smac) environment where agents can simply share parameters to solve the task. 
+- **Generalization**: we introduce a variety of objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects), thus allows meta-RL and multi-task reinforcement learning algorithms to be tested. 
 
-The potential application of this platform mainly is to become an important tool to evaluate the peroformance of  RL-based algorithms for the community of robotics. 
+Bi-DexMani is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
 
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
