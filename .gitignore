@@ -133,3 +133,5 @@ bi-dexhands/logs/
 bi-dexhands/runs
 # too large files in assets
 assets/dataset
+
+bi_dexhands.egg-info

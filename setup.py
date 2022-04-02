@@ -15,7 +15,7 @@ root_dir = os.path.dirname(os.path.realpath(__file__))
 INSTALL_REQUIRES = [
     # RL
     "gym",
-    "torch",
+    "torch==1.8.1",
     "matplotlib==3.5.1",
     "tb-nightly",
     "tqdm",
@@ -26,7 +26,7 @@ INSTALL_REQUIRES = [
 setup(
     name="bi-dexhands",
     author="cypypccpy",
-    version="0.1.0",
+    version="0.1.1",
     description="Benchmark environments for Dexterous Hand in NVIDIA IsaacGym.",
     keywords=["robotics", "rl"],
     include_package_data=True,
