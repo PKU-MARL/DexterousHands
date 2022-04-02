@@ -4,7 +4,7 @@
 **Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms for solving them. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
-- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](#Demos)
+- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](#Training)
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 
@@ -104,74 +104,50 @@ We provide a Gym-Like API that allows us to get information from the isaac-gym e
 
 ```python
 class MultiVecTaskPython(MultiVecTask):
+    # Get environment state information
     def get_state(self):
         return torch.clamp(self.task.states_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
 
     def step(self, actions):
+        # Stack all agent actions in order and enter them into the environment
         a_hand_actions = actions[0]
         for i in range(1, len(actions)):
             a_hand_actions = torch.hstack((a_hand_actions, actions[i]))
         actions = a_hand_actions
-
+        # Clip the actions
         actions_tensor = torch.clamp(actions, -self.clip_actions, self.clip_actions)
-
         self.task.step(actions_tensor)
-
-        hand_obs = []
+        # Obtain information in the environment and distinguish the observation of different agents by hand
         obs_buf = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
+        hand_obs = []
         hand_obs.append(torch.cat([obs_buf[:, :self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
         hand_obs.append(torch.cat([obs_buf[:, self.num_hand_obs:2*self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
         rewards = self.task.rew_buf.unsqueeze(-1).to(self.rl_device)
         dones = self.task.reset_buf.to(self.rl_device)
-
+        # Organize information into Multi-Agent RL format
+        # Refer to https://github.com/tinyzqh/light_mappo/blob/HEAD/envs/env.py
         sub_agent_obs = []
-        agent_state = []
-        sub_agent_reward = []
+        ...
         sub_agent_done = []
-        sub_agent_info = []
         for i in range(len(self.agent_index[0] + self.agent_index[1])):
-            if i < len(self.agent_index[0]):
-                sub_agent_obs.append(hand_obs[0])
-            else:
-                sub_agent_obs.append(hand_obs[1])
-
-            agent_state.append(obs_buf)
-            sub_agent_reward.append(rewards)
+            ...
             sub_agent_done.append(dones)
-            sub_agent_info.append(torch.Tensor(0))
-
+        # Transpose dim-0 and dim-1 values
         obs_all = torch.transpose(torch.stack(sub_agent_obs), 1, 0)
-        state_all = torch.transpose(torch.stack(agent_state), 1, 0)
-        reward_all = torch.transpose(torch.stack(sub_agent_reward), 1, 0)
+        ...
         done_all = torch.transpose(torch.stack(sub_agent_done), 1, 0)
-        info_all = torch.stack(sub_agent_info)
-
         return obs_all, state_all, reward_all, done_all, info_all, None
 
     def reset(self):
+        # Use a random action as the first action after the environment reset
         actions = 0.01 * (1 - 2 * torch.rand([self.task.num_envs, self.task.num_actions * 2], dtype=torch.float32, device=self.rl_device))
-
         # step the simulator
         self.task.step(actions)
-
-        hand_obs = []
+        # Get the observation and state buffer in the environment, the detailed are the same as step(self, actions)
         obs_buf = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs)
-        hand_obs.append(torch.cat([obs_buf[:, :self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
-        hand_obs.append(torch.cat([obs_buf[:, self.num_hand_obs:2*self.num_hand_obs], obs_buf[:, 2*self.num_hand_obs:]], dim=1))
-
-        sub_agent_obs = []
-        agent_state = []
-
-        for i in range(len(self.agent_index[0] + self.agent_index[1])):
-            if i < len(self.agent_index[0]):
-                sub_agent_obs.append(hand_obs[0])
-            else:
-                sub_agent_obs.append(hand_obs[1])
-            agent_state.append(obs_buf)
-
+        ...
         obs = torch.transpose(torch.stack(sub_agent_obs), 1, 0)
         state_all = torch.transpose(torch.stack(agent_state), 1, 0)
-
         return obs, state_all, None
 ```
 #### RL/Multi-Agent RL API
@@ -181,19 +157,17 @@ Similar to the Gym-Like wrapper, we also provide single-agent and multi-agent RL
 We give an example to illustrate multi-agent RL APIs, which mainly refer to [https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL):
 
 ```python
+# warmup before the main loop starts
 self.warmup()
-
+# log data
 start = time.time()
 episodes = int(self.num_env_steps) // self.episode_length // self.n_rollout_threads
-
 train_episode_rewards = torch.zeros(1, self.n_rollout_threads, device=self.device)
-
+# main loop
 for episode in range(episodes):
     if self.use_linear_lr_decay:
         self.trainer.policy.lr_decay(episode, episodes)
-
     done_episodes_rewards = []
-
     for step in range(self.episode_length):
         # Sample actions
         values, actions, action_log_probs, rnn_states, rnn_states_critic = self.collect(step)
@@ -202,7 +176,7 @@ for episode in range(episodes):
         dones_env = torch.all(dones, dim=1)
         reward_env = torch.mean(rewards, dim=1).flatten()
         train_episode_rewards += reward_env
-
+        # Record reward at the end of each episode
         for t in range(self.n_rollout_threads):
             if dones_env[t]:
                 done_episodes_rewards.append(train_episode_rewards[:, t].clone())
@@ -211,21 +185,18 @@ for episode in range(episodes):
         data = obs, share_obs, rewards, dones, infos, \
                 values, actions, action_log_probs, \
                 rnn_states, rnn_states_critic
-
         # insert data into buffer
         self.insert(data)
 
     # compute return and update network
     self.compute()
     train_infos = self.train()
-
     # post process
     total_num_steps = (episode + 1) * self.episode_length * self.n_rollout_threads
     # save model
     if (episode % self.save_interval == 0 or episode == episodes - 1):
         self.save()
 ```
-
 
 #### Training Example
 

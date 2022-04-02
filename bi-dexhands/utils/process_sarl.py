@@ -2,7 +2,7 @@
 
 
 def process_ppo(args, env, cfg_train, logdir):
-    from algorithms.sarl.ppo import PPO, ActorCritic
+    from algorithms.rl.ppo import PPO, ActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True
@@ -53,7 +53,7 @@ def process_ppo(args, env, cfg_train, logdir):
 
 
 def process_sac(args, env, cfg_train, logdir):
-    from algorithms.sarl.sac import SAC, MLPActorCritic
+    from algorithms.rl.sac import SAC, MLPActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     chkpt = learn_cfg["resume"]
@@ -100,7 +100,7 @@ def process_sac(args, env, cfg_train, logdir):
 
 
 def process_td3(args, env, cfg_train, logdir):
-    from algorithms.sarl.td3 import TD3, MLPActorCritic
+    from algorithms.rl.td3 import TD3, MLPActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     chkpt = learn_cfg["resume"]
@@ -150,7 +150,7 @@ def process_td3(args, env, cfg_train, logdir):
 
 
 def process_ddpg(args, env, cfg_train, logdir):
-    from algorithms.sarl.ddpg import DDPG, MLPActorCritic
+    from algorithms.rl.ddpg import DDPG, MLPActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     chkpt = learn_cfg["resume"]
@@ -198,7 +198,7 @@ def process_ddpg(args, env, cfg_train, logdir):
 
 
 def process_trpo(args, env, cfg_train, logdir):
-    from algorithms.sarl.trpo import TRPO, ActorCritic
+    from algorithms.rl.trpo import TRPO, ActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     chkpt = learn_cfg["resume"]

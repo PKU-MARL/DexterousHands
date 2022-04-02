@@ -1,88 +1,107 @@
-from datetime import datetime
 import os
-import time
-
-from gym.spaces import Space
-
 import numpy as np
-import statistics
 from collections import deque
-
+from copy import deepcopy
+import itertools
+import time
+import statistics
 import torch
+from torch.optim import Adam
 import torch.nn as nn
-import torch.optim as optim
+from torch import Tensor
+from gym.spaces import Space
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.sarl.ppo import RolloutStorage
+from algorithms.rl.td3 import ReplayBuffer
+from algorithms.rl.td3 import MLPActorCritic
 
 
-class PPO:
+def count_vars(module):
+    return sum([np.prod(p.shape) for p in module.parameters()])
 
+
+class TD3:
+
+    #TODO： now，obs == state ？
     def __init__(self,
                  vec_env,
-                 actor_critic_class,
-                 num_transitions_per_env,
-                 num_learning_epochs,
-                 num_mini_batches,
-                 clip_param=0.2,
-                 gamma=0.998,
-                 lam=0.95,
-                 init_noise_std=1.0,
-                 value_loss_coef=1.0,
-                 entropy_coef=0.0,
+                 actor_critic = MLPActorCritic,
+                 ac_kwargs=dict(),
+                 num_transitions_per_env=1000,
+                 num_learning_epochs=50,
+                 num_mini_batches=100,
+                 replay_size=10000,
+                 gamma=0.99,
+                 polyak=0.995,
                  learning_rate=1e-3,
-                 max_grad_norm=0.5,
+                 max_grad_norm =0.5,
+                 policy_delay=2,
+                 act_noise=0.1,
+                 target_noise=0.2,
+                 noise_clip=0.5,
                  use_clipped_value_loss=True,
-                 schedule="fixed",
-                 desired_kl=None,
-                 model_cfg=None,
+                 reward_scale=1,
+                 batch_size=64,
                  device='cpu',
-                 sampler='sequential',
+                 sampler='random',
                  log_dir='run',
                  is_testing=False,
                  print_log=True,
                  apply_reset=False,
                  asymmetric=False
                  ):
-
         if not isinstance(vec_env.observation_space, Space):
             raise TypeError("vec_env.observation_space must be a gym Space")
         if not isinstance(vec_env.state_space, Space):
             raise TypeError("vec_env.state_space must be a gym Space")
         if not isinstance(vec_env.action_space, Space):
             raise TypeError("vec_env.action_space must be a gym Space")
+
+
         self.observation_space = vec_env.observation_space
         self.action_space = vec_env.action_space
         self.state_space = vec_env.state_space
+        self.act_limit = vec_env.action_space.high[0]
 
         self.device = device
         self.asymmetric = asymmetric
+        self.learning_rate = learning_rate
 
-        self.desired_kl = desired_kl
-        self.schedule = schedule
-        self.step_size = learning_rate
+        #TD3 parameters
 
-        # PPO components
-        self.vec_env = vec_env
-        self.actor_critic = actor_critic_class(self.observation_space.shape, self.state_space.shape, self.action_space.shape,
-                                               init_noise_std, model_cfg, asymmetric=asymmetric)
-        self.actor_critic.to(self.device)
-        self.storage = RolloutStorage(self.vec_env.num_envs, num_transitions_per_env, self.observation_space.shape,
-                                      self.state_space.shape, self.action_space.shape, self.device, sampler)
-        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=learning_rate)
-
-        # PPO parameters
-        self.clip_param = clip_param
+        self.num_transitions_per_env = num_transitions_per_env
         self.num_learning_epochs = num_learning_epochs
         self.num_mini_batches = num_mini_batches
-        self.num_transitions_per_env = num_transitions_per_env
-        self.value_loss_coef = value_loss_coef
-        self.entropy_coef = entropy_coef
         self.gamma = gamma
-        self.lam = lam
+        self.polyak = polyak
         self.max_grad_norm = max_grad_norm
+        self.policy_delay = policy_delay
+        self.target_noise = target_noise
+        self.act_noise = act_noise
+        self.noise_clip= noise_clip
         self.use_clipped_value_loss = use_clipped_value_loss
 
+        # TD3 components
+        self.vec_env = vec_env
+        self.actor_critic = actor_critic(vec_env.observation_space, vec_env.action_space,self.act_noise, self.device, **ac_kwargs).to(self.device)
+        self.actor_critic_targ = deepcopy(self.actor_critic)
+
+        self.storage = ReplayBuffer(vec_env.num_envs, replay_size, batch_size, num_transitions_per_env, self.observation_space.shape,
+                                     self.state_space.shape, self.action_space.shape, self.device, sampler)
+
+        # Freeze target networks with respect to optimizers (only update via polyak averaging)
+        for p in self.actor_critic_targ.parameters():
+            p.requires_grad = False
+
+        # List of parameters for both Q-networks (save this for convenience)
+        self.q_params = itertools.chain(self.actor_critic.q1.parameters(), self.actor_critic.q2.parameters())
+
+        self.pi_optimizer = Adam(self.actor_critic.pi.parameters(), lr=self.learning_rate)
+        self.q_optimizer = Adam(self.q_params, lr=self.learning_rate)
+
+        self.reward_scale = reward_scale
+        self.batch_size = batch_size
+        self.warm_up = True
         # Log
         self.log_dir = log_dir
         self.print_log = print_log
@@ -94,29 +113,34 @@ class PPO:
 
         self.apply_reset = apply_reset
 
-    def test(self, path):
+    def test(self,path):
         self.actor_critic.load_state_dict(torch.load(path))
         self.actor_critic.eval()
 
-    def load(self, path):
+    def load(self,path):
         self.actor_critic.load_state_dict(torch.load(path))
         self.current_learning_iteration = int(path.split("_")[-1].split(".")[0])
         self.actor_critic.train()
 
-    def save(self, path):
-        torch.save(self.actor_critic.state_dict(), path)
+    def save(self,path):
+        torch.save(self.actor_critic.state_dict(),path)
 
-    def run(self, num_learning_iterations, log_interval=1):
+    def run(self,num_learning_iterations, log_interval = 1):
+        """
+        the main loop of training.
+        :param num_learning_iterations: the maximum number of training steps
+        :param log_interval: the frequency of saving model
+        :return: None
+        """
         current_obs = self.vec_env.reset()
         current_states = self.vec_env.get_state()
-
         if self.is_testing:
             while True:
                 with torch.no_grad():
                     if self.apply_reset:
                         current_obs = self.vec_env.reset()
                     # Compute the action
-                    actions = self.actor_critic.act_inference(current_obs)
+                    actions = self.actor_critic.act(current_obs)
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     current_obs.copy_(next_obs)
@@ -139,12 +163,12 @@ class PPO:
                         current_obs = self.vec_env.reset()
                         current_states = self.vec_env.get_state()
                     # Compute the action
-                    actions, actions_log_prob, values, mu, sigma = self.actor_critic.act(current_obs, current_states)
+                    actions = self.actor_critic.act(current_obs,deterministic = False)
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     next_states = self.vec_env.get_state()
                     # Record the transition
-                    self.storage.add_transitions(current_obs, current_states, actions, rews, dones, values, actions_log_prob, mu, sigma)
+                    self.storage.add_transitions(current_obs, current_states, actions, rews,next_obs, dones)
                     current_obs.copy_(next_obs)
                     current_states.copy_(next_states)
                     # Book keeping
@@ -159,6 +183,11 @@ class PPO:
                         episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
                         cur_reward_sum[new_ids] = 0
                         cur_episode_length[new_ids] = 0
+                    if self.storage.step > self.batch_size:
+                        self.warm_up = False
+
+                    if self.warm_up == False:
+                        mean_value_loss, mean_surrogate_loss = self.update()
 
                 if self.print_log:
                     # reward_sum = [x[0] for x in reward_sum]
@@ -166,7 +195,7 @@ class PPO:
                     rewbuffer.extend(reward_sum)
                     lenbuffer.extend(episode_length)
 
-                _, _, last_values, _, _ = self.actor_critic.act(current_obs, current_states)
+
                 stop = time.time()
                 collection_time = stop - start
 
@@ -174,19 +203,27 @@ class PPO:
 
                 # Learning step
                 start = stop
-                self.storage.compute_returns(last_values, self.gamma, self.lam)
-                mean_value_loss, mean_surrogate_loss = self.update()
-                self.storage.clear()
-                stop = time.time()
-                learn_time = stop - start
-                if self.print_log:
-                    self.log(locals())
-                if it % log_interval == 0:
-                    self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(it)))
-                ep_infos.clear()
+                if self.warm_up == False:
+
+                    stop = time.time()
+                    learn_time = stop - start
+                    if self.print_log:
+                        self.log(locals())
+                    if it % log_interval == 0:
+                        self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(it)))
+                    ep_infos.clear()
             self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(num_learning_iterations)))
 
+        pass
+
     def log(self, locs, width=80, pad=35):
+        """
+        print training info
+        :param locs:
+        :param width:
+        :param pad:
+        :return:
+        """
         self.tot_timesteps += self.num_transitions_per_env * self.vec_env.num_envs
         self.tot_time += locs['collection_time'] + locs['learn_time']
         iteration_time = locs['collection_time'] + locs['learn_time']
@@ -200,11 +237,9 @@ class PPO:
                 value = torch.mean(infotensor)
                 self.writer.add_scalar('Episode/' + key, value, locs['it'])
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
-        mean_std = self.actor_critic.log_std.exp().mean()
 
         self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
         self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
-        self.writer.add_scalar('Policy/mean_noise_std', mean_std.item(), locs['it'])
         if len(locs['rewbuffer']) > 0:
             self.writer.add_scalar('Train/mean_reward', statistics.mean(locs['rewbuffer']), locs['it'])
             self.writer.add_scalar('Train/mean_episode_length', statistics.mean(locs['lenbuffer']), locs['it'])
@@ -225,7 +260,6 @@ class PPO:
                               'collection_time']:.3f}s, learning {locs['learn_time']:.3f}s)\n"""
                           f"""{'Value function loss:':>{pad}} {locs['mean_value_loss']:.4f}\n"""
                           f"""{'Surrogate loss:':>{pad}} {locs['mean_surrogate_loss']:.4f}\n"""
-                          f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n"""
                           f"""{'Mean reward:':>{pad}} {statistics.mean(locs['rewbuffer']):.2f}\n"""
                           f"""{'Mean episode length:':>{pad}} {statistics.mean(locs['lenbuffer']):.2f}\n"""
                           f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
@@ -237,7 +271,6 @@ class PPO:
                             'collection_time']:.3f}s, learning {locs['learn_time']:.3f}s)\n"""
                           f"""{'Value function loss:':>{pad}} {locs['mean_value_loss']:.4f}\n"""
                           f"""{'Surrogate loss:':>{pad}} {locs['mean_surrogate_loss']:.4f}\n"""
-                          f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n"""
                           f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
                           f"""{'Mean episode length/episode:':>{pad}} {locs['mean_trajectory_length']:.2f}\n""")
 
@@ -255,73 +288,115 @@ class PPO:
         mean_surrogate_loss = 0
 
         batch = self.storage.mini_batch_generator(self.num_mini_batches)
+        # for obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch \
+        #        in self.storage.mini_batch_generator(self.num_mini_batches):
+        #TODO: sample a random indice of the batch
+        # as now the training uses the whole dataset
         for epoch in range(self.num_learning_epochs):
-            # for obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch \
-            #        in self.storage.mini_batch_generator(self.num_mini_batches):
-
+            learn_ep = 0
             for indices in batch:
-                obs_batch = self.storage.observations.view(-1, *self.storage.observations.size()[2:])[indices]
+                learn_ep += 1
+                
+                # if learn_ep >= self.num_learning_epochs:
+                #     break
+
+                obs_batch = self.storage.observations[indices]
+                nextobs_batch = self.storage.next_observations[indices]
                 if self.asymmetric:
-                    states_batch = self.storage.states.view(-1, *self.storage.states.size()[2:])[indices]
+                    states_batch = self.storage.states[indices]
                 else:
                     states_batch = None
-                actions_batch = self.storage.actions.view(-1, self.storage.actions.size(-1))[indices]
-                target_values_batch = self.storage.values.view(-1, 1)[indices]
-                returns_batch = self.storage.returns.view(-1, 1)[indices]
-                old_actions_log_prob_batch = self.storage.actions_log_prob.view(-1, 1)[indices]
-                advantages_batch = self.storage.advantages.view(-1, 1)[indices]
-                old_mu_batch = self.storage.mu.view(-1, self.storage.actions.size(-1))[indices]
-                old_sigma_batch = self.storage.sigma.view(-1, self.storage.actions.size(-1))[indices]
+                actions_batch = self.storage.actions[indices]
+                rewards_batch = self.storage.rewards[indices]
+                dones_batch = self.storage.dones[indices]
+            data = {'obs': obs_batch,
+                    'act':actions_batch,
+                    'r':rewards_batch,
+                    'obs2':nextobs_batch,
+                    'done':dones_batch}
 
-                actions_log_prob_batch, entropy_batch, value_batch, mu_batch, sigma_batch = self.actor_critic.evaluate(obs_batch,
-                                                                                                                       states_batch,
-                                                                                                                       actions_batch)
+            self.q_optimizer.zero_grad()
+            loss_q = self.compute_loss_q(data)
+            loss_q.backward()
+            nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
+            self.q_optimizer.step()
 
-                # KL
-                if self.desired_kl != None and self.schedule == 'adaptive':
+            # Record things
+            mean_value_loss += loss_q.item()
 
-                    kl = torch.sum(
-                        sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
-                    kl_mean = torch.mean(kl)
 
-                    if kl_mean > self.desired_kl * 2.0:
-                        self.step_size = max(1e-5, self.step_size / 1.5)
-                    elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
-                        self.step_size = min(1e-2, self.step_size * 1.5)
+            # Next run one gradient descent step for pi.
+            if learn_ep % self.policy_delay == 0:
 
-                    for param_group in self.optimizer.param_groups:
-                        param_group['lr'] = self.step_size
+                # Freeze Q-networks so you don't waste computational effort
+                # computing gradients for them during the policy learning step.
+                for p in self.q_params:
+                    p.requires_grad = False
 
-                # Surrogate loss
-                ratio = torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))
-                surrogate = -torch.squeeze(advantages_batch) * ratio
-                surrogate_clipped = -torch.squeeze(advantages_batch) * torch.clamp(ratio, 1.0 - self.clip_param,
-                                                                                   1.0 + self.clip_param)
-                surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()
-
-                # Value function loss
-                if self.use_clipped_value_loss:
-                    value_clipped = target_values_batch + (value_batch - target_values_batch).clamp(-self.clip_param,
-                                                                                                    self.clip_param)
-                    value_losses = (value_batch - returns_batch).pow(2)
-                    value_losses_clipped = (value_clipped - returns_batch).pow(2)
-                    value_loss = torch.max(value_losses, value_losses_clipped).mean()
-                else:
-                    value_loss = (returns_batch - value_batch).pow(2).mean()
-
-                loss = surrogate_loss + self.value_loss_coef * value_loss - self.entropy_coef * entropy_batch.mean()
-
-                # Gradient step
-                self.optimizer.zero_grad()
-                loss.backward()
+                self.pi_optimizer.zero_grad()
+                loss_pi = self.compute_loss_pi(data)
+                loss_pi.backward()
                 nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
-                self.optimizer.step()
+                self.pi_optimizer.step()
 
-                mean_value_loss += value_loss.item()
-                mean_surrogate_loss += surrogate_loss.item()
+                # Record things
+                mean_surrogate_loss += loss_pi.item()
+
+                # Unfreeze Q-networks so you can optimize it at next DDPG step.
+                for p in self.q_params:
+                    p.requires_grad = True
+
+
+            # Finally, update target networks by polyak averaging.
+            with torch.no_grad():
+                for p, p_targ in zip(self.actor_critic.parameters(), self.actor_critic_targ.parameters()):
+                    # NB: We use an in-place operations "mul_", "add_" to update target
+                    # params, as opposed to "mul" and "add", which would make new tensors.
+                    p_targ.data.mul_(self.polyak)
+                    p_targ.data.add_((1 - self.polyak) * p.data)
 
         num_updates = self.num_learning_epochs * self.num_mini_batches
         mean_value_loss /= num_updates
         mean_surrogate_loss /= num_updates
 
         return mean_value_loss, mean_surrogate_loss
+
+    def compute_loss_q(self,data):
+        o, a, r, o2, d = data['obs'],data['act'], data['r'], data['obs2'], data['done']
+
+        q1 = self.actor_critic.q1(o,a)
+        q2 = self.actor_critic.q2(o,a)
+
+        # Bellman backup for Q functions
+        with torch.no_grad():
+            pi_targ = self.actor_critic_targ.pi(o2)
+
+            # Target policy smoothing
+            epsilon = torch.randn_like(pi_targ) * self.target_noise
+            epsilon = torch.clamp(epsilon, -self.noise_clip, self.noise_clip)
+            a2 = pi_targ + epsilon
+            a2 = torch.clamp(a2, -self.act_limit, self.act_limit)
+
+            # Target Q-values
+            q1_pi_targ = self.actor_critic_targ.q1(o2, a2)
+            q2_pi_targ = self.actor_critic_targ.q2(o2, a2)
+            q_pi_targ = torch.min(q1_pi_targ, q2_pi_targ)
+            backup = r + self.gamma * (1 - d) * q_pi_targ
+
+        # MSE loss against Bellman backup
+        loss_q1 = ((q1 - backup)**2).mean()
+        loss_q2 = ((q2 - backup)**2).mean()
+        loss_q = loss_q1 + loss_q2
+
+        return loss_q
+
+    # Set up function for computing SAC pi loss
+    def compute_loss_pi(self,data):
+        o = data['obs']
+        q1_pi = self.actor_critic.q1(o, self.actor_critic.pi(o))
+        loss_pi = -q1_pi.mean()
+
+        return loss_pi
+
+
+

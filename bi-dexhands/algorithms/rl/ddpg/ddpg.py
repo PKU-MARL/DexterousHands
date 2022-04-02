@@ -6,40 +6,41 @@ import itertools
 import time
 import statistics
 import torch
-import torch.nn as nn
 from torch.optim import Adam
+import torch.nn as nn
 from torch import Tensor
 from gym.spaces import Space
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.sarl.sac import ReplayBuffer
-
-from algorithms.sarl.sac import MLPActorCritic
+from algorithms.rl.ddpg import ReplayBuffer
+from algorithms.rl.ddpg import MLPActorCritic
 
 
 def count_vars(module):
     return sum([np.prod(p.shape) for p in module.parameters()])
 
 
-class SAC:
-    
+class DDPG:
+
     #TODO： now，obs == state ？
     def __init__(self,
                  vec_env,
                  actor_critic = MLPActorCritic,
                  ac_kwargs=dict(),
-                 num_transitions_per_env=8,
-                 num_learning_epochs=5,
+                 num_transitions_per_env=1000,
+                 num_learning_epochs=50,
                  num_mini_batches=100,
-                 replay_size=100000,
+                 replay_size=int(1e6),
                  gamma=0.99,
-                 polyak=0.99,
+                 polyak=0.995,
                  learning_rate=1e-3,
                  max_grad_norm =0.5,
-                 entropy_coef=0.2,
+                 act_noise=0.1,
+                 target_noise=0.2,
+                 noise_clip=0.5,
                  use_clipped_value_loss=True,
                  reward_scale=1,
-                 batch_size=32,
+                 batch_size=64,
                  device='cpu',
                  sampler='random',
                  log_dir='run',
@@ -59,15 +60,28 @@ class SAC:
         self.observation_space = vec_env.observation_space
         self.action_space = vec_env.action_space
         self.state_space = vec_env.state_space
+        self.act_limit = vec_env.action_space.high[0]
 
         self.device = device
         self.asymmetric = asymmetric
         self.learning_rate = learning_rate
 
-        # SAC components
+        #DDDPG parameters
+
+        self.num_transitions_per_env = num_transitions_per_env
+        self.num_learning_epochs = num_learning_epochs
+        self.num_mini_batches = num_mini_batches
+        self.gamma = gamma
+        self.polyak = polyak
+        self.max_grad_norm = max_grad_norm
+        self.target_noise = target_noise
+        self.act_noise = act_noise
+        self.noise_clip= noise_clip
+        self.use_clipped_value_loss = use_clipped_value_loss
+
+        # DDPG components
         self.vec_env = vec_env
-        self.actor_critic = actor_critic(vec_env.observation_space, vec_env.action_space, **ac_kwargs).to(self.device)
-        print(self.actor_critic)
+        self.actor_critic = actor_critic(vec_env.observation_space, vec_env.action_space,self.act_noise, self.device, **ac_kwargs).to(self.device)
         self.actor_critic_targ = deepcopy(self.actor_critic)
 
         self.storage = ReplayBuffer(vec_env.num_envs, replay_size, batch_size, num_transitions_per_env, self.observation_space.shape,
@@ -78,25 +92,26 @@ class SAC:
             p.requires_grad = False
 
         # List of parameters for both Q-networks (save this for convenience)
-        self.q_params = itertools.chain(self.actor_critic.q1.parameters(), self.actor_critic.q2.parameters())
+        self.q_params = self.actor_critic.q.parameters()
 
         self.pi_optimizer = Adam(self.actor_critic.pi.parameters(), lr=self.learning_rate)
         self.q_optimizer = Adam(self.q_params, lr=self.learning_rate)
 
-        #SAC parameters
+        #DDDPG parameters
 
         self.num_transitions_per_env = num_transitions_per_env
         self.num_learning_epochs = num_learning_epochs
         self.num_mini_batches = num_mini_batches
-        self.entropy_coef = entropy_coef
         self.gamma = gamma
         self.polyak = polyak
         self.max_grad_norm = max_grad_norm
+        self.target_noise = target_noise
+        self.act_noise = act_noise
+        self.noise_clip= noise_clip
         self.use_clipped_value_loss = use_clipped_value_loss
         self.reward_scale = reward_scale
         self.batch_size = batch_size
         self.warm_up = True
-
         # Log
         self.log_dir = log_dir
         self.print_log = print_log
@@ -135,13 +150,13 @@ class SAC:
                     if self.apply_reset:
                         current_obs = self.vec_env.reset()
                     # Compute the action
-                    actions = self.actor_critic.act(current_obs,deterministic =True)
+                    actions = self.actor_critic.act(current_obs)
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     current_obs.copy_(next_obs)
         else:
-            rewbuffer = deque(maxlen=self.num_transitions_per_env)
-            lenbuffer = deque(maxlen=self.num_transitions_per_env)
+            rewbuffer = deque(maxlen=100)
+            lenbuffer = deque(maxlen=100)
             cur_reward_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
             cur_episode_length = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
 
@@ -158,10 +173,9 @@ class SAC:
                         current_obs = self.vec_env.reset()
                         current_states = self.vec_env.get_state()
                     # Compute the action
-                    actions = self.actor_critic.act(current_obs)
+                    actions = self.actor_critic.act(current_obs,deterministic = False)
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
-                    rews *= self.reward_scale
                     next_states = self.vec_env.get_state()
                     # Record the transition
                     self.storage.add_transitions(current_obs, current_states, actions, rews,next_obs, dones)
@@ -179,7 +193,6 @@ class SAC:
                         episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
                         cur_reward_sum[new_ids] = 0
                         cur_episode_length[new_ids] = 0
-
                     if self.storage.step > self.batch_size:
                         self.warm_up = False
 
@@ -192,7 +205,6 @@ class SAC:
                     rewbuffer.extend(reward_sum)
                     lenbuffer.extend(episode_length)
 
-
                 stop = time.time()
                 collection_time = stop - start
 
@@ -200,10 +212,8 @@ class SAC:
 
                 # Learning step
                 start = stop
-                # TODO: need check the buffer size before update
-                # add the update within the interaction loop
                 if self.warm_up == False:
-                    # mean_value_loss, mean_surrogate_loss = self.update()
+
 
                     stop = time.time()
                     learn_time = stop - start
@@ -237,7 +247,6 @@ class SAC:
                 value = torch.mean(infotensor)
                 self.writer.add_scalar('Episode/' + key, value, locs['it'])
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
-
 
         self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
         self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
@@ -289,10 +298,8 @@ class SAC:
         mean_surrogate_loss = 0
 
         batch = self.storage.mini_batch_generator(self.num_mini_batches)
-        # for obs_batch, actions_batch, target_values_batch, advantages_batch, returns_batch, old_actions_log_prob_batch \
-        #        in self.storage.mini_batch_generator(self.num_mini_batches):
-        #TODO: sample a random indice of the batch
-        # as now the training uses the whole dataset
+        
+        learn_ep = 0
         for epoch in range(self.num_learning_epochs):
             # learn_ep = 0
             for indices in batch:
@@ -310,48 +317,51 @@ class SAC:
                 actions_batch = self.storage.actions[indices]
                 rewards_batch = self.storage.rewards[indices]
                 dones_batch = self.storage.dones[indices]
+            #
+            data = {'obs': obs_batch,
+                    'act':actions_batch,
+                    'r':rewards_batch,
+                    'obs2':nextobs_batch,
+                    'done':dones_batch}
 
-                data = {'obs': obs_batch,
-                        'act':actions_batch,
-                        'r':rewards_batch,
-                        'obs2':nextobs_batch,
-                        'done':dones_batch}
+            self.q_optimizer.zero_grad()
+            loss_q = self.compute_loss_q(data)
+            loss_q.backward()
+            nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
+            self.q_optimizer.step()
 
-                self.q_optimizer.zero_grad()
-                loss_q = self.compute_loss_q(data)
-                loss_q.backward()
-                nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
-                self.q_optimizer.step()
+            # Record things
+            mean_value_loss += loss_q.item()
 
-                # Record things
-                mean_value_loss += loss_q.item()
 
-                # Freeze Q-networks so you don't waste computational effort
-                # computing gradients for them during the policy learning step.
-                for p in self.q_params:
-                    p.requires_grad = False
+            # Next run one gradient descent step for pi.
 
-                # Next run one gradient descent step for pi.
-                self.pi_optimizer.zero_grad()
-                loss_pi = self.compute_loss_pi(data)
-                loss_pi.backward()
-                nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
-                self.pi_optimizer.step()
+            # Freeze Q-networks so you don't waste computational effort
+            # computing gradients for them during the policy learning step.
+            for p in self.q_params:
+                p.requires_grad = False
 
-                # Unfreeze Q-networks so you can optimize it at next DDPG step.
-                for p in self.q_params:
-                    p.requires_grad = True
+            self.pi_optimizer.zero_grad()
+            loss_pi = self.compute_loss_pi(data)
+            loss_pi.backward()
+            nn.utils.clip_grad_norm_(self.actor_critic.parameters(), self.max_grad_norm)
+            self.pi_optimizer.step()
 
-                # Record things
-                mean_surrogate_loss += loss_pi.item()
+            # Record things
+            mean_surrogate_loss += loss_pi.item()
 
-                # Finally, update target networks by polyak averaging.
-                with torch.no_grad():
-                    for p, p_targ in zip(self.actor_critic.parameters(), self.actor_critic_targ.parameters()):
-                        # NB: We use an in-place operations "mul_", "add_" to update target
-                        # params, as opposed to "mul" and "add", which would make new tensors.
-                        p_targ.data.mul_(self.polyak)
-                        p_targ.data.add_((1 - self.polyak) * p.data)
+            # Unfreeze Q-networks so you can optimize it at next DDPG step.
+            for p in self.q_params:
+                p.requires_grad = True
+
+
+            # Finally, update target networks by polyak averaging.
+            with torch.no_grad():
+                for p, p_targ in zip(self.actor_critic.parameters(), self.actor_critic_targ.parameters()):
+                    # NB: We use an in-place operations "mul_", "add_" to update target
+                    # params, as opposed to "mul" and "add", which would make new tensors.
+                    p_targ.data.mul_(self.polyak)
+                    p_targ.data.add_((1 - self.polyak) * p.data)
 
         num_updates = self.num_learning_epochs * self.num_mini_batches
         mean_value_loss /= num_updates
@@ -362,38 +372,34 @@ class SAC:
     def compute_loss_q(self,data):
         o, a, r, o2, d = data['obs'],data['act'], data['r'], data['obs2'], data['done']
 
-        q1 = self.actor_critic.q1(o, a)
-        q2 = self.actor_critic.q2(o, a)
+        q = self.actor_critic.q(o,a)
 
         # Bellman backup for Q functions
         with torch.no_grad():
-            # Target actions come from *current* policy
-            a2, logp_a2 = self.actor_critic.pi(o2)
+            pi_targ = self.actor_critic_targ.pi(o2)
+
+            # Target policy smoothing
+            # TODO: maybe it isn't in DDPG
+            #  need check
+            epsilon = torch.randn_like(pi_targ) * self.target_noise
+            epsilon = torch.clamp(epsilon, -self.noise_clip, self.noise_clip)
+            a2 = pi_targ + epsilon
+            a2 = torch.clamp(a2, -self.act_limit, self.act_limit)
 
             # Target Q-values
-            q1_pi_targ = self.actor_critic_targ.q1(o2, a2)
-            q2_pi_targ = self.actor_critic_targ.q2(o2, a2)
-            q_pi_targ = torch.min(q1_pi_targ, q2_pi_targ)
-            backup = (r + self.gamma * (1 - d) * (q_pi_targ - self.entropy_coef * logp_a2))
+            q_pi_targ = self.actor_critic_targ.q(o2, a2)
+            backup = r + self.gamma * (1 - d) * q_pi_targ
 
         # MSE loss against Bellman backup
-        loss_q1 = ((q1 - backup) ** 2).mean()
-        loss_q2 = ((q2 - backup) ** 2).mean()
-        loss_q = loss_q1 + loss_q2
+        loss_q = ((q - backup)**2).mean()
 
         return loss_q
 
     # Set up function for computing SAC pi loss
     def compute_loss_pi(self,data):
         o = data['obs']
-        pi, logp_pi = self.actor_critic.pi(o)
-
-        q1_pi = self.actor_critic.q1(o, pi)
-        q2_pi = self.actor_critic.q2(o, pi)
-        q_pi = torch.min(q1_pi, q2_pi)
-
-        # Entropy-regularized policy loss
-        loss_pi = (self.entropy_coef * logp_pi - q_pi).mean()
+        q_pi = self.actor_critic.q(o, self.actor_critic.pi(o))
+        loss_pi = -q_pi.mean()
 
         return loss_pi
 
