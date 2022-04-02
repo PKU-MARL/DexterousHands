@@ -1,15 +1,12 @@
 # Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
-**Motivation**: Dexterous manipulaiton as a common but challenging task has attracted a great deal of interest in the field of robotics. Thanks to the intersection of RL and robotics, previous study achieves a good performance on unimanual dexterous manipulaiton. However, how to balance between hand dexterity and bimanual coordination remains an open challenge. Therefore, we provided a novel benchmark for researchers to study the problem in the context of machine intelligence. 
-
-**Bi-DexMani** provides a collection of tasks and reinforcement learning algorithms for bimanual dexterous manipulations. Diverse scenarios in Bi-DexMani are developed with the following features:
-- **High dimensionality**: we provide the robotic environments with high dimensional state-action spaces (state: more than 400 dim; action: 52 dim), thus bringing a new challenge for model-free reinforcement learning. 
-- **Cooperation**: we support two types of interface, single-agent and multi-agent modes. Meanwhile, our multi-agent setting is heterogeneous unlike [SMAC](https://github.com/oxwhirl/smac) where agents share parameters. Particularly, the definition of finger agents makes it possible to evaluate the cooperative level between different fingers.
-- **Availability**: we implement some single-agent and multi-agent algorithms, whose performances demonstrate our tasks are able to be solved to some extent, as shown in our experimental performance section.
-- **Efficiency**: we support running thousands of environments simultaneously based on [Isaac Gym](https://developer.nvidia.com/isaac-gym). The results illustrate the mean FPS (frame per second) of 2048 parallel environments in Bi-DexMani is about 40000 on a single NVIDIA RTX3090 GPU.
-- **Generalization**: we introduce a variety of objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (more than 2000 objects) and a large number of tasks (more than 20 tasks), thus allowing meta-RL and multi-task RL algorithms to learn general skills and generalize to unseen scenarios. 
-- **Cognition**: we provide some underlying relationships between our dexterous tasks and the movements of children from different ages. It will facilitate researchers on infant behavior and development to validate some hypotheses.
+**Bi-DexMani** provides a collection of bimanual dexterous manipulations tasks and (multi-agent) reinforcement learning algorithms for solving them. 
+Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics practices. To better help the community study this problem, Bi-DexMani are developed with the following key features:
+- **Efficiency**: Bi-DexMani is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously on one single GPU. For example, on one NVIDIA RTX 3090 GPU, Bi-DexMani can reach the mean FPS of 40,000+ by running  2048  environments in parallel. 
+- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environments with high dimensional continuous state-action spaces for (multi-agent) reinforcement learning practitioners, along with a comprehensive benchmark for exsiting model-free RL methods. 
+- **Cooperation**: we support two types of RL interface, single-agent and multi-agent modes. In our multi-agent settings, agents are genuinely  **heterogeneous** (i.e, each finger has its own use); this is very different from common multi-agent environment such as [SMAC](https://github.com/oxwhirl/smac) environment where agents can simply share parameters to solve the task. 
+- **Generalization**: we introduce a variety of objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (more than 2,000 objects), thus allows meta-RL and multi-task RL algorithms to be explored. 
 
 The potential application of this platform mainly is to become an important tool to evaluate the peroformance of  RL-based algorithms for the community of robotics. 
 
