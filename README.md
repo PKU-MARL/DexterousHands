@@ -65,7 +65,7 @@ pip install -e .
 
 ## Introduciton
 
-This repository contains complex dexterous hand RL environments Bi-DexHands for the NVIDIA Isaac Gym high performance environments. Bi-DexHands is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+This repository contains complex dexterous hand RL environments Bi-DexHands for the NVIDIA Isaac Gym high performance environments. Bi-DexHands is a  challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
 
 ### Demos
 <!-- <center class="half">
@@ -82,7 +82,7 @@ For more demos please refer to [here](./docs/environments.md)
 
 ### <span id="task">Tasks</span>
 
-Source code for tasks can be found in `envs/tasks`. 
+Source code for tasks can be found in `envs/tasks`. For the detailed settings of state/action/reward  please refer to [here](./docs/environments.md)
 
 Until now we only suppose the following environments:
 
@@ -95,7 +95,6 @@ Until now we only suppose the following environments:
 |ShadowHandCatch TwoCatchUnderarm| These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    |
 
 
-For more details about these environments please refer to [here](./docs/environments.md)
 
 ### Training
 
@@ -177,7 +176,7 @@ class MultiVecTaskPython(MultiVecTask):
 ```
 #### RL/Multi-Agent RL API
 
-Similar to the Gym-Like wrapper, we also provide single-agent and multi-agent RL algorithms respectively. In order to adapt to Isaacgym and speed up the running speed, all operations are done on the GPU using tensor, so there is no need to transfer data between the CPU and GPU, which greatly speeds up the operation.
+Similar to the Gym-Like wrapper, we also provide single-agent and multi-agent RL algorithms respectively. In order to adapt to Isaac Gym and speed up the running speed, all operations are done on the GPU using tensor, so there is no need to transfer data between the CPU and GPU, which greatly speeds up the operation.
 
 We give an example to illustrate multi-agent RL APIs, which mainly refer to [https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL):
 
