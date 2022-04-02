@@ -2,7 +2,7 @@
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
 **Bi-DexMani** provides a collection of bimanual dexterous manipulations tasks and (multi-agent) reinforcement learning algorithms for solving them. 
-Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics practices. To better help the community study this problem, Bi-DexMani are developed with the following key features:
+Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexMani are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexMani is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexMani can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
 - **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and MARL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. 
 - **Heterogeneous-agents Cooperation**: Agents (i.e., joitns, fingers, hands,...) in Bi-DexMani are genuinely heterogeneous; this is very different from common multi-agent environment such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
