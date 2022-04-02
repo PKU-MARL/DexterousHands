@@ -24,8 +24,8 @@ INSTALL_REQUIRES = [
 
 # Installation operation
 setup(
-    name="dexteroushandenvs",
-    author="",
+    name="bi-dexhands",
+    author="cypypccpy",
     version="0.1.0",
     description="Benchmark environments for Dexterous Hand in NVIDIA IsaacGym.",
     keywords=["robotics", "rl"],

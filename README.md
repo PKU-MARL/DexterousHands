@@ -53,7 +53,7 @@ pip install -e .
 
 ## Introduciton
 
-This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+This repository contains complex dexterous hand RL environments Bi-DexHands for the NVIDIA Isaac Gym high performance environments. Bi-DexHands is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
 
 ### Demos
 <!-- <center class="half">
