@@ -18,7 +18,7 @@ Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-bas
 - [Overview of Environments](./docs/environments.md)
 - [Overview of Algorithms](./docs/algorithms.md)
 - [Getting Started](#Getting-Started)
-  - [Tasks]
+  - [Tasks](#Tasks)
   - [Training](#Training)
   - [Testing](#Testing)
   - [Plotting](#Plotting)
@@ -56,9 +56,13 @@ pip install -e .
 This repository contains complex dexterous hand RL environments DexterousHandEnvs for the NVIDIA Isaac Gym high performance environments. DexterousHandEnvs is a very challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
 
 ### Demos
-<center class="half">
-    <img src="assets/image_folder/0.gif" width="300"/><img src="assets/image_folder/3.gif"width="300"/>
-</center>
+<!-- <center class="half">
+    <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
+</center> -->
+<table><tr>
+<td><img src="assets/image_folder/0.gif" border=0 width="500"></td>
+<td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
+</tr></table>
 
 For more demos please refer to [here](./docs/environments.md)
 
@@ -72,11 +76,11 @@ Until now we only suppose the following environments:
 
 | Environments | Description | Demo     |
 |  :----:  | :----:  | :----:  |
-|ShadowHandOver| These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. | <img src="assets/image_folder/0.gif" align="middle" width="550" border="1"/>    |
-|ShadowHandCatchUnderarm| These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | <img src="assets/image_folder/4.gif" align="middle" width="140" border="1"/>    |
-|ShadowHandCatchOver2Underarm| This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand | <img src="assets/image_folder/2.gif" align="middle" width="130" border="1"/>    |
-|ShadowHandCatchAbreast| This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | <img src="assets/image_folder/1.gif" align="middle" width="130" border="1"/>    |
-|ShadowHandCatchTwoCatchUnderarm| These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | <img src="assets/image_folder/sendpix0.gif" align="middle" width="130" border="1"/>    |
+|ShadowHand Over| These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. | <img src="assets/image_folder/0.gif" width="1000"/>    |
+|ShadowHandCatch Underarm|These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | <img src="assets/image_folder/4.gif" align="middle" width="1000"/>    |
+|ShadowHandCatch Over2Underarm| This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand | <img src="assets/image_folder/2.gif" align="middle" width="1000"/>    |
+|ShadowHandCatch Abreast| This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | <img src="assets/image_folder/1.gif" align="middle" width="1000"/>    |
+|ShadowHandCatch TwoCatchUnderarm| These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    |
 
 
 For more details about these environments please refer to [here](./docs/environments.md)
