@@ -1,4 +1,4 @@
-# Bimanual Dexterous Manipulation via Reinforcement Learning
+# Bi-DexHands: Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
 **Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms for solving them. 
