@@ -281,6 +281,30 @@ You can then build the documentation by running `make <format>` from the
 If you get a katex error run `npm install katex`.  If it persists, try
 `npm install -g katex`
 
+## Future Plan
+
+- **Tasks under development**:  
+  - [x] Handover, throw&catch (a 9-month-old child's behavior)
+  - [ ] Pick glasses  ( an 1-year-old child's behavior )
+  - [ ] Stack blocks (an 1-year-old child's behavior )
+  - [ ] Put off a pen cap (a 30-month-old child's behavior)
+  - [x] Open/Close a door (a 30-month-old child's behavior)
+  - [ ] Unscrew a bottle top (a 30-month-old child's behavior)
+  - [x] Lift a pot (a 2-year-old child's behavior)
+  - [ ] Turn buttons off/on (a 5-year-old child's behavior)
+  - [ ] Pour water in a teapot (an adult's behavior)
+
+- **Meta/Multi-task Algorithms**:
+  - [ ] Multi-task PPO
+  - [ ] Multi-task TRPO
+  - [ ] Multi-task SAC
+  - [ ] MAML
+  - [ ] RL$^2$ 
+  - [ ] PEARL
+
+
+
+
 ## The Team
 
 DexterousHands is a PKU-MARL project under the leadership of Dr. [Yaodong Yang](https://www.yangyaodong.com/), it is currently maintained by [Yuanpei Chen](https://github.com/cypypccpy) and [Shengjie Wang](https://github.com/Shengjie-bob). 
