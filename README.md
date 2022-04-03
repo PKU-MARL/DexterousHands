@@ -285,7 +285,7 @@ If you get a katex error run `npm install katex`.  If it persists, try
 
 - **Tasks under development**:  
   - [x] Handover, throw&catch (a 9-month-old child's behavior)
-  - [ ] Pick glasses  ( an 1-year-old child's behavior )
+  - [ ] Pick up eyeglasses  ( an 1-year-old child's behavior )
   - [ ] Stack blocks (an 1-year-old child's behavior )
   - [ ] Put off a pen cap (a 30-month-old child's behavior)
   - [x] Open/Close a door (a 30-month-old child's behavior)
