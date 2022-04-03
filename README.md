@@ -294,7 +294,7 @@ If you get a katex error run `npm install katex`.  If it persists, try
   - [ ] Turn buttons off/on (a 5-year-old child's behavior)
   - [ ] Pour water in a teapot (an adult's behavior)
 
-- **Meta/Multi-task Algorithms**:
+- **Meta/Multi-task algorithms**:
   - [ ] Multi-task PPO
   - [ ] Multi-task TRPO
   - [ ] Multi-task SAC
