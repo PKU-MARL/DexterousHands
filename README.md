@@ -299,7 +299,7 @@ If you get a katex error run `npm install katex`.  If it persists, try
   - [ ] Multi-task TRPO
   - [ ] Multi-task SAC
   - [ ] MAML
-  - [ ] RL$^2$ 
+  - [ ] RL<sup>2 </sup>
   - [ ] PEARL
 
 
