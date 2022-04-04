@@ -1,12 +1,12 @@
 # Bi-DexHands: Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
-**Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms baselines. 
+**Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms for solving them. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
-- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](#Training)
+- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](#./bi-dexhands/algorithms/marl/)
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
-- **Task Generalization**: we introduce tens of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (***>2,000 objects***); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
+- **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 
 Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
 
@@ -93,6 +93,12 @@ Until now we only suppose the following environments:
 |ShadowHandCatch Over2Underarm| This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand | <img src="assets/image_folder/2.gif" align="middle" width="1000"/>    |
 |ShadowHandCatch Abreast| This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | <img src="assets/image_folder/1.gif" align="middle" width="1000"/>    |
 |ShadowHandCatch TwoCatchUnderarm| These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    |
+|ShadowHandLift Underarm | This environment requires grasping the pot handle with two hands and lifting the pot to the designated position  | <img src="assets/image_folder/3.gif" align="middle" width="1000"/>    |
+|ShadowHandDoor OpenInward | This environment requires the closed door to be opened, and the door can only be pulled inwards | <img src="assets/image_folder/open_inward.gif" align="middle" width="1000"/>    |
+|ShadowHandDoor OpenOutward | This environment requires a closed door to be opened and the door can only be pushed outwards  | <img src="assets/image_folder/open_outward.gif" align="middle" width="1000"/>    |
+|ShadowHandDoor CloseInward | This environment requires the open door to be closed, and the door is initially open inwards | <img src="assets/image_folder/close_inward.gif" align="middle" width="1000"/>    |
+|ShadowHand BottleCap | This environment involve two hands and a bottle, we need to hold the bottle with one hand and open the bottle cap with the other hand  | <img src="assets/image_folder/bottle_cap.gif" align="middle" width="1000"/>    |
+<!-- |ShadowHandDoor CloseOutward | This environment requires the open door to be closed, and the door is initially open outwards  | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    | -->
 
 
 
