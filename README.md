@@ -29,6 +29,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 <td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
 </tr></table>
 
+- **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
 
 Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
 
@@ -37,7 +38,6 @@ Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-bas
   - [Install from PyPI](#Install-from-PyPI)
   - [Install from source code](#Install-from-source-code)
 - [Introduction to Bi-DexHands](#Introduction-to-Bi-DexHands)
-  - [Demos](#Demos)
 - [File Structure](#File-Structure)
 - [Overview of Environments](./docs/environments.md)
 - [Overview of Algorithms](./docs/algorithms.md)
@@ -89,12 +89,6 @@ pip install -e .
 ## Introduciton
 
 This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for dexterous hands manipulation, which is considered as the most challenging task for traditional control methods. 
-
-
-
-### Point Cloud
-
-We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py).
 
 ## Getting Started
 
