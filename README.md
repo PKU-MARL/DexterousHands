@@ -7,6 +7,15 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [examples](#./bi-dexhands/algorithms/marl/).
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous. Solving bimanual dexterous manipulations requires sophisticated cooperations among agents; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (***>2,000 objects***); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
+- **Quick Demos**
+<!-- <center class="half">
+    <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
+</center> -->
+<table><tr>
+<td><img src="assets/image_folder/0.gif" border=0 width="500"></td>
+<td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
+</tr></table>
+
 
 Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
 
@@ -30,6 +39,7 @@ Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-bas
 - [The Team](#The-Team)
 - [License](#License)
 <br></br>
+
 ****
 ## Installation
 
@@ -67,17 +77,6 @@ pip install -e .
 
 This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for dexterous hands manipulation, which is considered as the most challenging task for traditional control methods. 
 
-### Quick Demos
-
-For more demos please refer to [here](./docs/environments.md).
-
-<!-- <center class="half">
-    <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
-</center> -->
-<table><tr>
-<td><img src="assets/image_folder/0.gif" border=0 width="500"></td>
-<td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
-</tr></table>
 
 
 ## Getting Started
