@@ -1,12 +1,12 @@
 # Bi-DexHands: Bimanual Dexterous Manipulation via Reinforcement Learning
 <img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
 
-**Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms for solving them. 
+**Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
-- **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
-- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](#./bi-dexhands/algorithms/marl/)
-- **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
-- **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
+- **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one single NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
+- **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [examples](#./bi-dexhands/algorithms/marl/).
+- **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous. Solving bimanual dexterous manipulations requires sophisticated cooperations among agents; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
+- **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (***>2,000 objects***); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 
 Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
 
@@ -65,9 +65,12 @@ pip install -e .
 
 ## Introduciton
 
-This repository contains complex dexterous hand RL environments Bi-DexHands for the NVIDIA Isaac Gym high performance environments. Bi-DexHands is a  challenging dexterous hand manipulation environment for multi-agent reinforcement learning. We refer to some designs of existing multi-agent and dexterous hand environments, integrate their advantages, expand some new environments and unique features for multi-agent reinforcement learning. Our environments focus on the application of multi-agent algorithms to dexterous hand control, which is very challenging in traditional control algorithms. 
+This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for dexterous hands manipulation, which is considered as the most challenging task for traditional control methods. 
 
-### Demos
+### Quick Demos
+
+For more demos please refer to [here](./docs/environments.md).
+
 <!-- <center class="half">
     <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
 </center> -->
@@ -76,15 +79,14 @@ This repository contains complex dexterous hand RL environments Bi-DexHands for 
 <td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
 </tr></table>
 
-For more demos please refer to [here](./docs/environments.md)
 
 ## Getting Started
 
 ### <span id="task">Tasks</span>
 
-Source code for tasks can be found in `envs/tasks`. For the detailed settings of state/action/reward  please refer to [here](./docs/environments.md)
+Source code for tasks can be found in `envs/tasks`. The detailed settings of state/action/reward are in [here](./docs/environments.md).
 
-Until now we only suppose the following environments:
+So far, we release the following tasks (with many more to come):
 
 | Environments | Description | Demo     |
 |  :----:  | :----:  | :----:  |
@@ -106,7 +108,7 @@ Until now we only suppose the following environments:
 
 #### Gym-Like API
 
-We provide a Gym-Like API that allows us to get information from the isaac-gym environment. Our single-agent Gym-Like wrapper is the code of the Isaacgym team used, and we have developed a multi-agent Gym-Like wrapper based on it:
+We provide a Gym-Like API that allows us to get information from the Isaac Gym environment. Our single-agent Gym-Like wrapper is the code of the Isaac Gym team used, and we have developed a multi-agent Gym-Like wrapper based on it:
 
 ```python
 class MultiVecTaskPython(MultiVecTask):
@@ -158,9 +160,9 @@ class MultiVecTaskPython(MultiVecTask):
 ```
 #### RL/Multi-Agent RL API
 
-Similar to the Gym-Like wrapper, we also provide single-agent and multi-agent RL algorithms respectively. In order to adapt to Isaac Gym and speed up the running speed, all operations are done on the GPU using tensor, so there is no need to transfer data between the CPU and GPU, which greatly speeds up the operation.
+We also provide single-agent and multi-agent RL interfaces. In order to adapt to Isaac Gym and speed up the running efficiency, all operations are implemented on GPUs using tensor. Therefore, there is no need to transfer data between the CPU and GPU.
 
-We give an example to illustrate multi-agent RL APIs, which mainly refer to [https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL):
+We give an example using ***HATRPO (the SOTA MARL algorithm for cooperative tasks)*** to illustrate multi-agent RL APIs, please refer to [https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL):
 
 ```python
 # warmup before the main loop starts
@@ -204,9 +206,9 @@ for episode in range(episodes):
         self.save()
 ```
 
-#### Training Example
+#### Training Examples
 
-For example, if you want to train your first policy with ShadowHandOver task and PPO algorithm, run this line:
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=ppo
@@ -257,7 +259,7 @@ python train.py --task=ShadowHandOver --model_dir=logs/shadow_hand_over/happo/mo
 
 ### Plotting
 
-After training, you can convert all tfevent files into csv files and then try plotting the results.
+Users can convert all tfevent files into csv files and then try plotting the results.
 
 ```bash
 # geenrate csv
