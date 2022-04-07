@@ -226,7 +226,7 @@ class HATRPO():
         self.policy.critic_optimizer.step()
 
         # actor update
-        ratio = torch.exp(action_log_probs - old_action_log_probs_batch)
+        ratio = torch.exp((action_log_probs - old_action_log_probs_batch).sum(dim=-1, keepdim=True))
         if self._use_policy_active_masks:
             loss = (torch.sum(ratio * factor_batch * adv_targ, dim=-1, keepdim=True) *
                            active_masks_batch).sum() / active_masks_batch.sum()
@@ -285,7 +285,7 @@ class HATRPO():
                                                                                 available_actions_batch,
                                                                                 active_masks_batch)
 
-            ratio = torch.exp(action_log_probs - old_action_log_probs_batch)
+            ratio = torch.exp((action_log_probs - old_action_log_probs_batch).sum(dim=-1, keepdim=True))
             if self._use_policy_active_masks:
                 new_loss = (torch.sum(ratio * factor_batch * adv_targ, dim=-1, keepdim=True) *
                             active_masks_batch).sum() / active_masks_batch.sum()

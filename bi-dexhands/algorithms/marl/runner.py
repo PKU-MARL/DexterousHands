@@ -307,7 +307,7 @@ class Runner:
                                                             available_actions,
                                                             self.buffer[agent_id].active_masks[:-1].reshape(-1, *self.buffer[agent_id].active_masks.shape[2:]))
 
-            action_prod = torch.prod(torch.exp(new_actions_logprob.detach()-old_actions_logprob.detach()).reshape(self.episode_length,self.n_rollout_threads,action_dim), dim=-1, keepdim=True)
+            action_prod = torch.exp((new_actions_logprob.detach()-old_actions_logprob.detach()).reshape(self.episode_length,self.n_rollout_threads,action_dim).sum(dim=-1, keepdim=True))
             factor = factor*action_prod.detach()
             train_infos.append(train_info)      
             self.buffer[agent_id].after_update()
