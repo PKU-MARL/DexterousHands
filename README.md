@@ -24,7 +24,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 </tr></table>
 
 - **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. 
-<td><img src="assets/image_folder/pc1.png" align="right" border=1 width="250"></td>
+<td><img src="assets/image_folder/pc1.png" align="right" border=1 width="400"></td>
 
   - We used the depth camera in isaaccgym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels.
   - You can also use this feature to implement some advanced functions youself, such as stitching partial point clouds to get full point clouds. 
@@ -100,12 +100,12 @@ So far, we release the following tasks (with many more to come):
 | Environments | Description | Demo     |
 |  :----:  | :----:  | :----:  |
 |ShadowHand Over| These environments involve two fixed-position hands. The hand which starts with the object must find a way to hand it over to the second hand. | <img src="assets/image_folder/0.gif" width="1000"/>    |
-|ShadowHandCatch Underarm|These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | <img src="assets/image_folder/4.gif" align="middle" width="1000"/>    |
+|ShadowHandCatch Underarm|These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. | <img src="assets/image_folder/hand_catch_underarm.gif" align="middle" width="1000"/>    |
 |ShadowHandCatch Over2Underarm| This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand | <img src="assets/image_folder/2.gif" align="middle" width="1000"/>    |
 |ShadowHandCatch Abreast| This environment is similar to ShadowHandCatchUnderarm, the difference is that the two hands are changed from relative to side-by-side posture. | <img src="assets/image_folder/1.gif" align="middle" width="1000"/>    |
 |ShadowHandCatch TwoCatchUnderarm| These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). | <img src="assets/image_folder/two_catch.gif" align="middle" width="1000"/>    |
 |ShadowHandLift Underarm | This environment requires grasping the pot handle with two hands and lifting the pot to the designated position  | <img src="assets/image_folder/3.gif" align="middle" width="1000"/>    |
-|ShadowHandDoor OpenInward | This environment requires the closed door to be opened, and the door can only be pulled inwards | <img src="assets/image_folder/open_inward.gif" align="middle" width="1000"/>    |
+|ShadowHandDoor OpenInward | This environment requires the closed door to be opened, and the door can only be pulled inwards | <img src="assets/image_folder/door_open_inward.gif" align="middle" width="1000"/>    |
 |ShadowHandDoor OpenOutward | This environment requires a closed door to be opened and the door can only be pushed outwards  | <img src="assets/image_folder/open_outward.gif" align="middle" width="1000"/>    |
 |ShadowHandDoor CloseInward | This environment requires the open door to be closed, and the door is initially open inwards | <img src="assets/image_folder/close_inward.gif" align="middle" width="1000"/>    |
 |ShadowHand BottleCap | This environment involve two hands and a bottle, we need to hold the bottle with one hand and open the bottle cap with the other hand  | <img src="assets/image_folder/bottle_cap.gif" align="middle" width="1000"/>    |
