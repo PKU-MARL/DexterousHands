@@ -23,9 +23,14 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 <td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
 </tr></table>
 
-- **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
+- **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. 
+<td><img src="assets/image_folder/pc1.png" align="right" border=1 width="250"></td>
 
-Bi-DexHands is becoming an important tool to evaluate the peroformance of RL-based solutions for robotics research. 
+  - We used the depth camera in isaaccgym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels.
+  - You can also use this feature to implement some advanced functions youself, such as stitching partial point clouds to get full point clouds. 
+  - This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
+
+Bi-DexHands is becoming an important tool to evaluate the performance of RL-based solutions for robotics research. 
 
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
@@ -80,7 +85,7 @@ You can also install this repo from source code:
 pip install -e .
 ```
 
-## Introduciton
+## Introduction
 
 This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for dexterous hands manipulation, which is considered as the most challenging task for traditional control methods. 
 
@@ -319,7 +324,7 @@ If you get a katex error run `npm install katex`.  If it persists, try
 
 ## The Team
 
-DexterousHands is a PKU-MARL project under the leadership of Dr. [Yaodong Yang](https://www.yangyaodong.com/), it is currently maintained by [Yuanpei Chen](https://github.com/cypypccpy) and [Shengjie Wang](https://github.com/Shengjie-bob). 
+Bi-DexHands is a PKU-MARL project under the leadership of Dr. [Yaodong Yang](https://www.yangyaodong.com/), it is currently maintained by [Yuanpei Chen](https://github.com/cypypccpy) and [Shengjie Wang](https://github.com/Shengjie-bob). 
 
 It must be mentioned that in our development process, we mainly refer to the following two open source repositories: 
 
@@ -330,4 +335,4 @@ It must be mentioned that in our development process, we mainly refer to the fol
 
 ## License
 
-DexterousHands has a Apache license, as found in the [LICENSE](LICENSE) file.
+Bi-DexHands has a Apache license, as found in the [LICENSE](LICENSE) file.
