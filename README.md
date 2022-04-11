@@ -24,11 +24,11 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 </tr></table>
 
 - **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release. 
-<td><img src="assets/image_folder/pc1.png" align="right" border=1 width="400"></td>
+<td><img src="assets/image_folder/pc1.png" align="right" border=1 width="350"></td>
 
-  - We used the depth camera in isaaccgym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels.
-  - You can also use this feature to implement some advanced functions youself, such as stitching partial point clouds to get full point clouds. 
-  - This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
+    - We used the depth camera in isaaccgym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels.
+    - You can also use this feature to implement some advanced functions youself, such as stitching partial point clouds to get full point clouds. 
+    - This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
 
 Bi-DexHands is becoming an important tool to evaluate the performance of RL-based solutions for robotics research. 
 
