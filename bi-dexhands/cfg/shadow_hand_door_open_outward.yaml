@@ -34,6 +34,7 @@ env:
 
   objectType: "pot" # can be block, egg or pen
   observationType: "full_state" # 
+  handAgentIndex: "[[0, 1, 2, 3, 4, 5]]"
   asymmetric_observations: False
   successTolerance: 0.1
   printNumSuccesses: False

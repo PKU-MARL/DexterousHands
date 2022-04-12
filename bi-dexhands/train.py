@@ -12,12 +12,11 @@ import random
 from utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
 from utils.parse_task import parse_task
 from utils.process_sarl import *
-from utils.process_marl import process_MultiAgentRL
+from utils.process_marl import process_MultiAgentRL, get_AgentIndex
 
 def train():
     print("Algorithm: ", args.algo)
-    agent_index = [[[0, 1, 2, 3, 4, 5]],
-                   [[0, 1, 2, 3, 4, 5]]]
+    agent_index = get_AgentIndex(cfg)
 
     if args.algo in ["mappo", "happo", "hatrpo","maddpg","ippo"]: 
         # maddpg exists a bug now 

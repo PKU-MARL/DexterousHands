@@ -6,7 +6,15 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 
+def get_AgentIndex(config):
+    agent_index = []
+    # right hand
+    agent_index.append(eval(config["env"]["handAgentIndex"]))
+    # left hand
+    agent_index.append(eval(config["env"]["handAgentIndex"]))
 
+    return agent_index
+    
 def process_MultiAgentRL(args,env, config, model_dir=""):
 
     config["n_rollout_threads"] = env.num_envs
