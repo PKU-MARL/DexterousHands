@@ -174,6 +174,9 @@ We also provide single-agent and multi-agent RL interfaces. In order to adapt to
 We give an example using ***HATRPO (the SOTA MARL algorithm for cooperative tasks)*** to illustrate multi-agent RL APIs, please refer to [https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL):
 
 ```python
+from algorithms.marl.hatrpo_trainer import HATRPO as TrainAlgo
+from algorithms.marl.hatrpo_policy import HATRPO_Policy as Policy
+...
 # warmup before the main loop starts
 self.warmup()
 # log data
