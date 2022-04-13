@@ -56,7 +56,7 @@ It uses [Anaconda](https://www.anaconda.com/) to create virtual environments.
 To install Anaconda, follow instructions [here](https://docs.anaconda.com/anaconda/install/linux/).
 
 Ensure that Isaac Gym works on your system by running one of the examples from the `python/examples` 
-directory, like `joint_monkey.py`. Follow troubleshooting steps described in the Isaac Gym Preview 3 
+directory, like `joint_monkey.py`. Please follow troubleshooting steps described in the Isaac Gym Preview 3 
 install instructions if you have any trouble running the samples.
 
 Once Isaac Gym is installed and samples work within your current python environment, install this repo:
@@ -69,7 +69,7 @@ You can simply install Bi-DexHands from PyPI with the following command:
 pip install bidexhands
 ```
 #### Install from source code
-You can also install this repo from source code:
+You can also install this repo from the source code:
 
 ```bash
 pip install -e .
@@ -77,7 +77,7 @@ pip install -e .
 
 ## Introduction
 
-This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for dexterous hands manipulation, which is considered as the most challenging task for traditional control methods. 
+This repository contains complex dexterous hands control tasks. Bi-DexHands is built in the NVIDIA Isaac Gym with high performance guarantee for training RL algorithms. Our environments focus on applying model-free RL/MARL algorithms for bimanual dexterous manipulation, which are considered as a challenging task for traditional control methods. 
 
 ## Getting Started
 
