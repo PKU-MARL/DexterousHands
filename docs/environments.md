@@ -109,7 +109,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
 
 ### HandCatchOver2Underarm Environments
-<img src="../assets/image_folder/1.gif" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/2.gif" align="middle" width="450" border="1"/>
 
 This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchOver2Underarm`
 
