@@ -282,6 +282,11 @@ if __name__ == "__main__":
         shaded_std=args.shaded_std,
         legend_outside=args.legend_outside
     )
+
+    os.chdir('../../')
+    abs_path = os.path.abspath('{}'.format(args.output_path))
+    args.output_path = abs_path
+
     if args.output_path:
         plt.savefig(args.output_path, dpi=args.dpi, bbox_inches='tight')
     if args.show:
