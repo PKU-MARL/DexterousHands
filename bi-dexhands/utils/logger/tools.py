@@ -104,6 +104,34 @@ def convert_tfevents_to_csv(root_dir, alg_type, refresh=False):
             result[output_file] = content
     return result
 
+
+def merge_csv(csv_files, root_dir, remove_zero=False):
+    """Merge result in csv_files into a single csv file."""
+    assert len(csv_files) > 0
+    if remove_zero:
+        for v in csv_files.values():
+            if v[1][0] == 0:
+                v.pop(1)
+
+    sorted_keys = sorted(csv_files.keys())
+    sorted_values = [csv_files[k][1:] for k in sorted_keys]
+    content = [
+        ["env_step", "rew", "rew:shaded"] +
+        list(map(lambda f: "rew:" + os.path.relpath(f, root_dir), sorted_keys))
+    ]
+
+    for rows in zip(*sorted_values):
+        array = np.array(rows)
+        # assert len(set(array[:, 0])) == 1, (set(array[:, 0]), array[:, 0])
+        # line = [rows[0][0], round(array[:, 1].mean(), 4), round(array[:, 1].std(), 4)]
+        line = [round(array[:, 0].mean(), 4), round(array[:, 1].mean(), 4), round(array[:, 1].std(), 4)]
+        line += array[:, 1].tolist()
+        content.append(line)
+    output_path = os.path.join(root_dir, f"test_rew_{len(csv_files)}seeds.csv")
+    print(f"Output merged csv file to {output_path} with {len(content[1:])} lines.")
+    csv.writer(open(output_path, "w")).writerows(content)
+
+
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
@@ -134,3 +162,4 @@ if __name__ == "__main__":
     args.root_dir = '{}/{}'.format(args.root_dir,args.alg_name)
 
     csv_files = convert_tfevents_to_csv(args.root_dir, args.alg_type, args.refresh)
+    merge_csv(csv_files, args.root_dir, args.remove_zero)
