@@ -115,6 +115,11 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
     parser.add_argument(
+        '--alg-name',
+        type=str,
+        default='happo'
+    )    
+    parser.add_argument(
         '--alg-type',
         type=str,
         default='marl',
@@ -132,6 +137,8 @@ if __name__ == "__main__":
     )
     parser.add_argument('--root-dir', type=str)
     args = parser.parse_args()
+    
+    args.root_dir = '{}/{}'.format(args.root_dir,args.alg_name)
 
     csv_files = convert_tfevents_to_csv(args.root_dir, args.alg_type, args.refresh)
     merge_csv(csv_files, args.root_dir, args.remove_zero)
