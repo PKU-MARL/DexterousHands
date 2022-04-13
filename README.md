@@ -1,5 +1,5 @@
 # Bi-DexHands: Bimanual Dexterous Manipulation via Reinforcement Learning
-<img src="assets/image_folder/cover.jpg" width="1000" border="1"/>
+<img src="assets/image_folder/coverv3.jpg" width="1000" border="1"/>
 
 ****
 [![PyPI](https://img.shields.io/pypi/v/bidexhands)](https://pypi.org/project/bidexhands/)
