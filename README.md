@@ -98,7 +98,7 @@ So far, we release the following tasks (with many more to come):
 |ShadowHandDoor OpenInward | This environment requires the closed door to be opened, and the door can only be pulled inwards | <img src="assets/image_folder/door_open_inward.gif" align="middle" width="1000"/>    |
 |ShadowHandDoor OpenOutward | This environment requires a closed door to be opened and the door can only be pushed outwards  | <img src="assets/image_folder/open_outward.gif" align="middle" width="1000"/>    |
 |ShadowHandDoor CloseInward | This environment requires the open door to be closed, and the door is initially open inwards | <img src="assets/image_folder/close_inward.gif" align="middle" width="1000"/>    |
-|ShadowHand BottleCap | This environment involve two hands and a bottle, we need to hold the bottle with one hand and open the bottle cap with the other hand  | <img src="assets/image_folder/bottle_cap.gif" align="middle" width="1000"/>    |
+|ShadowHand BottleCap | This environment involves two hands and a bottle, we need to hold the bottle with one hand and open the bottle cap with the other hand  | <img src="assets/image_folder/bottle_cap.gif" align="middle" width="1000"/>    |
 <!-- |ShadowHandDoor CloseOutward | This environment requires the open door to be closed, and the door is initially open outwards  | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    | -->
 
 
