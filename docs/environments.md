@@ -109,7 +109,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 ```
 
 ### HandCatchOver2Underarm Environments
-<img src="../assets/image_folder/2.jpg" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/1.gif" align="middle" width="450" border="1"/>
 
 This environment is is made up of half ShadowHandCatchUnderarm and half ShadowHandCatchOverarm, the object needs to be thrown from the vertical hand to the palm-up hand. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchOver2Underarm`
 
@@ -152,7 +152,7 @@ reward = (0.3 - goal_dist - quat_diff)
 ```
 
 ### TwoObjectCatch Environments
-<img src="../assets/image_folder/two_catch.jpg" align="middle" width="450" border="1"/>
+<img src="../assets/image_folder/two_catch.gif" align="middle" width="450" border="1"/>
 
 These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). This is necessary since each object's goal can only be reached by the other hand. To use the HandCatchUnderarm environment, pass `--task=ShadowHandTwoCatchUnderarm`
 
