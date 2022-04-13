@@ -269,8 +269,8 @@ Users can convert all tfevent files into csv files and then try plotting the res
 
 ```bash
 # geenrate csv for sarl and marl algorithms
-$ python ./utils/logger/tools.py --alg-type sarl --root-dir ./logs/shadow_hand_over --refresh 
-$ python ./utils/logger/tools.py --alg-type marl --root-dir ./logs/shadow_hand_over --refresh 
+$ python ./utils/logger/tools.py --alg-name <sarl algorithm> --alg-type sarl --root-dir ./logs/shadow_hand_over --refresh 
+$ python ./utils/logger/tools.py --alg-name <marl algorithm> --alg-type marl --root-dir ./logs/shadow_hand_over --refresh 
 # generate figures
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
 ```
