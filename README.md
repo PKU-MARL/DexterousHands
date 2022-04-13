@@ -372,6 +372,10 @@ If you get a katex error run `npm install katex`.  If it persists, try
 
 It must be pointed out that Bi-DeHands is still under development, and there are some known issue: 
 - **ShadowHandBottleCap** and **ShadowHandLiftUnderarm** environment may report errors due to collision calculation bugs in the later stage of program runtime.
+```
+RuntimeError: CUDA error: an illegal memory access was encountered
+CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
+```
 - Although we provide the implementation, we did not tested **DDPG**, **TD3** and **MADDPG** algorithms, they may still have bugs.
 
 
