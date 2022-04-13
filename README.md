@@ -378,7 +378,7 @@ It must be pointed out that Bi-DeHands is still under development, and there are
 ## The Team
 
 Bi-DexHands is a project contributed by 
- [Yuanpei Chen](https://github.com/cypypccpy),[Shengjie Wang](https://github.com/Shengjie-bob), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Yaodong Yang](https://www.yangyaodong.com/) (yaodong.yang@pku.edu.cn).
+ [Yuanpei Chen](https://github.com/cypypccpy),[Shengjie Wang](https://github.com/Shengjie-bob), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Yaodong Yang](https://www.yangyaodong.com/) at Peking University, please contact yaodong.yang@pku.edu.cn if you are interested to collaborate.
 
 
 We also thank the list of contributors from the following two open source repositories: 
