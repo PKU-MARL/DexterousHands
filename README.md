@@ -14,6 +14,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bi-dexhands/algorithms/marl/)
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
+- **Point Cloud**: We provide the ability to use point clouds as observations. We used the depth camera in Isaacc Gym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels. See the [code](./bi-dexhands/tasks/shadow_hand_over.py). 
 - **Quick Demos**
 <!-- <center class="half">
     <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
@@ -22,11 +23,6 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 <td><img src="assets/image_folder/0.gif" border=0 width="500"></td>
 <td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
 </tr></table>
-
-- **Point Cloud**: We provide the ability to use point clouds as observation to train the policy, but have not yet used it for training in this release.   
-    - <td><img src="assets/image_folder/pc1.png" align="right" border=1 width="350"></td> We used the depth camera in isaaccgym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels.
-    - You can also use this feature to implement some advanced functions youself, such as stitching partial point clouds to get full point clouds. 
-    - This part is still under development. Anyone who wants to implement related functions can refer to our [code](./bi-dexhands/tasks/shadow_hand_over.py). 
 
 Bi-DexHands is becoming an important tool to evaluate the performance of RL-based solutions for robotics research. 
 
