@@ -970,11 +970,7 @@ def compute_hand_reward(
     resets = torch.where(right_hand_finger_dist >= 1.5, torch.ones_like(reset_buf), reset_buf)
     resets = torch.where(left_hand_finger_dist >= 1.5, torch.ones_like(resets), resets)
     # resets = torch.where(left_hand_dist >= 0.2, torch.ones_like(resets), resets)
-
-    print(right_hand_dist_rew[0])
-    print(left_hand_dist_rew[0])
-    print(up_rew[0])
-
+    
     # Find out which envs hit the goal and update successes count
     resets = torch.where(progress_buf >= max_episode_length, torch.ones_like(resets), resets)
 

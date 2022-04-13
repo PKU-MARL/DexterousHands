@@ -15,6 +15,7 @@ from tasks.shadow_hand_door_close_inward import ShadowHandDoorCloseInward
 from tasks.shadow_hand_door_close_outward import ShadowHandDoorCloseOutward
 from tasks.shadow_hand_door_open_inward import ShadowHandDoorOpenInward
 from tasks.shadow_hand_door_open_outward import ShadowHandDoorOpenOutward
+from tasks.shadow_hand_bottle_cap import ShadowHandBottleCap
 
 from tasks.hand_base.vec_task import VecTaskCPU, VecTaskGPU, VecTaskPython, VecTaskPythonArm
 from tasks.hand_base.multi_vec_task import MultiVecTaskPython, SingleVecTaskPythonArm
