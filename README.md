@@ -255,16 +255,16 @@ The trained model will be saved to `logs/${Task Name}/${Algorithm Name}`folder.
 
 To load a trained model and only perform inference (no training), pass `--test` 
 as an argument, and pass `--model_dir` to specify the trained models which you want to load.
-For single-agent reinforcement learning, you need to pass `--model_dir` to specify exactly what .pt model you want to load. An example is as follows:
+For single-agent reinforcement learning, you need to pass `--model_dir` to specify exactly what .pt model you want to load. An example of PPO algorithm is as follows:
 
 ```bash
-python train.py --task=ShadowHandOver --model_dir=logs/shadow_hand_over/ppo/ppo_seed0/model_5000.pt --test
+python train.py --task=ShadowHandOver --algo=ppo --model_dir=logs/shadow_hand_over/ppo/ppo_seed0/model_5000.pt --test
 ```
 
-For multi-agent reinforcement learning, pass `--model_dir` to specify the path to the folder where all your agent model files are saved. An example is as follows:
+For multi-agent reinforcement learning, pass `--model_dir` to specify the path to the folder where all your agent model files are saved. An example of HAPPO algorithm is as follows:
 
 ```bash
-python train.py --task=ShadowHandOver --model_dir=logs/shadow_hand_over/happo/models_seed0 --test
+python train.py --task=ShadowHandOver --algo=happo --model_dir=logs/shadow_hand_over/happo/models_seed0 --test
 ```
 
 ### Plotting
@@ -273,7 +273,7 @@ Users can convert all tfevent files into csv files and then try plotting the res
 
 ```bash
 # geenrate csv
-$ python ./utils/logger/tools.py --alg-name <algorithm> --alg-type <marl/sarl> --root-dir ./logs/shadow_hand_over --refresh 
+$ python ./utils/logger/tools.py  --root-dir ./logs/shadow_hand_over --refresh 
 # generate figures
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
 ```
