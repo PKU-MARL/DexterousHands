@@ -377,13 +377,12 @@ It must be pointed out that Bi-DeHands is still under development, and there are
 
 ## The Team
 
-Bi-DexHands is a PKU-MARL project under the leadership of Dr. [Yaodong Yang](https://www.yangyaodong.com/), it is currently maintained by [Yuanpei Chen](https://github.com/cypypccpy) and [Shengjie Wang](https://github.com/Shengjie-bob). 
+Bi-DexHands is a project contributed by 
+ [Yuanpei Chen](https://github.com/cypypccpy),[Shengjie Wang](https://github.com/Shengjie-bob), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Yaodong Yang](https://www.yangyaodong.com/).
 
-It must be mentioned that in our development process, we mainly refer to the following two open source repositories: 
 
-[https://github.com/NVIDIA-Omniverse/IsaacGymEnvs](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs) 
-
-[https://github.com/cyanrain7/TRPO-in-MARL](https://github.com/cyanrain7/TRPO-in-MARL) 
+We also thank the list of contributors from the following two open source repositories: 
+[Isaac Gym](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs), [HATRPO](https://github.com/cyanrain7/TRPO-in-MARL) 
 
 
 ## License
