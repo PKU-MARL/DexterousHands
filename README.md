@@ -209,14 +209,14 @@ for episode in range(episodes):
 
 #### Training Examples
 
-For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line:
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=ppo
 ```
 
 To select an algorithm, pass `--algo=ppo/mappo/happo/hatrpo/...` 
-as an argument. For example, if you want to use happo algorithm, run this line:
+as an argument. For example, if you want to use happo algorithm, run this line in `bi-dexhands` folder:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=hatrpo
