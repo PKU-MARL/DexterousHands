@@ -282,6 +282,61 @@ $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-s
 
 ### Figures
 
+We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorithms. All baselines are run under the parameters of `2048 num_env` and `100M total_step`. 
+
+<table>
+    <tr>
+        <th colspan="2">ShadowHandOver</th>
+        <th colspan="2">ShadowHandLiftUnderarm</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/0.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_over.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/3.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_lift_underarm.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandCatchUnderarm</th>
+        <th colspan="2">ShadowHandDoorOpenInward</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/4.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/open_inward.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_door_open_inward.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandCatchOver2Underarm</th>
+        <th colspan="2">ShadowHandDoorOpenOutward</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/2.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_over2underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/open_outward.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_door_open_outward.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandCatchAbreast</th>
+        <th colspan="2">ShadowHandDoorCloseInward</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/1.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_abreast.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/close_inward.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_door_close_inward.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandCatchTwoCatchUnderarm</th>
+        <th colspan="2">ShadowHandDoorCloseOutward</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/two_catch.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_two_catch_underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/close_inward.gif" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_door_close_outward.png" align="middle" width="750"/></td>
+    <tr>
+</table>
+
 For more figures please refer to [here](./docs/figures.md)
 
 ## Building the Documentation
