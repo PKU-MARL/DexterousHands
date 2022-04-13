@@ -261,12 +261,12 @@ python train.py --task=ShadowHandOver --algo=happo --model_dir=logs/shadow_hand_
 
 ### Plotting
 
-Users can convert all tfevent files into csv files and then try plotting the results.
+Users can convert all tfevent files into csv files and then try plotting the results. Note that you should verify `env-num` and `env-step` same as your experimental setting. For the details, please refer to the `./utils/logger/tools.py`.
 
 ```bash
 # geenrate csv for sarl and marl algorithms
-$ python ./utils/logger/tools.py --alg-name <sarl algorithm> --alg-type sarl --root-dir ./logs/shadow_hand_over --refresh 
-$ python ./utils/logger/tools.py --alg-name <marl algorithm> --alg-type marl --root-dir ./logs/shadow_hand_over --refresh 
+$ python ./utils/logger/tools.py --alg-name <sarl algorithm> --alg-type sarl --env-num 2048 --env-step 8 --root-dir ./logs/shadow_hand_over --refresh 
+$ python ./utils/logger/tools.py --alg-name <marl algorithm> --alg-type marl --env-num 2048 --env-step 8 --root-dir ./logs/shadow_hand_over --refresh 
 # generate figures
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
 ```

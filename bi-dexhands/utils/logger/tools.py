@@ -40,7 +40,7 @@ def csv2numpy(csv_file):
     return {k: np.array(v) for k, v in csv_dict.items()}
 
 
-def convert_tfevents_to_csv(root_dir, alg_type, refresh=False):
+def convert_tfevents_to_csv(root_dir, alg_type, env_num, env_step, refresh=False):
     """Recursively convert test/rew from all tfevent file under root_dir to csv.
 
     This function assumes that there is at most one tfevents file in each directory
@@ -77,9 +77,7 @@ def convert_tfevents_to_csv(root_dir, alg_type, refresh=False):
             initial_time = ea._first_event_timestamp
             content = [["env_step", "rew", "time"]]
 
-            # just for sarl
-            env_num = 2048
-            env_step = 8 # if env is to lift a pot, change it as 20
+            
             if alg_type == "sarl":
                 for i, test_rew in enumerate(ea.scalars.Items("Train/mean_reward")):
                     content.append(
@@ -147,6 +145,18 @@ if __name__ == "__main__":
         help="single-agent: sarl; multi-agent: marl"
     )
     parser.add_argument(
+        '--env-num',
+        type=int,
+        default=2048,
+        help="the number of parallel simulations"
+    )
+    parser.add_argument(
+        '--env-step',
+        type=int,
+        default=8,
+        help="the environment lifting a pot : 20; other environments: 8"
+    )
+    parser.add_argument(
         '--refresh',
         action="store_true",
         help="Re-generate all csv files instead of using existing one."
@@ -161,5 +171,5 @@ if __name__ == "__main__":
     
     args.root_dir = '{}/{}'.format(args.root_dir,args.alg_name)
 
-    csv_files = convert_tfevents_to_csv(args.root_dir, args.alg_type, args.refresh)
+    csv_files = convert_tfevents_to_csv(args.root_dir, args.alg_type, args.env_num, args.env_step, args.refresh)
     merge_csv(csv_files, args.root_dir, args.remove_zero)
