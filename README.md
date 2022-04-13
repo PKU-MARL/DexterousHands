@@ -14,7 +14,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **RL/MARL Benchmark**: we provide the first bimanual manipulation task environment for RL and Multi-Agent RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bi-dexhands/algorithms/marl/)
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
-- **Point Cloud**: We provide the ability to use point clouds as observations. We used the depth camera in Isaacc Gym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels. See the [code](./bi-dexhands/tasks/shadow_hand_over.py). 
+- **Point Cloud**: We provide the ability to use point clouds as observations. We used the depth camera in Isaacc Gym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels. See the [code](./bi-dexhands/tasks/shadow_hand_point_cloud.py). 
 - **Quick Demos**
 <!-- <center class="half">
     <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
@@ -31,7 +31,6 @@ Bi-DexHands is becoming an important tool to evaluate the performance of RL-base
   - [Install from PyPI](#Install-from-PyPI)
   - [Install from source code](#Install-from-source-code)
 - [Introduction to Bi-DexHands](#Introduction-to-Bi-DexHands)
-- [File Structure](#File-Structure)
 - [Overview of Environments](./docs/environments.md)
 - [Overview of Algorithms](./docs/algorithms.md)
 - [Getting Started](#Getting-Started)
@@ -336,7 +335,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
 
 For more figures please refer to [here](./docs/figures.md)
 
-## Building the Documentation
+<!-- ## Building the Documentation
 
 To build documentation in various formats, you will need [Sphinx](http://www.sphinx-doc.org) and the
 readthedocs theme.
@@ -349,11 +348,11 @@ You can then build the documentation by running `make <format>` from the
 `docs/` folder. Run `make` to get a list of all available output formats.
 
 If you get a katex error run `npm install katex`.  If it persists, try
-`npm install -g katex`
+`npm install -g katex` -->
 
 ## Future Plan
 
-- **Tasks under development**:  
+### Tasks under development:  
   - [x] Handover, throw&catch (a 9-month-old child's behavior)
   - [ ] Pick up eyeglasses  ( an 1-year-old child's behavior )
   - [ ] Stack blocks (an 1-year-old child's behavior )
@@ -364,7 +363,7 @@ If you get a katex error run `npm install katex`.  If it persists, try
   - [ ] Turn buttons off/on (a 5-year-old child's behavior)
   - [ ] Pour water in a teapot (an adult's behavior)
 
-- **Meta/Multi-task algorithms**:
+### Meta/Multi-task algorithms:
   - [ ] Multi-task PPO
   - [ ] Multi-task TRPO
   - [ ] Multi-task SAC
@@ -372,7 +371,11 @@ If you get a katex error run `npm install katex`.  If it persists, try
   - [ ] RL<sup>2 </sup>
   - [ ] PEARL
 
+### Known issue
 
+It must be pointed out that Bi-DeHands is still under development, and there are some known issue: 
+- **ShadowHandBottleCap** and **ShadowHandLiftUnderarm** environment may report errors due to collision calculation bugs in the later stage of program runtime.
+- Although we provide the implementation, we did not tested **DDPG**, **TD3** and **MADDPG** algorithms, they may still have bugs.
 
 
 ## The Team
