@@ -42,7 +42,7 @@ These environments involve two fixed-position hands. The hand which starts with 
 | 200 - 206     | goal pose    |
 | 207 - 210     | goal rot - object rot   |
 
-#### Action Space<span id="action1">Action Space</span>
+#### <span id="action1">Action Space</span>
 The shadow hand has 24 joints, 20 actual drive joints and 4 underdrive joints. So our Action is the joint Angle value of the 20 dimensional actuated joint.
 | Index | Description |
 |  ----  | ----  |
@@ -66,7 +66,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 
 These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchUnderarm`
 
-#### #### <span id="obs2">Observation Space</span>
+#### <span id="obs2">Observation Space</span>
 
 
 | Index | Description |
@@ -85,7 +85,7 @@ These environments again have two hands, however now they have some additional d
 | 212 - 218     | goal pose    |
 | 219 - 222     | goal rot - object rot   |
 
-#### Action Space<span id="action2">Action Space</span>
+#### <span id="action2">Action Space</span>
 
 Similar to the HandOver environments, except now the bases are not fixed and have translational and rotational degrees of freedom that allow them to move within some range.
 | Index | Description |
@@ -113,7 +113,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist))
 
 Similar to the HandCatchUnderArm environments but now the two hands are upright, and so the throwing/catching technique that has to be employed is different. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchOverarm`
 
-#### #### <span id="obs3">Observation Space</span>
+#### <span id="obs3">Observation Space</span>
 
 
 | Index | Description |
@@ -132,7 +132,7 @@ Similar to the HandCatchUnderArm environments but now the two hands are upright,
 | 212 - 218     | goal pose    |
 | 219 - 222     | goal rot - object rot   |
 
-#### Action Space<span id="action3">Action Space</span>
+#### <span id="action3">Action Space</span>
 
 Similar to the HandOver environments, except now the bases are not fixed and have translational and rotational degrees of freedom that allow them to move within some range.
 | Index | Description |
@@ -156,7 +156,7 @@ reward = (0.3 - goal_dist - quat_diff)
 
 These environments involve coordination between the two hands so as to throw the two objects between hands (i.e. swapping them). This is necessary since each object's goal can only be reached by the other hand. To use the HandCatchUnderarm environment, pass `--task=ShadowHandTwoCatchUnderarm`
 
-#### #### <span id="obs4">Observation Space</span>
+#### <span id="obs4">Observation Space</span>
 
 
 | Index | Description |
@@ -180,7 +180,7 @@ These environments involve coordination between the two hands so as to throw the
 | 237 - 243     | goal2 pose    |
 | 244 - 247     | goal2 rot - object2 rot   |
 
-#### Action Space<span id="action4">Action Space</span>
+#### <span id="action4">Action Space</span>
 
 Similar to the HandOver environments, except now the bases are not fixed and have translational and rotational degrees of freedom that allow them to move within some range.
 | Index | Description |
@@ -213,7 +213,7 @@ reward = torch.exp(-0.2*(dist_rew * dist_reward_scale + rot_dist)) + torch.exp(-
 
 These environments again have two hands, however now they have some additional degrees of freedom that allows them to translate/rotate their centre of masses within some constrained region. To use the HandCatchUnderarm environment, pass `--task=ShadowHandCatchAbreast`
 
-#### #### <span id="obs5">Observation Space</span>
+#### <span id="obs5">Observation Space</span>
 
 
 | Index | Description |
@@ -232,7 +232,7 @@ These environments again have two hands, however now they have some additional d
 | 212 - 218     | goal pose    |
 | 219 - 222     | goal rot - object rot   |
 
-#### Action Space<span id="action5">Action Space</span>
+#### <span id="action5">Action Space</span>
 
 Similar to the HandOver environments, except now the bases are not fixed and have translational and rotational degrees of freedom that allow them to move within some range.
 | Index | Description |
