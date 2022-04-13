@@ -113,12 +113,7 @@ def convert_tfevents_to_csv(root_dir, alg_type, refresh=False):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument(
-        '--alg-name',
-        type=str,
-        default='happo'
-    )
-
+    
     parser.add_argument(
         '--alg-type',
         type=str,
