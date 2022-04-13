@@ -110,7 +110,6 @@ def convert_tfevents_to_csv(root_dir, alg_type, refresh=False):
                 result[output_file] = content
     return result
 
-
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     
@@ -141,4 +140,3 @@ if __name__ == "__main__":
     args.root_dir = '{}/{}'.format(args.root_dir,args.alg_name)
 
     csv_files = convert_tfevents_to_csv(args.root_dir, args.alg_type, args.refresh)
-    merge_csv(csv_files, args.root_dir, args.remove_zero)
