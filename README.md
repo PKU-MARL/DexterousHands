@@ -273,7 +273,7 @@ Users can convert all tfevent files into csv files and then try plotting the res
 
 ```bash
 # geenrate csv
-$ python ./utils/logger/tools.py --root-dir ./logs/shadow_hand_over --refresh
+$ python ./utils/logger/tools.py --alg-name <algorithm> --alg-type <marl/sarl> --root-dir ./logs/shadow_hand_over --refresh 
 # generate figures
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
 ```
