@@ -62,7 +62,7 @@ install instructions if you have any trouble running the samples.
 Once Isaac Gym is installed and samples work within your current python environment, install this repo:
 
 #### Install from PyPI
-Bi-DexHands is hosted on PyPI. It requires Python >= 3.6.
+Bi-DexHands is hosted on PyPI. It requires Python >= 3.7.
 You can simply install Bi-DexHands from PyPI with the following command:
 
 ```bash
