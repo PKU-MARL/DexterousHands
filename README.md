@@ -16,13 +16,9 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 - **Point Cloud**: We provide the ability to use point clouds as observations. We used the depth camera in Isaacc Gym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels. See the [code](./bi-dexhands/tasks/shadow_hand_point_cloud.py). 
 - **Quick Demos**
-<!-- <center class="half">
-    <img src="assets/image_folder/0.gif" align="center" width="500"/><img src="assets/image_folder/3.gif" align="center" width="500"/>
-</center> -->
-<table><tr>
-<td><img src="assets/image_folder/0.gif" border=0 width="500"></td>
-<td><img src="assets/image_folder/3.gif" border=0 width="475"></td>
-</tr></table>
+
+<img src="assets/image_folder/quick_demo.gif" width="1000"/>
+
 
 Bi-DexHands is becoming an important tool to evaluate the performance of RL-based solutions for robotics research. 
 
