@@ -18,7 +18,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **Quick Demos**
 
 <div align=center>
-<img src="assets/image_folder/quick_demo.gif" align="center" width="600"/>
+<img src="assets/image_folder/quick_demov3.gif" align="center" width="600"/>
 </div> 
  
 Bi-DexHands is becoming an important tool to evaluate the performance of RL-based solutions for robotics research. 
