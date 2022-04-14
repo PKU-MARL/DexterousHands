@@ -330,12 +330,11 @@ class HATRPO():
             advantages = buffer.returns[:-1] - self.value_normalizer.denormalize(buffer.value_preds[:-1])
         else:
             advantages = buffer.returns[:-1] - buffer.value_preds[:-1]
-        advantages_copy = advantages.copy()
-        advantages_copy[buffer.active_masks[:-1] == 0.0] = np.nan
-        mean_advantages = np.nanmean(advantages_copy)
-        std_advantages = np.nanstd(advantages_copy)
+        advantages_copy = advantages.clone()
+        # advantages_copy[buffer.active_masks[:-1] == 0.0] = torch.nan
+        mean_advantages = torch.mean(advantages_copy)
+        std_advantages = torch.std(advantages_copy)
         advantages = (advantages - mean_advantages) / (std_advantages + 1e-5)
-        
 
         train_info = {}
 
