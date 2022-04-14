@@ -275,7 +275,7 @@ $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-s
 
 ### Figures
 
-We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorithms. All baselines are run under the parameters of `2048 num_env` and `100M total_step`. 
+We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorithms. All baselines are run under the parameters of `2048 num_env` and `100M total_step`. The `dataset` folder contains the raw csv files. 
 
 <table>
     <tr>
