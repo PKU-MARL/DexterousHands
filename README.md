@@ -386,8 +386,9 @@ Bi-DexHands is a project contributed by
 
 
 We also thank the list of contributors from the following two open source repositories: 
-[Isaac Gym](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs), [HATRPO](https://github.com/cyanrain7/TRPO-in-MARL) 
+[Isaac Gym](https://github.com/NVIDIA-Omniverse/IsaacGymEnvs), [HATRPO](https://github.com/cyanrain7/TRPO-in-MARL).
 
+we also recommend users to read [the early work](https://arxiv.org/abs/2009.05104) on dexterous hands manipulation that inpisres this work.
 
 ## License
 
