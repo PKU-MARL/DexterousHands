@@ -220,7 +220,7 @@ To select an algorithm, pass `--algo=ppo/mappo/happo/hatrpo/...`
 as an argument. For example, if you want to use happo algorithm, run this line in `bi-dexhands` folder:
 
 ```bash
-python train.py --task=ShadowHandOver --algo=hatrpo
+python train.py --task=ShadowHandOver --algo=happo
 ``` 
 
 Supported Single-Agent RL algorithms are listed below:
