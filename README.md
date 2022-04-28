@@ -284,7 +284,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/hand_over.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_over.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_over_v1.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/lift_underarm.jpg" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/figures/shadow_hand_lift_underarm.png" align="middle" width="750"/></td>
     <tr>
@@ -294,7 +294,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_underarm.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_underarm_v1.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/open_inward.jpg" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/figures/shadow_hand_door_open_inward.png" align="middle" width="750"/></td>
     <tr>
@@ -304,7 +304,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_over2underarm.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_over2underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_over2underarm_v1.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/open_outward.jpg" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/figures/shadow_hand_door_open_outward.png" align="middle" width="750"/></td>
     <tr>
@@ -314,7 +314,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_abreast.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_abreast.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_catch_abreast_v1.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/close_inward.jpg" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/figures/shadow_hand_door_close_inward.png" align="middle" width="750"/></td>
     <tr>
@@ -324,7 +324,7 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/two_catch.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_two_catch_underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/shadow_hand_two_catch_underarm_v1.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/close_outward.jpg" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/figures/shadow_hand_door_close_outward.png" align="middle" width="750"/></td>
     <tr>
