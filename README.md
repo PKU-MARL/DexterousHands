@@ -18,7 +18,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **Quick Demos**
 
 <div align=center>
-<img src="assets/image_folder/quick_demov3.gif" align="center" width="600"/>
+<img src="assets/image_folder/quick_demo2.gif" align="center" width="600"/>
 </div> 
  
 Contents of this repo are as follows:
@@ -100,7 +100,12 @@ So far, we release the following tasks (with many more to come):
 |ShadowHandDoor CloseInward | This environment requires the open door to be closed, and the door is initially open inwards | <img src="assets/image_folder/close_inwardv2.gif" align="middle" width="1000"/>    |
 |ShadowHand BottleCap | This environment involves two hands and a bottle, we need to hold the bottle with one hand and open the bottle cap with the other hand  | <img src="assets/image_folder/bottle_capv2.gif" align="middle" width="1000"/>    |
 <!-- |ShadowHandDoor CloseOutward | This environment requires the open door to be closed, and the door is initially open outwards  | <img src="assets/image_folder/sendpix0.gif" align="middle" width="1000"/>    | -->
-
+|ShadowHandPush Block | This environment requires both hands to touch the block and push it forward | <img src="assets/image_folder/push_block.gif" align="middle" width="1000"/>    |
+|ShadowHandOpen Scissors | This environment requires both hands to cooperate to open the scissors | <img src="assets/image_folder/scissors.gif" align="middle" width="1000"/>    |
+|ShadowHandOpen PenCap | This environment requires both hands to cooperate to open the pen cap  | <img src="assets/image_folder/pen.gif" align="middle" width="1000"/>    |
+|ShadowHandSwing Cup | This environment requires two hands to hold the cup handle and rotate it 90 degrees | <img src="assets/image_folder/swing_cup.gif" align="middle" width="1000"/>    |
+|ShadowHandTurn Botton | This environment requires both hands to press the button | <img src="assets/image_folder/switch.gif" align="middle" width="1000"/>    |
+|ShadowHandGrasp AndPlace | This environment has a bucket and an object, we need to put the object into the bucket  | <img src="assets/image_folder/g&p.gif" align="middle" width="1000"/>    |
 
 
 ### Training
@@ -351,20 +356,20 @@ If you get a katex error run `npm install katex`.  If it persists, try
 
 ### Tasks under development:  
   - [x] Handover, throw&catch (a 9-month-old child's behavior)
-  - [ ] Pick up eyeglasses  ( an 1-year-old child's behavior )
+  - [x] Pick up eyeglasses  ( an 1-year-old child's behavior )
   - [ ] Stack blocks (an 1-year-old child's behavior )
-  - [ ] Put off a pen cap (a 30-month-old child's behavior)
+  - [x] Put off a pen cap (a 30-month-old child's behavior)
   - [x] Open/Close a door (a 30-month-old child's behavior)
-  - [ ] Unscrew a bottle top (a 30-month-old child's behavior)
+  - [x] Unscrew a bottle top (a 30-month-old child's behavior)
   - [x] Lift a pot (a 2-year-old child's behavior)
-  - [ ] Turn buttons off/on (a 5-year-old child's behavior)
+  - [x] Turn buttons off/on (a 5-year-old child's behavior)
   - [ ] Pour water in a teapot (an adult's behavior)
 
 ### Meta/Multi-task algorithms:
-  - [ ] Multi-task PPO
-  - [ ] Multi-task TRPO
-  - [ ] Multi-task SAC
-  - [ ] MAML
+  - [x] Multi-task PPO
+  - [x] Multi-task TRPO
+  - [x] Multi-task SAC
+  - [x] MAML
   - [ ] RL<sup>2 </sup>
   - [ ] PEARL
 

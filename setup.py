@@ -15,7 +15,7 @@ root_dir = os.path.dirname(os.path.realpath(__file__))
 INSTALL_REQUIRES = [
     # RL
     "gym",
-    "torch==1.8.1",
+    "torch",
     "matplotlib==3.5.1",
     "tb-nightly",
     "tqdm",
