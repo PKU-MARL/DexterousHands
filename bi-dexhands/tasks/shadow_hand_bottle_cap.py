@@ -786,6 +786,9 @@ class ShadowHandBottleCap(BaseTask):
 
         self.hand_positions[all_hand_indices.to(torch.long), :] = self.saved_root_tensor[all_hand_indices.to(torch.long), 0:3]
         self.hand_orientations[all_hand_indices.to(torch.long), :] = self.saved_root_tensor[all_hand_indices.to(torch.long), 3:7]
+        self.hand_angvels[all_hand_indices.to(torch.long), :] = self.saved_root_tensor[all_hand_indices.to(torch.long), 7:10]
+        self.hand_linvels[all_hand_indices.to(torch.long), :] = self.saved_root_tensor[all_hand_indices.to(torch.long), 10:13]
+
         all_indices = torch.unique(torch.cat([all_hand_indices,
                                               object_indices,
                                               self.table_indices[env_ids]]).to(torch.int32))
