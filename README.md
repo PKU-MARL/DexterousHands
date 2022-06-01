@@ -396,4 +396,4 @@ We also recommend users to read [the early work](https://arxiv.org/abs/2009.0510
 
 ## License
 
-Bi-DexHands has a Apache license, as found in the [LICENSE](LICENSE) file.
+Bi-DexHands has an Apache license, as found in the [LICENSE](LICENSE) file.
