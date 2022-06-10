@@ -74,7 +74,7 @@ def retrieve_cfg(args, use_rlg_config=False):
     elif args.task == "ShadowHandCatchAbreast":
         return os.path.join(args.logdir, "shadow_hand_catch_abreast/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_catch_abreast.yaml"
     elif args.task == "ShadowHandReOrientation":
-        return os.path.join(args.logdir, "shadow_hand_re_orientation/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_re_orientation.yaml"
+        return os.path.join(args.logdir, "shadow_hand_re_orientation/{}/{}".format(args.algo, args.algo)), "cfg/{}/re_orientation_config.yaml".format(args.algo), "cfg/shadow_hand_re_orientation.yaml"
     elif args.task == "ShadowHandOverOverarm":
         return os.path.join(args.logdir, "shadow_hand_over_overarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_over_overarm.yaml"
     # elif args.task == "ShadowHand":
@@ -112,7 +112,7 @@ def retrieve_cfg(args, use_rlg_config=False):
     elif args.task == "ShadowHandPen":
         return os.path.join(args.logdir, "shadow_hand_pen/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_pen.yaml"
     elif args.task == "ShadowHandBlockStack":
-        return os.path.join(args.logdir, "shadow_hand_block_stack/{}/{}".format(args.algo, args.algo)), "cfg/{}/block_config.yaml".format(args.algo), "cfg/shadow_hand_block_stack.yaml"
+        return os.path.join(args.logdir, "shadow_hand_block_stack/{}/{}".format(args.algo, args.algo)), "cfg/{}/stack_block_config.yaml".format(args.algo), "cfg/shadow_hand_block_stack.yaml"
     elif args.task == "ShadowHandSwitch":
         return os.path.join(args.logdir, "shadow_hand_switch/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_switch.yaml"
     elif args.task == "ShadowHandMeta":
@@ -125,8 +125,6 @@ def retrieve_cfg(args, use_rlg_config=False):
         return os.path.join(args.logdir, "shadow_hand_meta_ml1/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_ml1.yaml"
     elif args.task == "ShadowHandMetaMT5":
         return os.path.join(args.logdir, "shadow_hand_meta_mt5/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt5.yaml"
-    elif args.task == "ShadowHandMetaMT5Door":
-        return os.path.join(args.logdir, "shadow_hand_meta_mt5_door/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt5_door.yaml"
     elif args.task == "ShadowHandPushBlock":
         return os.path.join(args.logdir, "shadow_hand_push_block/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_push_block.yaml"
     elif args.task == "ShadowHandSwingCup":
@@ -363,7 +361,7 @@ def get_args(benchmark=False, use_rlg_config=False):
     if args.cfg_env == "Base":
         args.cfg_env = cfg_env
 
-    if args.algo not in ["maddpg", "happo", "mappo", "hatrpo","ippo","ppo","sac","td3","ddpg","trpo"]:
-        warn_algorithm_name()
+    # if args.algo not in ["maddpg", "happo", "mappo", "hatrpo","ippo","ppo","sac","td3","ddpg","trpo"]:
+    #     warn_algorithm_name()
 
     return args

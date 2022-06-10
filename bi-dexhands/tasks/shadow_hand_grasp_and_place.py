@@ -317,6 +317,13 @@ class ShadowHandGraspAndPlace(BaseTask):
         object_asset_options.fix_base_link = False
         # object_asset_options.collapse_fixed_joints = True
         # object_asset_options.disable_gravity = True
+        object_asset_options.use_mesh_materials = True
+        object_asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX
+        object_asset_options.override_com = True
+        object_asset_options.override_inertia = True
+        object_asset_options.vhacd_enabled = True
+        object_asset_options.vhacd_params = gymapi.VhacdParams()
+        object_asset_options.vhacd_params.resolution = 100000
         object_asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
 
         object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)

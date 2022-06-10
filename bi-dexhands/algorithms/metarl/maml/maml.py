@@ -52,8 +52,8 @@ class Trainer:
 
         self.task_num = self.env.task_num
         self.num_env_each_task = int(self.env.num_envs / self.env.num_tasks)
-        self.support_set_size = 2
-        self.query_set_size = 6
+        self.support_set_size = 1
+        self.query_set_size = 3
 
         self.num_meta_learning_epochs = 1
         self.meta_desired_kl = inner_algo.desired_kl
@@ -70,10 +70,9 @@ class Trainer:
         self.meta_optimizer = optim.Adam(self.meta_actor_critic.parameters(), lr=learning_rate)
 
     def train(self, train_epoch):
-        for epoch in range(train_epoch):
+        for _ in range(train_epoch):
             support_storage_list = self.inner_algo.sample_support_trajectory(self.support_set_size)
             query_storage_list = self.inner_algo.sample_query_trajectory(self.query_set_size, self.meta_storage)
-            self.inner_algo.train_epoch = epoch
 
             self.meta_update(support_storage_list, query_storage_list)
             # clear the inner_algo parameters
@@ -84,6 +83,8 @@ class Trainer:
                         p_inner.data.mul_(polyak)
                         p_inner.data.add_((1 - polyak) * p_meta.data)
 
+            if self.inner_algo.train_epoch == train_epoch:
+                break
 
     def sample_batch_task(self, task_size):
         batch_task = random.sample(self.env.task_envs, task_size)
@@ -92,14 +93,15 @@ class Trainer:
     def meta_update(self, support_storage_list, query_storage_list):
         mean_value_loss = 0
         mean_surrogate_loss = 0
-        outer_losses = []
 
         for query_storage in query_storage_list:
+            outer_losses = []
             self.meta_optimizer.zero_grad()
             self.net_state = TorchOpt.extract_state_dict(self.meta_actor_critic, enable_visual=True, visual_prefix='step_0.') # extract state
             self.optim_state = TorchOpt.extract_state_dict(self.inner_optim)
 
-            for i in range(self.task_num):
+            # -1 for test task
+            for i in range(self.task_num - 1):
                 for support_storage in support_storage_list:
                     self.inner_update(support_storage, i)
 
@@ -121,19 +123,19 @@ class Trainer:
                                                                                             actions_batch)
 
                 # KL
-                if self.meta_desired_kl != None and self.meta_schedule == 'adaptive':
+                # if self.meta_desired_kl != None and self.meta_schedule == 'adaptive':
 
-                    kl = torch.sum(
-                        sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
-                    kl_mean = torch.mean(kl)
+                #     kl = torch.sum(
+                #         sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
+                #     kl_mean = torch.mean(kl)
 
-                    if kl_mean > self.desired_kl * 2.0:
-                        self.step_size = max(1e-5, self.step_size / 1.5)
-                    elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
-                        self.step_size = min(1e-2, self.step_size * 1.5)
+                #     if kl_mean > self.desired_kl * 2.0:
+                #         self.step_size = max(1e-5, self.step_size / 1.5)
+                #     elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
+                #         self.step_size = min(1e-2, self.step_size * 1.5)
 
-                    for param_group in self.meta_optimizer.param_groups:
-                        param_group['lr'] = self.step_size
+                #     for param_group in self.meta_optimizer.param_groups:
+                #         param_group['lr'] = self.step_size
 
                 # Surrogate loss
                 ratio = torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))
@@ -202,16 +204,16 @@ class Trainer:
                                                                                         actions_batch)
 
             # KL
-            if self.desired_kl != None and self.schedule == 'adaptive':
+            # if self.desired_kl != None and self.schedule == 'adaptive':
 
-                kl = torch.sum(
-                    sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
-                kl_mean = torch.mean(kl)
+            #     kl = torch.sum(
+            #         sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
+            #     kl_mean = torch.mean(kl)
 
-                if kl_mean > self.desired_kl * 2.0:
-                    self.step_size = max(1e-5, self.step_size / 1.5)
-                elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
-                    self.step_size = min(1e-2, self.step_size * 1.5)
+            #     if kl_mean > self.desired_kl * 2.0:
+            #         self.step_size = max(1e-5, self.step_size / 1.5)
+            #     elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
+            #         self.step_size = min(1e-2, self.step_size * 1.5)
 
                 # for param_group in self.meta_optimizer.param_groups:
                 #     param_group['lr'] = self.step_size

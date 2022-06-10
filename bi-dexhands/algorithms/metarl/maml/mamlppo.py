@@ -1,3 +1,4 @@
+from curses import meta
 from datetime import datetime
 import os
 import time
@@ -74,7 +75,7 @@ class MAMLPPO:
         self.task_num = self.vec_env.task_num
         for i in range(self.task_num):
             pseudo_actor_critic[i].to(self.device)
-            self.optimizers.append(optim.Adam(pseudo_actor_critic[i].parameters(), lr=learning_rate))
+            self.optimizers.append(optim.SGD(pseudo_actor_critic[i].parameters(), lr=learning_rate))
             self.actor_critic.append(pseudo_actor_critic[i])
 
         self.storage = RolloutStorage(self.num_envs, num_transitions_per_env, self.observation_space.shape,
@@ -104,6 +105,25 @@ class MAMLPPO:
         self.apply_reset = apply_reset
         self.train_epoch = 0
 
+        self.rewbuffer = deque(maxlen=100)
+        self.test_rewbuffer = deque(maxlen=100)
+        self.task_rewbuffer = []
+        for i in range(len(self.vec_env.task_envs) - 1):
+            self.task_rewbuffer.append(deque(maxlen=100))
+        self.lenbuffer = deque(maxlen=100)
+
+        self.cur_reward_sum = torch.zeros(self.num_env_each_task * (self.task_num - 1), dtype=torch.float, device=self.device)
+        self.cur_test_reward_sum = torch.zeros(self.num_env_each_task * 1, dtype=torch.float, device=self.device)
+        self.cur_episode_length = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
+
+        self.reward_sum = []
+        self.test_reward_sum = []
+        self.episode_length = []
+        self.task_reward_sum = []
+        for i in range(len(self.vec_env.task_envs) - 1):
+            self.task_reward_sum.append([])
+        self.support_storage_list = []
+
     def test(self, path):
         self.actor_critic.load_state_dict(torch.load(path))
         self.actor_critic.eval()
@@ -120,13 +140,19 @@ class MAMLPPO:
         current_obs = self.vec_env.reset()
         current_states = self.vec_env.get_state()
 
-        rewbuffer = deque(maxlen=100)
-        lenbuffer = deque(maxlen=100)
-        cur_reward_sum = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
-        cur_episode_length = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
+        # rewbuffer = self.reward_sum
+        # test_rewbuffer = self.test_rewbuffer
+        # task_rewbuffer = self.task_rewbuffer
+        # lenbuffer = self.lenbuffer
 
-        reward_sum = []
-        episode_length = []
+        # cur_reward_sum = self.cur_reward_sum
+        # cur_test_reward_sum = self.cur_test_reward_sum
+        # cur_episode_length = self.cur_episode_length
+
+        # reward_sum = self.reward_sum
+        # test_reward_sum = self.test_reward_sum
+        # episode_length = self.episode_length
+        # task_reward_sum = self.task_reward_sum
 
         self.support_storage_list = []
 
@@ -164,20 +190,33 @@ class MAMLPPO:
                 ep_infos.append(infos)
 
                 if self.print_log:
-                    cur_reward_sum[:] += rews
-                    cur_episode_length[:] += 1
+                    self.cur_reward_sum[:] += rews[:self.num_env_each_task * (self.task_num - 1)]
+                    self.cur_test_reward_sum += rews[self.num_env_each_task * (self.task_num - 1):]
+                    self.cur_episode_length[:] += 1
 
-                    new_ids = (dones > 0).nonzero(as_tuple=False)
-                    reward_sum.extend(cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
-                    episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
-                    cur_reward_sum[new_ids] = 0
-                    cur_episode_length[new_ids] = 0
+                    new_ids = (dones[:self.num_env_each_task * (self.task_num - 1)] > 0).nonzero(as_tuple=False)
+                    test_new_ids = (dones[self.num_env_each_task * (self.task_num - 1):] > 0).nonzero(as_tuple=False)
+
+                    for i in range(len(self.vec_env.task_envs) - 1):
+                        task_new_ids = (dones[i*self.num_env_each_task:(i+1)*self.num_env_each_task] > 0).nonzero(as_tuple=False)
+                        task_reward = self.cur_reward_sum[i*self.num_env_each_task:(i+1)*self.num_env_each_task]
+                        self.task_reward_sum[i].extend(task_reward[task_new_ids][:, 0].cpu().numpy().tolist())
+
+                    self.reward_sum.extend(self.cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
+                    self.test_reward_sum.extend(self.cur_test_reward_sum[test_new_ids][:, 0].cpu().numpy().tolist())
+                    self.episode_length.extend(self.cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
+                    self.cur_reward_sum[new_ids] = 0
+                    self.cur_test_reward_sum[test_new_ids] = 0
+                    self.cur_episode_length[new_ids] = 0
 
             if self.print_log:
                 # reward_sum = [x[0] for x in reward_sum]
                 # episode_length = [x[0] for x in episode_length]
-                rewbuffer.extend(reward_sum)
-                lenbuffer.extend(episode_length)
+                self.rewbuffer.extend(self.reward_sum)
+                self.test_rewbuffer.extend(self.test_reward_sum)
+                self.lenbuffer.extend(self.episode_length)
+                for i in range(len(self.vec_env.task_envs) - 1):
+                    self.task_rewbuffer[i].extend(self.task_reward_sum[i])
 
             for i in range(self.task_num):
                 if i == 0:
@@ -197,7 +236,8 @@ class MAMLPPO:
             start = stop
             self.storage.compute_returns(last_values, self.gamma, self.lam)
             mean_value_loss, mean_surrogate_loss = self.update()
-            train_epoch = self.train_epoch
+            self.train_epoch += 1
+
             self.support_storage_list.append(deepcopy(self.storage))
             self.storage.clear()
             stop = time.time()
@@ -212,13 +252,19 @@ class MAMLPPO:
         current_obs = self.vec_env.reset()
         current_states = self.vec_env.get_state()
 
-        rewbuffer = deque(maxlen=100)
-        lenbuffer = deque(maxlen=100)
-        cur_reward_sum = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
-        cur_episode_length = torch.zeros(self.num_envs, dtype=torch.float, device=self.device)
+        # rewbuffer = self.reward_sum
+        # test_rewbuffer = self.test_rewbuffer
+        # task_rewbuffer = self.task_rewbuffer
+        # lenbuffer = self.lenbuffer
 
-        reward_sum = []
-        episode_length = []
+        # cur_reward_sum = self.cur_reward_sum
+        # cur_test_reward_sum = self.cur_test_reward_sum
+        # cur_episode_length = self.cur_episode_length
+
+        # reward_sum = self.reward_sum
+        # test_reward_sum = self.test_reward_sum
+        # episode_length = self.episode_length
+        # task_reward_sum = self.task_reward_sum
         self.query_storage_list = []
 
         for it in range(query_set_size):
@@ -243,6 +289,7 @@ class MAMLPPO:
                         values = torch.cat((values, tem_values), dim=0)
                         mu = torch.cat((mu, tem_mu), dim=0)
                         sigma = torch.cat((sigma, tem_sigma), dim=0)
+
                 # Step the vec_environment
                 next_obs, rews, dones, infos = self.vec_env.step(actions)
                 next_states = self.vec_env.get_state()
@@ -254,20 +301,33 @@ class MAMLPPO:
                 ep_infos.append(infos)
 
                 if self.print_log:
-                    cur_reward_sum[:] += rews
-                    cur_episode_length[:] += 1
+                    self.cur_reward_sum[:] += rews[:self.num_env_each_task * (self.task_num - 1)]
+                    self.cur_test_reward_sum += rews[self.num_env_each_task * (self.task_num - 1):]
+                    self.cur_episode_length[:] += 1
 
-                    new_ids = (dones > 0).nonzero(as_tuple=False)
-                    reward_sum.extend(cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
-                    episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
-                    cur_reward_sum[new_ids] = 0
-                    cur_episode_length[new_ids] = 0
+                    new_ids = (dones[:self.num_env_each_task * (self.task_num - 1)] > 0).nonzero(as_tuple=False)
+                    test_new_ids = (dones[self.num_env_each_task * (self.task_num - 1):] > 0).nonzero(as_tuple=False)
+
+                    for i in range(len(self.vec_env.task_envs) - 1):
+                        task_new_ids = (dones[i*self.num_env_each_task:(i+1)*self.num_env_each_task] > 0).nonzero(as_tuple=False)
+                        task_reward = self.cur_reward_sum[i*self.num_env_each_task:(i+1)*self.num_env_each_task]
+                        self.task_reward_sum[i].extend(task_reward[task_new_ids][:, 0].cpu().numpy().tolist())
+
+                    self.reward_sum.extend(self.cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
+                    self.test_reward_sum.extend(self.cur_test_reward_sum[test_new_ids][:, 0].cpu().numpy().tolist())
+                    self.episode_length.extend(self.cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
+                    self.cur_reward_sum[new_ids] = 0
+                    self.cur_test_reward_sum[test_new_ids] = 0
+                    self.cur_episode_length[new_ids] = 0
 
             if self.print_log:
                 # reward_sum = [x[0] for x in reward_sum]
                 # episode_length = [x[0] for x in episode_length]
-                rewbuffer.extend(reward_sum)
-                lenbuffer.extend(episode_length)
+                self.rewbuffer.extend(self.reward_sum)
+                self.test_rewbuffer.extend(self.test_reward_sum)
+                self.lenbuffer.extend(self.episode_length)
+                for i in range(len(self.vec_env.task_envs) - 1):
+                    self.task_rewbuffer[i].extend(self.task_reward_sum[i])
 
             for i in range(self.task_num):
                 if i == 0:
@@ -278,11 +338,12 @@ class MAMLPPO:
                                                                                                 current_states[self.num_env_each_task*i:self.num_env_each_task*(i+1)])
                     last_values = torch.cat((last_values, tem_last_values), dim=0)
 
+
             stop = time.time()
             collection_time = stop - start
 
             mean_trajectory_length, mean_reward = meta_storage.get_statistics()
-            train_epoch = self.train_epoch
+            self.train_epoch += 1
 
             # Learning step
             start = stop
@@ -291,8 +352,9 @@ class MAMLPPO:
             learn_time = stop - start
             self.query_storage_list.append(deepcopy(meta_storage))
             meta_storage.clear()
-            # if self.print_log:
-            #     self.log(locals(), query=True)
+            if self.print_log:
+                mean_value_loss, mean_surrogate_loss = 0, 0
+                self.log(locals(), query=True)
             ep_infos.clear()
 
         return self.query_storage_list
@@ -309,8 +371,17 @@ class MAMLPPO:
                 for ep_info in locs['ep_infos']:
                     infotensor = torch.cat((infotensor, ep_info[key].to(self.device)))
                 value = torch.mean(infotensor)
-                self.writer.add_scalar('Episode/' + key, value, locs['it'])
+                self.writer.add_scalar('Episode/' + key, value, self.train_epoch)
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
+        
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                if i == len(self.vec_env.task_envs) - 1:
+                    continue
+                if len(self.task_rewbuffer[i]) > 0:
+                    value = statistics.mean(self.task_rewbuffer[i])
+                    self.writer.add_scalar('Episode/' + task_name, value, self.train_epoch)
+                    ep_string += f"""{f'Mean Reward {task_name}:':>{pad}} {value:.4f}\n"""
+
         for i in range(self.task_num):
             if i != 0:
                 mean_std += self.actor_critic[i].log_std.exp().mean()
@@ -318,23 +389,24 @@ class MAMLPPO:
                 mean_std = self.actor_critic[i].log_std.exp().mean()
         fps = int(self.num_transitions_per_env * self.num_envs / (locs['collection_time'] + locs['learn_time']))
 
-        self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
-        self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
-        self.writer.add_scalar('Policy/mean_noise_std', mean_std.item(), locs['it'])
-        if len(locs['rewbuffer']) > 0:
-            self.writer.add_scalar('Train/mean_reward', statistics.mean(locs['rewbuffer']), locs['it'])
-            self.writer.add_scalar('Train/FPS',fps,locs['it'])
-            self.writer.add_scalar('Train/mean_episode_length', statistics.mean(locs['lenbuffer']), locs['it'])
-            self.writer.add_scalar('Train/mean_reward/time', statistics.mean(locs['rewbuffer']), self.tot_time)
-            self.writer.add_scalar('Train/mean_episode_length/time', statistics.mean(locs['lenbuffer']), self.tot_time)
+        self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], self.train_epoch)
+        self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], self.train_epoch)
+        self.writer.add_scalar('Policy/mean_noise_std', mean_std.item(), self.train_epoch)
+        if len(self.rewbuffer) > 0 and len(self.test_rewbuffer) > 0:
+            self.writer.add_scalar('Train/mean_reward', statistics.mean(self.rewbuffer), self.train_epoch)
+            self.writer.add_scalar('Train/FPS',fps,self.train_epoch)
+            self.writer.add_scalar('Train/mean_episode_length', statistics.mean(self.lenbuffer), self.train_epoch)
+            self.writer.add_scalar('Train/mean_reward/time', statistics.mean(self.rewbuffer), self.tot_time)
+            self.writer.add_scalar('Train/mean_episode_length/time', statistics.mean(self.lenbuffer), self.tot_time)
+            self.writer.add_scalar('Train/mean_test_reward', statistics.mean(self.test_rewbuffer), self.train_epoch)
 
-        self.writer.add_scalar('Train2/mean_reward/step', locs['mean_reward'], locs['it'])
-        self.writer.add_scalar('Train2/mean_episode_length/episode', locs['mean_trajectory_length'], locs['it'])
+        self.writer.add_scalar('Train2/mean_reward/step', locs['mean_reward'], self.train_epoch)
+        self.writer.add_scalar('Train2/mean_episode_length/episode', locs['mean_trajectory_length'], self.train_epoch)
 
         # fps = int(self.num_transitions_per_env * self.num_envs / (locs['collection_time'] + locs['learn_time']))
-        str = f" \033[1m Inner update/Outer update: {locs['it']}/{locs['train_epoch']} \033[0m "
+        str = f" \033[1m Inner update/Outer update: {self.train_epoch}/{self.train_epoch} \033[0m "
 
-        if len(locs['rewbuffer']) > 0:
+        if len(self.rewbuffer) > 0 and len(self.test_rewbuffer) > 0:
             log_string = (f"""{'#' * width}\n"""
                           f"""{str.center(width, ' ')}\n\n"""
                           f"""{'Computation:':>{pad}} {fps:.0f} steps/s (collection: {locs[
@@ -342,8 +414,9 @@ class MAMLPPO:
                           f"""{'Value function loss:':>{pad}} {locs['mean_value_loss']:.4f}\n"""
                           f"""{'Surrogate loss:':>{pad}} {locs['mean_surrogate_loss']:.4f}\n"""
                           f"""{'Mean action noise std:':>{pad}} {mean_std.item():.2f}\n"""
-                          f"""{'Mean reward:':>{pad}} {statistics.mean(locs['rewbuffer']):.2f}\n"""
-                          f"""{'Mean episode length:':>{pad}} {statistics.mean(locs['lenbuffer']):.2f}\n"""
+                          f"""{'Mean reward:':>{pad}} {statistics.mean(self.rewbuffer):.2f}\n"""
+                          f"""{'Mean test reward:':>{pad}} {statistics.mean(self.test_rewbuffer):.2f}\n"""
+                          f"""{'Mean episode length:':>{pad}} {statistics.mean(self.lenbuffer):.2f}\n"""
                           f"""{'Mean reward/step:':>{pad}} {locs['mean_reward']:.2f}\n"""
                           f"""{'Mean episode length/episode:':>{pad}} {locs['mean_trajectory_length']:.2f}\n""")
         else:
@@ -362,8 +435,8 @@ class MAMLPPO:
                        f"""{'Total timesteps:':>{pad}} {self.tot_timesteps}\n"""
                        f"""{'Iteration time:':>{pad}} {iteration_time:.2f}s\n"""
                        f"""{'Total time:':>{pad}} {self.tot_time:.2f}s\n"""
-                       f"""{'ETA:':>{pad}} {self.tot_time / (locs['it'] + 1) * (
-                               locs['train_epoch'] - locs['it']):.1f}s\n""")
+                       f"""{'ETA:':>{pad}} {self.tot_time / (self.train_epoch + 1) * (
+                               self.train_epoch - self.train_epoch):.1f}s\n""")
         print(log_string)
 
     def update(self):
@@ -394,23 +467,23 @@ class MAMLPPO:
                                                                                             actions_batch)
 
                 # KL
-                if self.desired_kl != None and self.schedule == 'adaptive':
-                    kl = torch.sum(
-                        sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
-                    kl_mean = torch.mean(kl)
+                # if self.desired_kl != None and self.schedule == 'adaptive':
+                #     kl = torch.sum(
+                #         sigma_batch - old_sigma_batch + (torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
+                #     kl_mean = torch.mean(kl)
 
-                    if kl_mean > self.desired_kl * 2.0:
-                        self.step_size = max(1e-5, self.step_size / 1.5)
-                    elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
-                        self.step_size = min(1e-2, self.step_size * 1.5)
+                #     if kl_mean > self.desired_kl * 2.0:
+                #         self.step_size = max(1e-5, self.step_size / 1.5)
+                #     elif kl_mean < self.desired_kl / 2.0 and kl_mean > 0.0:
+                #         self.step_size = min(1e-2, self.step_size * 1.5)
 
-                    for param_group in self.optimizers[i].param_groups:
-                        param_group['lr'] = self.step_size
+                #     for param_group in self.optimizers[i].param_groups:
+                #         param_group['lr'] = self.step_size
 
                 # Surrogate loss
                 ratio = torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))
-
                 surrogate = -torch.squeeze(advantages_batch) * ratio
+
                 surrogate_clipped = -torch.squeeze(advantages_batch) * torch.clamp(ratio, 1.0 - self.clip_param,
                                                                                    1.0 + self.clip_param)
                 surrogate_loss = torch.max(surrogate, surrogate_clipped).mean()

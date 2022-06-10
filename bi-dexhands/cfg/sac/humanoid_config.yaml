@@ -1,0 +1,40 @@
+seed: -1
+
+clip_observations: 5.0
+clip_actions: 1.0
+
+
+learn:
+  agent_name: shadow_hand
+  test: False
+  resume: 0
+  save_interval: 200 # check for potential saves every this many iterations
+  print_log: True
+
+  # rollout params
+  max_iterations: 5000
+
+  # training params
+  hidden_nodes: 1024
+  hidden_layer: 3
+
+  cliprange: 0.2
+  nsteps: 32
+  noptepochs: 1
+  nminibatches: 1 # this is per agent
+  replay_size: 40000
+  polyak: 0.995
+  learning_rate: 0.001
+  max_grad_norm: 1
+  ent_coef: 0.2
+  reward_scale: 1
+  batch_size: 64
+#  optim_stepsize: 1.e-3 # 3e-4 is default for single agent training with constant schedule
+#  schedule: adaptive # could be adaptive or linear or fixed
+#  desired_kl: 0.016
+  gamma: 0.99
+#  lam: 0.95
+#  init_noise_std: 0.8
+
+  log_interval: 1
+  asymmetric: False

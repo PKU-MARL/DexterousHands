@@ -13,6 +13,8 @@ from utils.config import set_np_formatting, set_seed, get_args, parse_sim_params
 from utils.parse_task import parse_task
 from utils.process_sarl import *
 from utils.process_marl import process_MultiAgentRL, get_AgentIndex
+from utils.process_mtrl import *
+from utils.process_metarl import *
 
 def train():
     print("Algorithm: ", args.algo)
@@ -43,9 +45,33 @@ def train():
 
         sarl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
     
+    elif args.algo in ["mtppo", "random"]:
+        args.task_type = "MultiTask"
+
+        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
+
+        mtrl = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
+
+        iterations = cfg_train["learn"]["max_iterations"]
+        if args.max_iterations > 0:
+            iterations = args.max_iterations
+
+        mtrl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
+
+    elif args.algo in ["mamlppo"]:
+        args.task_type = "Meta"
+        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
+
+        trainer = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
+
+        iterations = cfg_train["learn"]["max_iterations"]
+        if args.max_iterations > 0:
+            iterations = args.max_iterations
+
+        trainer.train(train_epoch=iterations)
 
     else:
-        print("Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo,maddpg,sac,td3,trpo,ppo,ddpg]")
+        print("Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo,maddpg,sac,td3,trpo,ppo,ddpg, mtppo, random, mamlppo]")
 
 
 if __name__ == '__main__':

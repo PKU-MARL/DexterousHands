@@ -61,7 +61,9 @@ class RolloutStorage(object):
 
         # Compute and normalize the advantages
         self.advantages = self.returns - self.values
-        self.advantages = (self.advantages - self.advantages.mean()) / (self.advantages.std() + 1e-8)
+        for i in range(self.num_envs):
+            self.advantages[:, i*self.num_transitions_per_env:(i+1)*self.num_transitions_per_env] = (self.advantages[:, i*self.num_transitions_per_env:(i+1)*self.num_transitions_per_env] - \
+                self.advantages[:, i*self.num_transitions_per_env:(i+1)*self.num_transitions_per_env].mean()) / (self.advantages[:, i*self.num_transitions_per_env:(i+1)*self.num_transitions_per_env].std() + 1e-8)
 
     def get_statistics(self):
         done = self.dones.cpu()

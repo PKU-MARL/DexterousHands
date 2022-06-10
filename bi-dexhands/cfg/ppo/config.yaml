@@ -11,11 +11,11 @@ learn:
   agent_name: shadow_hand
   test: False
   resume: 0
-  save_interval: 200 # check for potential saves every this many iterations
+  save_interval: 1000 # check for potential saves every this many iterations
   print_log: True
 
   # rollout params
-  max_iterations: 5000
+  max_iterations: 6500
 
   # training params
   cliprange: 0.2
@@ -27,7 +27,7 @@ learn:
   optim_stepsize: 3.e-4 # 3e-4 is default for single agent training with constant schedule
   schedule: adaptive # could be adaptive or linear or fixed
   desired_kl: 0.016
-  gamma: 0.99
+  gamma: 0.96
   lam: 0.95
   init_noise_std: 0.8
 

@@ -1,3 +1,4 @@
+from distutils.log import info
 from datetime import datetime
 import os
 import time
@@ -42,7 +43,8 @@ class PPO:
                  is_testing=False,
                  print_log=True,
                  apply_reset=False,
-                 asymmetric=False
+                 asymmetric=False,
+                 random=False
                  ):
 
         if not isinstance(vec_env.observation_space, Space):
@@ -61,6 +63,7 @@ class PPO:
         self.desired_kl = desired_kl
         self.schedule = schedule
         self.step_size = learning_rate
+        self.random = random
 
         # PPO components
         self.vec_env = vec_env
@@ -95,7 +98,7 @@ class PPO:
         self.apply_reset = apply_reset
 
     def test(self, path):
-        self.actor_critic.load_state_dict(torch.load(path))
+        self.actor_critic.load_state_dict(torch.load(path, map_location='cuda:0'))
         self.actor_critic.eval()
 
     def load(self, path):
@@ -120,14 +123,109 @@ class PPO:
                     # Step the vec_environment
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     current_obs.copy_(next_obs)
-        else:
+
+        elif self.random:
             rewbuffer = deque(maxlen=100)
             lenbuffer = deque(maxlen=100)
+            task_rewbuffer = []
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                task_rewbuffer.append(deque(maxlen=100))
+
             cur_reward_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
+            cur_success_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
             cur_episode_length = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
 
             reward_sum = []
             episode_length = []
+            task_reward_sum = []
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                task_reward_sum.append([])
+
+            for it in range(self.current_learning_iteration, num_learning_iterations):
+                start = time.time()
+                ep_infos = []
+
+                # Rollout
+                for _ in range(self.num_transitions_per_env):
+                    if self.apply_reset:
+                        current_obs = self.vec_env.reset()
+                        current_states = self.vec_env.get_state()
+                    # Compute the action
+                    actions = 1 - 2 * torch.rand([self.vec_env.num_envs, self.vec_env.num_actions], dtype=torch.float32, device=self.device)
+                    # Step the vec_environment
+                    next_obs, rews, dones, infos = self.vec_env.step(actions)
+                    next_states = self.vec_env.get_state()
+                    # Record the transition
+                    current_obs.copy_(next_obs)
+                    current_states.copy_(next_states)
+                    # Book keeping
+                    ep_infos.append(infos)
+
+                    if self.print_log:
+                        cur_reward_sum[:] += rews
+                        cur_episode_length[:] += 1
+                        cur_success_sum[:] = ep_infos[-1]["total_successes"]
+                        cur_success_sum = torch.where(cur_success_sum > 0, torch.ones_like(cur_success_sum), torch.zeros_like(cur_success_sum))
+                        
+                        new_ids = (dones > 0).nonzero(as_tuple=False)
+
+                        # for i, task_name in enumerate(self.vec_env.task_envs):
+                        #     success_new_ids = (dones[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs] > 0).nonzero(as_tuple=False)
+                        #     success = cur_success_sum[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs]
+                        #     success = success[success_new_ids].cpu().numpy().tolist()
+                        #     success_sum.append(success)
+
+                        for i, task_name in enumerate(self.vec_env.task_envs):
+                            task_new_ids = (dones[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs] > 0).nonzero(as_tuple=False)
+                            task_reward = cur_reward_sum[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs]
+                            task_reward_sum[i].extend(task_reward[task_new_ids][:, 0].cpu().numpy().tolist())
+
+                        reward_sum.extend(cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
+                        episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
+                        
+                        cur_reward_sum[new_ids] = 0
+                        cur_episode_length[new_ids] = 0
+                        cur_success_sum[new_ids] = 0
+
+                if self.print_log:
+                    # reward_sum = [x[0] for x in reward_sum]
+                    # episode_length = [x[0] for x in episode_length]
+                    rewbuffer.extend(reward_sum)
+                    lenbuffer.extend(episode_length)
+                    for i, task_name in enumerate(self.vec_env.task_envs):
+                        task_rewbuffer[i].extend(task_reward_sum[i])
+
+                stop = time.time()
+                collection_time = stop - start
+
+                # Learning step
+                start = stop
+                mean_value_loss, mean_surrogate_loss, mean_trajectory_length, mean_reward = 0, 0, 0, 0
+                stop = time.time()
+                learn_time = stop - start
+                if self.print_log:
+                    self.log(locals())
+                if it % log_interval == 0:
+                    self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(it)))
+                ep_infos.clear()
+            self.save(os.path.join(self.log_dir, 'model_{}.pt'.format(num_learning_iterations)))
+
+        else:
+            rewbuffer = deque(maxlen=100)
+            lenbuffer = deque(maxlen=100)
+            task_rewbuffer = []
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                task_rewbuffer.append(deque(maxlen=100))
+
+            cur_reward_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
+            cur_success_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
+            cur_episode_length = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
+
+            reward_sum = []
+            episode_length = []
+            task_reward_sum = []
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                task_reward_sum.append([])
 
             for it in range(self.current_learning_iteration, num_learning_iterations):
                 start = time.time()
@@ -153,18 +251,36 @@ class PPO:
                     if self.print_log:
                         cur_reward_sum[:] += rews
                         cur_episode_length[:] += 1
-
+                        cur_success_sum[:] = ep_infos[-1]["total_successes"]
+                        cur_success_sum = torch.where(cur_success_sum > 0, torch.ones_like(cur_success_sum), torch.zeros_like(cur_success_sum))
+                        
                         new_ids = (dones > 0).nonzero(as_tuple=False)
+
+                        # for i, task_name in enumerate(self.vec_env.task_envs):
+                        #     success_new_ids = (dones[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs] > 0).nonzero(as_tuple=False)
+                        #     success = cur_success_sum[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs]
+                        #     success = success[success_new_ids].cpu().numpy().tolist()
+                        #     success_sum.append(success)
+
+                        for i, task_name in enumerate(self.vec_env.task_envs):
+                            task_new_ids = (dones[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs] > 0).nonzero(as_tuple=False)
+                            task_reward = cur_reward_sum[i*self.vec_env.num_each_envs:(i+1)*self.vec_env.num_each_envs]
+                            task_reward_sum[i].extend(task_reward[task_new_ids][:, 0].cpu().numpy().tolist())
+
                         reward_sum.extend(cur_reward_sum[new_ids][:, 0].cpu().numpy().tolist())
                         episode_length.extend(cur_episode_length[new_ids][:, 0].cpu().numpy().tolist())
+                        
                         cur_reward_sum[new_ids] = 0
                         cur_episode_length[new_ids] = 0
+                        cur_success_sum[new_ids] = 0
 
                 if self.print_log:
                     # reward_sum = [x[0] for x in reward_sum]
                     # episode_length = [x[0] for x in episode_length]
                     rewbuffer.extend(reward_sum)
                     lenbuffer.extend(episode_length)
+                    for i, task_name in enumerate(self.vec_env.task_envs):
+                        task_rewbuffer[i].extend(task_reward_sum[i])
 
                 _, _, last_values, _, _ = self.actor_critic.act(current_obs, current_states)
                 stop = time.time()
@@ -200,6 +316,13 @@ class PPO:
                 value = torch.mean(infotensor)
                 self.writer.add_scalar('Episode/' + key, value, locs['it'])
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
+            
+            for i, task_name in enumerate(self.vec_env.task_envs):
+                if len(locs['task_rewbuffer'][i]) > 0:
+                    value = statistics.mean(locs['task_rewbuffer'][i])
+                    self.writer.add_scalar('Episode/' + task_name, value, locs['it'])
+                    ep_string += f"""{f'Mean Reward {task_name}:':>{pad}} {value:.4f}\n"""
+
         mean_std = self.actor_critic.log_std.exp().mean()
 
         fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))

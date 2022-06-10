@@ -21,7 +21,7 @@ import torch
 # Base class for RL tasks
 class BaseTask():
 
-    def __init__(self, cfg, enable_camera_sensors=False):
+    def __init__(self, cfg, enable_camera_sensors=False, is_meta=False, task_num=0):
         self.gym = gymapi.acquire_gym()
 
         self.device_type = cfg.get("device_type", "cuda")
@@ -39,6 +39,9 @@ class BaseTask():
             self.graphics_device_id = -1
 
         self.num_envs = cfg["env"]["numEnvs"]
+        if is_meta:
+            self.num_envs = cfg["env"]["numEnvs"] * task_num
+            
         self.num_obs = cfg["env"]["numObservations"]
         self.num_states = cfg["env"].get("numStates", 0)
         self.num_actions = cfg["env"]["numActions"]

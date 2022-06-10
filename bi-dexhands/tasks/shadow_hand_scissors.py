@@ -319,13 +319,13 @@ class ShadowHandScissors(BaseTask):
         object_asset_options.density = 500
         object_asset_options.fix_base_link = False
         object_asset_options.default_dof_drive_mode = gymapi.DOF_MODE_NONE
-        object_asset_options.use_mesh_materials = True
-        object_asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX
-        object_asset_options.override_com = True
-        object_asset_options.override_inertia = True
-        object_asset_options.vhacd_enabled = True
-        object_asset_options.vhacd_params = gymapi.VhacdParams()
-        object_asset_options.vhacd_params.resolution = 100000
+        # object_asset_options.use_mesh_materials = True
+        # object_asset_options.mesh_normal_mode = gymapi.COMPUTE_PER_VERTEX
+        # object_asset_options.override_com = True
+        # object_asset_options.override_inertia = True
+        # object_asset_options.vhacd_enabled = True
+        # object_asset_options.vhacd_params = gymapi.VhacdParams()
+        # object_asset_options.vhacd_params.resolution = 100000
 
         object_asset = self.gym.load_asset(self.sim, asset_root, object_asset_file, object_asset_options)
 
@@ -501,9 +501,9 @@ class ShadowHandScissors(BaseTask):
             # object_dof_props = self.gym.get_actor_dof_properties(env_ptr, object_handle)
             # for object_dof_prop in object_dof_props:
             #     object_dof_prop[4] = 1
-            #     object_dof_prop[5] = 1
-            #     object_dof_prop[6] = 1
-            #     object_dof_prop[7] = 0.5
+            #     object_dof_prop[5] = 0
+            #     object_dof_prop[6] = 0
+            #     object_dof_prop[7] = 0
             # self.gym.set_actor_dof_properties(env_ptr, object_handle, object_dof_props)
             
             #set friction
@@ -788,8 +788,8 @@ class ShadowHandScissors(BaseTask):
 
         self.prev_targets[env_ids, self.num_shadow_hand_dofs:self.num_shadow_hand_dofs*2] = pos
         self.cur_targets[env_ids, self.num_shadow_hand_dofs:self.num_shadow_hand_dofs*2] = pos
-        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 1] = to_torch([-0.59], device=self.device)
-        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 1] = to_torch([-0.59], device=self.device)
+        self.prev_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([-0.59], device=self.device)
+        self.cur_targets[env_ids, self.num_shadow_hand_dofs*2:self.num_shadow_hand_dofs*2 + 2] = to_torch([-0.59], device=self.device)
 
         hand_indices = self.hand_indices[env_ids].to(torch.int32)
         another_hand_indices = self.another_hand_indices[env_ids].to(torch.int32)
@@ -872,12 +872,12 @@ class ShadowHandScissors(BaseTask):
 
         # self.prev_targets[:, 49] = self.cur_targets[:, 49]
         # self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(self.cur_targets))
-        all_hand_indices = torch.unique(torch.cat([self.hand_indices,
-                                            self.another_hand_indices]).to(torch.int32))
-        self.gym.set_dof_position_target_tensor_indexed(self.sim,
-                                                gymtorch.unwrap_tensor(self.prev_targets),
-                                                gymtorch.unwrap_tensor(all_hand_indices), len(all_hand_indices))
-        # self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(self.cur_targets))  
+        # all_hand_indices = torch.unique(torch.cat([self.hand_indices,
+        #                                     self.another_hand_indices]).to(torch.int32))
+        # self.gym.set_dof_position_target_tensor_indexed(self.sim,
+        #                                         gymtorch.unwrap_tensor(self.prev_targets),
+        #                                         gymtorch.unwrap_tensor(all_hand_indices), len(all_hand_indices))
+        self.gym.set_dof_position_target_tensor(self.sim, gymtorch.unwrap_tensor(self.cur_targets))  
 
     def post_physics_step(self):
         self.progress_buf += 1
@@ -970,7 +970,7 @@ def compute_hand_reward(
     # reward = torch.exp(-0.1*(right_hand_dist_rew * dist_reward_scale)) + torch.exp(-0.1*(left_hand_dist_rew * dist_reward_scale))
     reward = 2 + up_rew - right_hand_dist_rew - left_hand_dist_rew
 
-    resets = torch.where(right_hand_dist_rew <= 0, torch.ones_like(reset_buf), reset_buf)
+    resets = torch.where(up_rew < -0.5, torch.ones_like(reset_buf), reset_buf)
     resets = torch.where(right_hand_finger_dist >= 1.75, torch.ones_like(resets), resets)
     resets = torch.where(left_hand_finger_dist >= 1.75, torch.ones_like(resets), resets)
     # Find out which envs hit the goal and update successes count
