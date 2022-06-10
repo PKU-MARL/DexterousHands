@@ -29,7 +29,7 @@ from tasks.shadow_hand_block_stack import ShadowHandBlockStack
 # Meta
 from tasks.shadow_hand_meta.shadow_hand_meta_mt1 import ShadowHandMetaMT1
 from tasks.shadow_hand_meta.shadow_hand_meta_ml1 import ShadowHandMetaML1
-from tasks.shadow_hand_meta.shadow_hand_meta_mt5 import ShadowHandMetaMT5
+from tasks.shadow_hand_meta.shadow_hand_meta_mt4 import ShadowHandMetaMT4
 
 from tasks.hand_base.vec_task import VecTaskCPU, VecTaskGPU, VecTaskPython, VecTaskPythonArm
 from tasks.hand_base.multi_vec_task import MultiVecTaskPython, SingleVecTaskPythonArm

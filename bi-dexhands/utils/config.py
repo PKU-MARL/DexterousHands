@@ -123,8 +123,8 @@ def retrieve_cfg(args, use_rlg_config=False):
         return os.path.join(args.logdir, "shadow_hand_meta_mt1/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt1.yaml"
     elif args.task == "ShadowHandMetaML1":
         return os.path.join(args.logdir, "shadow_hand_meta_ml1/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_ml1.yaml"
-    elif args.task == "ShadowHandMetaMT5":
-        return os.path.join(args.logdir, "shadow_hand_meta_mt5/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt5.yaml"
+    elif args.task == "ShadowHandMetaMT4":
+        return os.path.join(args.logdir, "shadow_hand_meta_mt4/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt4.yaml"
     elif args.task == "ShadowHandPushBlock":
         return os.path.join(args.logdir, "shadow_hand_push_block/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_push_block.yaml"
     elif args.task == "ShadowHandSwingCup":

@@ -1,6 +1,6 @@
 # if given, will override the device setting in gym. 
 env: 
-  env_name: "shadow_hand_meta_mt5"
+  env_name: "shadow_hand_meta_mt4"
   numEnvs: 64
   envSpacing: 1.
   episodeLength: 75

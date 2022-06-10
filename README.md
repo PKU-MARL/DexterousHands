@@ -109,6 +109,58 @@ So far, we release the following tasks (with many more to come):
 
 ### Training
 
+#### Training Examples
+
+##### RL/MARL Examples
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
+
+```bash
+python train.py --task=ShadowHandOver --algo=ppo
+```
+
+To select an algorithm, pass `--algo=ppo/mappo/happo/hatrpo/...` 
+as an argument. For example, if you want to use happo algorithm, run this line in `bi-dexhands` folder:
+
+```bash
+python train.py --task=ShadowHandOver --algo=happo
+``` 
+
+Supported Single-Agent RL algorithms are listed below:
+
+- [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf)
+- [Trust Region Policy Optimization (TRPO)](https://arxiv.org/pdf/1502.05477.pdf)
+- [Twin Delayed DDPG (TD3)](https://arxiv.org/pdf/1802.09477.pdf)
+- [Soft Actor-Critic (SAC)](https://arxiv.org/pdf/1812.05905.pdf)
+- [Deep Deterministic Policy Gradient (DDPG)](https://arxiv.org/pdf/1509.02971.pdf)
+
+Supported Multi-Agent RL algorithms are listed below:
+
+- [Heterogeneous-Agent Proximal Policy Optimization (HAPPO)](https://arxiv.org/pdf/2109.11251.pdf)
+- [Heterogeneous-Agent Trust Region Policy Optimization (HATRPO)](https://arxiv.org/pdf/2109.11251.pdf)
+- [Multi-Agent Proximal Policy Optimization (MAPPO)](https://arxiv.org/pdf/2103.01955.pdf)
+- [Independent Proximal Policy Optimization (IPPO)](https://arxiv.org/pdf/2011.09533.pdf)
+- [Multi-Agent Deep Deterministic Policy Gradient  (MADDPG)](https://arxiv.org/pdf/1706.02275.pdf)
+
+##### Multi-task/Meta RL Examples
+
+The training method of multi-task/meta RL is similar to the RL/MARL, it is only need to select the multi-task/meta categories and the corresponding algorithm. For example, if you want to train a policy for the ShadowHandMT4 categories by the MTPPO algorithm, run this line in `bi-dexhands` folder:
+
+```bash
+python train.py --task=ShadowHandMetaMT4 --algo=mtppo
+```
+
+Supported Multi-task RL algorithms are listed below:
+
+- [Multi-task Proximal Policy Optimization (MTPPO)](https://arxiv.org/pdf/1707.06347.pdf)
+- [Multi-task Trust Region Policy Optimization (MTTRPO)](https://arxiv.org/pdf/1502.05477.pdf)
+- [Multi-task Soft Actor-Critic (MTSAC)](https://arxiv.org/pdf/1812.05905.pdf)
+
+Supported Meta RL algorithms are listed below:
+
+- [Heterogeneous-Agent Proximal Policy Optimization (ProMP)](https://arxiv.org/pdf/1810.06784.pdf)
+
+
+
 #### Gym-Like API
 
 We provide a Gym-Like API that allows us to get information from the Isaac Gym environment. Our single-agent Gym-Like wrapper is the code of the Isaac Gym team used, and we have developed a multi-agent Gym-Like wrapper based on it:
@@ -211,39 +263,6 @@ for episode in range(episodes):
     if (episode % self.save_interval == 0 or episode == episodes - 1):
         self.save()
 ```
-
-#### Training Examples
-
-For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
-
-```bash
-python train.py --task=ShadowHandOver --algo=ppo
-```
-
-To select an algorithm, pass `--algo=ppo/mappo/happo/hatrpo/...` 
-as an argument. For example, if you want to use happo algorithm, run this line in `bi-dexhands` folder:
-
-```bash
-python train.py --task=ShadowHandOver --algo=happo
-``` 
-
-Supported Single-Agent RL algorithms are listed below:
-
-- [Proximal Policy Optimization (PPO)](https://arxiv.org/pdf/1707.06347.pdf)
-- [Trust Region Policy Optimization (TRPO)](https://arxiv.org/pdf/1502.05477.pdf)
-- [Twin Delayed DDPG (TD3)](https://arxiv.org/pdf/1802.09477.pdf)
-- [Soft Actor-Critic (SAC)](https://arxiv.org/pdf/1812.05905.pdf)
-- [Deep Deterministic Policy Gradient (DDPG)](https://arxiv.org/pdf/1509.02971.pdf)
-
-Supported Multi-Agent RL algorithms are listed below:
-
-- [Heterogeneous-Agent Proximal Policy Optimization (HAPPO)](https://arxiv.org/pdf/2109.11251.pdf)
-- [Heterogeneous-Agent Trust Region Policy Optimization (HATRPO)](https://arxiv.org/pdf/2109.11251.pdf)
-- [Multi-Agent Proximal Policy Optimization (MAPPO)](https://arxiv.org/pdf/2103.01955.pdf)
-- [Independent Proximal Policy Optimization (IPPO)](https://arxiv.org/pdf/2011.09533.pdf)
-- [Multi-Agent Deep Deterministic Policy Gradient  (MADDPG)](https://arxiv.org/pdf/1706.02275.pdf)
-
-For a brief introduction to these algorithms, please refer to [here](./docs/algorithms.md)
 
 ### Testing
 

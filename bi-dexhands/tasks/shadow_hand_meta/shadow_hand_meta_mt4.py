@@ -16,9 +16,9 @@ from tasks.hand_base.base_task import BaseTask
 from isaacgym import gymtorch
 from isaacgym import gymapi
 
-from .shadow_hand_meta_mt5_task_info import obtain_task_info, compute_hand_reward
+from .shadow_hand_meta_mt4_task_info import obtain_task_info, compute_hand_reward
 
-class ShadowHandMetaMT5(BaseTask):
+class ShadowHandMetaMT4(BaseTask):
     def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless, agent_index=[[[0, 1, 2, 3, 4, 5]], [[0, 1, 2, 3, 4, 5]]], is_multi_agent=False):
         self.cfg = cfg
         self.sim_params = sim_params
