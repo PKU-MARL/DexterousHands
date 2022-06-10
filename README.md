@@ -157,7 +157,7 @@ Supported Multi-task RL algorithms are listed below:
 
 Supported Meta RL algorithms are listed below:
 
-- [Heterogeneous-Agent Proximal Policy Optimization (ProMP)](https://arxiv.org/pdf/1810.06784.pdf)
+- [ProMP: Proximal Meta-Policy Search (ProMP)](https://arxiv.org/pdf/1810.06784.pdf)
 
 
 
