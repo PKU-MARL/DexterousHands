@@ -279,7 +279,7 @@ $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-s
 
 ### Figures
 
-We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorithms. All baselines are run under the parameters of `2048 num_env` and `100M total_step`. The `dataset` folder contains the raw csv files. 
+We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO, SAC** algorithms. All baselines are run under the parameters of `2048 num_env` and `100M total_step`. The `dataset` folder contains the raw csv files. 
 
 <table>
     <tr>
@@ -288,9 +288,9 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/hand_over.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_over_v1.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/over.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/lift_underarm.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_lift_underarm.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/lift_underarm.png" align="middle" width="750"/></td>
     <tr>
     <tr>
         <th colspan="2">ShadowHandCatchUnderarm</th>
@@ -298,19 +298,19 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_underarm.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_underarm_v1.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/catch_underarm.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/open_inward.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_door_open_inward.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/door_open_inward.png" align="middle" width="750"/></td>
     <tr>
     <tr>
-        <th colspan="2">ShadowHandCatchOver2Underarm</th>
+        <th colspan="2">ShadowHandOver2Underarm</th>
         <th colspan="2">ShadowHandDoorOpenOutward</th>
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_over2underarm.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_over2underarm_v1.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/catch_over2underarm.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/open_outward.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_door_open_outward.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/door_open_outward.png" align="middle" width="750"/></td>
     <tr>
     <tr>
         <th colspan="2">ShadowHandCatchAbreast</th>
@@ -318,23 +318,71 @@ We provide stable and reproducible baselins run by **PPO, HAPPO, MAPPO** algorit
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/catch_abreast.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_catch_abreast_v1.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/catch_abreast.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/close_inward.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_door_close_inward.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/door_close_inward.png" align="middle" width="750"/></td>
     <tr>
     <tr>
-        <th colspan="2">ShadowHandCatchTwoCatchUnderarm</th>
+        <th colspan="2">ShadowHandTwoCatchUnderarm</th>
         <th colspan="2">ShadowHandDoorCloseOutward</th>
     <tr>
     <tr>
         <td><img src="assets/image_folder/static_image/two_catch.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_two_catch_underarm_v1.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/two_catch_underarm.png" align="middle" width="750"/></td>
         <td><img src="assets/image_folder/static_image/close_outward.jpg" align="middle" width="750"/></td>
-        <td><img src="assets/image_folder/figures/shadow_hand_door_close_outward.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/door_close_outward.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandPushBlock</th>
+        <th colspan="2">ShadowHandPen</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/static_image/push_block.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/push_block.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/static_image/pen_cap.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/pen.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandScissors</th>
+        <th colspan="2">ShadowHandSwingCup</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/static_image/scissors.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/scissors.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/static_image/swing_cup.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/swing_cup.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandBlockStack</th>
+        <th colspan="2">ShadowHandReOrientation</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/static_image/stack_block.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/block_stack.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/static_image/re_orientation.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/re_orientation.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandPourWater</th>
+        <th colspan="2">ShadowHandSwitch</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/static_image/pour_water.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/pour_water.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/static_image/switch.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/switch.png" align="middle" width="750"/></td>
+    <tr>
+    <tr>
+        <th colspan="2">ShadowHandGraspAndPlace</th>
+        <th colspan="2">ShadowHandBottleCap</th>
+    <tr>
+    <tr>
+        <td><img src="assets/image_folder/static_image/grasp_and_place.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/grasp_and_place.png" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/static_image/bottle_cap.jpg" align="middle" width="750"/></td>
+        <td><img src="assets/image_folder/figures/bottle_cap.png" align="middle" width="750"/></td>
     <tr>
 </table>
-
-For more figures please refer to [here](./docs/figures.md)
 
 <!-- ## Building the Documentation
 
@@ -350,27 +398,6 @@ You can then build the documentation by running `make <format>` from the
 
 If you get a katex error run `npm install katex`.  If it persists, try
 `npm install -g katex` -->
-
-## Future Plan
-
-### Tasks under development:  
-  - [x] Handover, throw&catch (a 9-month-old child's behavior)
-  - [x] Pick up eyeglasses  ( an 1-year-old child's behavior )
-  - [ ] Stack blocks (an 1-year-old child's behavior )
-  - [x] Put off a pen cap (a 30-month-old child's behavior)
-  - [x] Open/Close a door (a 30-month-old child's behavior)
-  - [x] Unscrew a bottle top (a 30-month-old child's behavior)
-  - [x] Lift a pot (a 2-year-old child's behavior)
-  - [x] Turn buttons off/on (a 5-year-old child's behavior)
-  - [ ] Pour water in a teapot (an adult's behavior)
-
-### Meta/Multi-task algorithms:
-  - [x] Multi-task PPO
-  - [x] Multi-task TRPO
-  - [x] Multi-task SAC
-  - [x] MAML
-  - [ ] RL<sup>2 </sup>
-  - [ ] PEARL
 
 ### Known issue
 
