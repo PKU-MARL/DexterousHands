@@ -312,7 +312,9 @@ def get_args(benchmark=False, use_rlg_config=False):
         {"name": "--algo", "type": str, "default": "happo",
             "help": "Choose an algorithm"},
         {"name": "--model_dir", "type": str, "default": "",
-            "help": "Choose a model dir"}]
+            "help": "Choose a model dir"},
+        {"name": "--datatype", "type": str, "default": "random",
+            "help": "Choose an ffline datatype"}]
 
     if benchmark:
         custom_parameters += [{"name": "--num_proc", "type": int, "default": 1, "help": "Number of child processes to launch"},

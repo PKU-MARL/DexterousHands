@@ -40,7 +40,6 @@ def process_ppo(args, env, cfg_train, logdir):
               asymmetric=(env.num_states > 0)
               )
 
-    # ppo.test("/home/hp-3070/bi-dexhands/bi-dexhands/logs/shadow_hand_lift_underarm2/ppo/ppo_seed2/model_40000.pt")
     if is_testing and args.model_dir != "":
         print("Loading model from {}".format(chkpt_path))
         ppo.test(chkpt_path)

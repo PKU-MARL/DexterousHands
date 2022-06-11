@@ -1,0 +1,14 @@
+seed: -1
+
+learn:
+  agent_name: shadow_hand
+  max_timesteps: 1000000
+  batch_size: 256
+  policy_freq: 2
+  alpha: 0.2 #2.5
+  discount: 0.99
+  tau: 0.005
+  iterations: 10000
+  test : False
+  max_iterations: 10000
+  save_interval : 10000

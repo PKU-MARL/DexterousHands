@@ -15,6 +15,7 @@ from utils.process_sarl import *
 from utils.process_marl import process_MultiAgentRL, get_AgentIndex
 from utils.process_mtrl import *
 from utils.process_metarl import *
+from utils.process_offrl import *
 
 def train():
     print("Algorithm: ", args.algo)
@@ -70,8 +71,19 @@ def train():
 
         trainer.train(train_epoch=iterations)
 
+    elif args.algo in ["td3_bc", "bcq", "iql", "ppo_collect"]:
+        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
+
+        offrl = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
+
+        iterations = cfg_train["learn"]["max_iterations"]
+        if args.max_iterations > 0:
+            iterations = args.max_iterations
+
+        offrl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
+
     else:
-        print("Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo,maddpg,sac,td3,trpo,ppo,ddpg, mtppo, random, mamlppo]")
+        print("Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo,maddpg,sac,td3,trpo,ppo,ddpg, mtppo, random, mamlppo, td3_bc, bcq, iql, ppo_collect]")
 
 
 if __name__ == '__main__':
