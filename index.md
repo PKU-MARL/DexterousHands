@@ -18,7 +18,7 @@ Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](http
 
 ## Results
 
-![Results](./assets/images/4.JPG)
+![Results](./assets/images/merge_20.png)
 
 ## Demo
 
