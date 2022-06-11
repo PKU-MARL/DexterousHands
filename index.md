@@ -1,15 +1,3 @@
----
-layout: default
----
-
-Text can be **bold**, _italic_, or ~~strikethrough~~.
-
-[Link to another page](./another-page.html).
-
-There should be whitespace between paragraphs.
-
-There should be whitespace between paragraphs. We recommend including a README, or a file with information about your project.
-
 # Bi-DexHands: Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning
 
 ## Introduction
@@ -26,24 +14,20 @@ Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](http
 
 ### Framework
 
+![Framework](./assets/images/overview.png)
+
 ### Results
 
-* * *
+![Results](./assets/images/4.JPG)
 
 ### Demo
 
-*   Item foo
-*   Item bar
-*   Item baz
-*   Item zip
 
 ### Code
 
-![Octocat](https://github.githubassets.com/images/icons/emoji/octocat.png)
+Please see ![our github repo](https://github.com/PKU-MARL/DexterousHands) for code and data of this project.
 
 ### Citation
-
-![Branching](https://guides.github.com/activities/hello-world/branching.png)
 
 
 ### Contact

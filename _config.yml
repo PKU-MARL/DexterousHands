@@ -1,5 +1,5 @@
-title: Dinky theme
-description: Dinky is a red hot theme for GitHub Pages.
-show_downloads: true
+title: bidexhands.ai
+description: Bi-DexHands: Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning
+show_downloads: False
 google_analytics:
 theme: jekyll-theme-dinky
