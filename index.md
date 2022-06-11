@@ -22,7 +22,7 @@ Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](http
 
 ## Demo
 
-![Demo](./assets/images/quick_demo2.gif)
+![Demo](./assets/images/quick_demo_v2.gif)
 
 ## Code
 
