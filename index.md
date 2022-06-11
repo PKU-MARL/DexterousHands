@@ -22,10 +22,9 @@ Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](http
 
 ### Demo
 
-
 ### Code
 
-Please see ![our github repo](https://github.com/PKU-MARL/DexterousHands) for code and data of this project.
+Please see [our github repo](https://github.com/PKU-MARL/DexterousHands) for code and data of this project.
 
 ### Citation
 
