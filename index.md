@@ -12,22 +12,25 @@ Despite the success on each single task, when it comes to acquiring multiple man
 
 Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](https://github.com/PKU-MARL/DexterousHands).
 
-### Framework
+## Framework
 
 ![Framework](./assets/images/overview.png)
 
-### Results
+## Results
 
 ![Results](./assets/images/4.JPG)
 
-### Demo
+## Demo
 
-### Code
+![Demo](./assets/images/quick_demo2.gif)
+
+## Code
 
 Please see [our github repo](https://github.com/PKU-MARL/DexterousHands) for code and data of this project.
 
-### Citation
+## Citation
 
 
-### Contact
+## Contact
 
+Bi-DexHands is a project contributed by [Yuanpei Chen](https://github.com/cypypccpy), [Shengjie Wang](https://github.com/Shengjie-bob), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Yaodong Yang](https://www.yangyaodong.com/) at Peking University, please contact yaodong.yang@pku.edu.cn if you are interested to collaborate.
