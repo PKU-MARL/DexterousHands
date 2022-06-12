@@ -146,12 +146,12 @@ We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](h
         <th colspan="2">ML20</th>
     </tr>
     <tr>
-        <td>train</td>
-        <td>test</td>
-        <td>train</td>
-        <td>test</td>
-        <td>train</td>
-        <td>test</td>
+        <th>train</th>
+        <th>test</th>
+        <th>train</th>
+        <th>test</th>
+        <th>train</th>
+        <th>test</th>
     </tr>
     <tr>
         <td>Ground Truth</td>
