@@ -13,12 +13,99 @@ Despite the success on each single task, when it comes to acquiring multiple man
 Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](https://github.com/PKU-MARL/DexterousHands).
 
 ## Framework
+Framework of Bi-DexHands, a bechmark for learning bimanual dexterous manipulation.
 
 ![Framework](./assets/images/overview.png)
 
 ## Results
 
+We conduct a full benchmark of the RL algorithms. All of our experiments are run with Intel i7-9700K CPU @ 3.60GHz and NVIDIA RTX 3090 GPU.
+
+### RL/MARL results
+Currently, we only evaluate the performance of [PPO](https://arxiv.org/abs/1707.06347), [SAC](https://arxiv.org/abs/1801.01290), [MAPPO](https://arxiv.org/abs/2103.01955), and [HAPPO](https://arxiv.org/abs/2109.11251) algorithms on these 20 tasks, and we implemented the rest of the RL/MARL algorithms in our Github repository. Learning curves for all 20 tasks is shown in below. The shaded region represents the standard deviation of the score over 10 trials. Curves are smoothed uniformly for visual clarity. All algorithms interact with environments in 100M steps and the number of parallel simulations is 2048.
+
 ![Results](./assets/images/merge_20.png)
+
+### Offline RL results
+
+We evaluate behavior cloning (BC), [BCQ](http://proceedings.mlr.press/v97/fujimoto19a.html), [TD3+BC](https://proceedings.neurips.cc/paper/2021/hash/a8166da05c5a094f7dc03724b41886e5-Abstract.html), and [IQL](https://arxiv.org/abs/2110.06169) on two tasks, Hand Over and Door Open Outward, and report normalized scores in Table~\ref{t
+
+| **Tasks**                         | **Datasets**  | **Online PPO** | **BC**         | **BCQ**             | **TD3+BC**          | **IQL**        |
+|:---------------------------------:|:-------------:|:--------------:|:--------------:|:-------------------:|:-------------------:|:--------------:|
+| Hand Over        | random        | $100.0$        | $0.7 \pm 0.2$  | $1.0 \pm 0.1$       | $0.9 \pm 0.2$       | $0.7 \pm 0.4$  |
+|                                   | replay        | $100.0$        | $17.5 \pm 3.5$ | $61.6 \pm 4.9$      | $\bm{70.1} \pm 2.1$ | $43.1 \pm 2.3$ |
+|                                   | medium        | $100.0$        | $61.6 \pm 1.0$ | $\bm{66.1} \pm 1.9$ | $\bm{65.8} \pm 2.2$ | $57.4 \pm 1.5$ |
+|                                   | medium-expert | $100.0$        | $63.3 \pm 1.4$ | $\bm{81.7} \pm 4.9$ | $\bm{84.9} \pm 5.3$ | $67.2 \pm 3.6$ |
+|               Door OpenOutward    | random        | $100.0$        | $2.1 \pm 0.6$  | $23.8 \pm 2.9$      | $\bm{34.9} \pm 4.3$ | $3.8 \pm 1.0$  |
+|                                   | replay        | $100.0$        | $36.9\pm 4.3$  | $48.8 \pm 4.5$      | $\bm{60.5} \pm 2.6$ | $31.7 \pm 2.0$ |
+|                                   | medium        | $100.0$        | $63.9 \pm 0.7$ | $60.1 \pm 2.3$      | $\bm{66.3} \pm 0.7$ | $56.6 \pm 1.2$ |
+|                                   | medium-expert | $100.0$        | $69.0 \pm 6.4$ | $\bm{73.7} \pm 4.5$ | $\bm{71.9} \pm 3.5$ | $53.8 \pm 1.8$ |
+
+
+### Multi-task/Meta results
+
+We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](https://arxiv.org/abs/1810.06784) algorithms on MT1, ML1, MT4, ML4, MT20, and ML20. We also provided the results of random policy and using the PPO algorithm in individual task as the ground truth for comparison. The average reward for each training is shown in below.
+
+<table>
+    <tr>
+        <td rowspan="2">Method</td>
+        <td rowspan="2">MT1</td>
+        <td rowspan="2">MT4</td>
+        <td rowspan="2">MT20</td>
+        <td rowspan="2">Method</td>
+        <td colspan="2">ML1</td>
+        <td colspan="2">ML4</td>
+        <td colspan="2">ML20</td>
+    </tr>
+    <tr>
+        <td>train</td>
+        <td>test</td>
+        <td>train</td>
+        <td>test</td>
+        <td>train</td>
+        <td>test</td>
+    </tr>
+    <tr>
+        <td>Ground Truth</td>
+        <td>15.2</td>
+        <td>24,3</td>
+        <td>32.5</td>
+        <td>Ground Truth</td>
+        <td>15.0</td>
+        <td>15.8</td>
+        <td>28.0</td>
+        <td>13.1</td>
+        <td>33.7</td>
+        <td>26.1</td>
+    </tr>
+    <tr>
+        <td>Multi-task PPO</td>
+        <td>9.4</td>
+        <td>5.4</td>
+        <td>8.9</td>
+        <td>ProMP</td>
+        <td>0.95</td>
+        <td>1.2</td>
+        <td>2.5</td>
+        <td>0.5</td>
+        <td>0.02</td>
+        <td>0.36</td>
+    </tr>
+    <tr>
+        <td>Random</td>
+        <td>0.61</td>
+        <td>1.1</td>
+        <td>-2.5</td>
+        <td>Random</td>
+        <td>0.59</td>
+        <td>0.68</td>
+        <td>1.5</td>
+        <td>0.24</td>
+        <td>-2.9</td>
+        <td>0.27</td>
+    </tr>
+</table>
+
 
 ## Demo
 
