@@ -2,10 +2,7 @@
 
 ## Introduction
 
-Achieving human-level dexterity is an important open problem in robotics. However, tasks of dexterous hand manipulation, even at the baby level, are challenging to solve through reinforcement learning (RL). 
-
-The difficulty lies in the high degrees of freedom and the required cooperation among heterogeneous agents (e.g., joints of fingers).  
-In this study, we propose the **Bi**manual **Dex**terous **Hands** Benchmark (Bi-DexHands), a simulator that involves two dexterous hands with tens of bimanual manipulation tasks and thousands of target objects. Specifically, tasks in Bi-DexHands are designed to match different levels of human motor skills according to cognitive science literature. We built Bi-DexHands  in the Issac Gym; this enables highly efficient RL training,  reaching 30,000+ FPS by only one single NVIDIA RTX 3090. 
+Achieving human-level dexterity is an important open problem in robotics. However, tasks of dexterous hand manipulation, even at the baby level, are challenging to solve through reinforcement learning (RL). The difficulty lies in the high degrees of freedom and the required cooperation among heterogeneous agents (e.g., joints of fingers). In this study, we propose the **Bi**manual **Dex**terous **Hands** Benchmark (Bi-DexHands), a simulator that involves two dexterous hands with tens of bimanual manipulation tasks and thousands of target objects. Specifically, tasks in Bi-DexHands are designed to match different levels of human motor skills according to cognitive science literature. We built Bi-DexHands  in the Issac Gym; this enables highly efficient RL training,  reaching 30,000+ FPS by only one single NVIDIA RTX 3090. 
 
 We provide a comprehensive benchmark for popular RL algorithms under different settings; this includes Single-agent/Multi-agent RL, Offline RL, Multi-task RL, and Meta RL. Our results show that the PPO type of on-policy algorithms can master simple manipulation tasks that are equivalent up to 48-month human babies (e.g., catching a flying object, opening a bottle), while multi-agent RL can further help to master manipulations that require skilled bimanual cooperation (e.g., lifting a pot, stacking blocks).  
 Despite the success on each single task, when it comes to acquiring multiple manipulation skills, existing RL algorithms fail to work in most of the multi-task and the few-shot learning settings, which calls for more substantial development from the RL community. 
@@ -41,7 +38,7 @@ We evaluate behavior cloning (BC), [BCQ](http://proceedings.mlr.press/v97/fujimo
         <th>IQL</th>
     </tr>
     <tr>
-        <th rowspan="4">Hand Over</th>
+        <td rowspan="4">HandOver</td>
         <td>random</td>
         <td>100.0</td>
         <td>0.7</td>
@@ -74,7 +71,7 @@ We evaluate behavior cloning (BC), [BCQ](http://proceedings.mlr.press/v97/fujimo
         <td>67.2</td>
     </tr>
     <tr>
-        <th rowspan="4">Door OpenOutward</th>
+        <td rowspan="4">DoorOpenOutward</td>
         <td>random</td>
         <td>100.0</td>
         <td>2.1</td>
@@ -116,10 +113,33 @@ We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](h
 
 <table>
     <tr>
-        <th rowspan="2">Method</th>
-        <th rowspan="2">MT1</th>
-        <th rowspan="2">MT4</th>
-        <th rowspan="2">MT20</th>
+        <th>Method</th>
+        <th>MT1</th>
+        <th>MT4</th>
+        <th>MT20</th>
+    </tr>
+    <tr>
+        <td>Ground Truth</td>
+        <td>15.2</td>
+        <td>24,3</td>
+        <td>32.5</td>
+    </tr>
+    <tr>
+        <td>Multi-task PPO</td>
+        <td>9.4</td>
+        <td>5.4</td>
+        <td>8.9</td>
+    </tr>
+    <tr>
+        <td>Random</td>
+        <td>0.61</td>
+        <td>1.1</td>
+        <td>-2.5</td>
+    </tr>
+</table>
+
+<table>
+    <tr>
         <th rowspan="2">Method</th>
         <th colspan="2">ML1</th>
         <th colspan="2">ML4</th>
@@ -135,10 +155,6 @@ We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](h
     </tr>
     <tr>
         <td>Ground Truth</td>
-        <td>15.2</td>
-        <td>24,3</td>
-        <td>32.5</td>
-        <td>Ground Truth</td>
         <td>15.0</td>
         <td>15.8</td>
         <td>28.0</td>
@@ -147,10 +163,6 @@ We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](h
         <td>26.1</td>
     </tr>
     <tr>
-        <td>Multi-task PPO</td>
-        <td>9.4</td>
-        <td>5.4</td>
-        <td>8.9</td>
         <td>ProMP</td>
         <td>0.95</td>
         <td>1.2</td>
@@ -160,10 +172,6 @@ We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](h
         <td>0.36</td>
     </tr>
     <tr>
-        <td>Random</td>
-        <td>0.61</td>
-        <td>1.1</td>
-        <td>-2.5</td>
         <td>Random</td>
         <td>0.59</td>
         <td>0.68</td>
