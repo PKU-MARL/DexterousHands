@@ -1,6 +1,12 @@
 # Bi-DexHands: Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning
 
-We propose a bimanual dexterous manipulation benchmark (Bi-DexHands) according to literature from cognitive science for comprehensive reinforcement learning research.
+We propose a bimanual dexterous manipulation benchmark (Bi-DexHands) according to literature from cognitive science for comprehensive reinforcement learning research. Bi-DexHands are developed with the following key features:
+
+- **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. On one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **30,000+ mean FPS** by running 2,048 environments in parallel. 
+- **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for common RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods.
+- **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
+- **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
+- **Cognition**: We provided the underlying relationship between our dexterous tasks and the motor skills of humans at different ages. This facilitates researchers on studying robot skill learning and development, in particular in comparison to humans.
 
 ## Introduction
 
