@@ -28,34 +28,102 @@ Currently, we only evaluate the performance of [PPO](https://arxiv.org/abs/1707.
 
 ### Offline RL results
 
-We evaluate behavior cloning (BC), [BCQ](http://proceedings.mlr.press/v97/fujimoto19a.html), [TD3+BC](https://proceedings.neurips.cc/paper/2021/hash/a8166da05c5a094f7dc03724b41886e5-Abstract.html), and [IQL](https://arxiv.org/abs/2110.06169) on two tasks, Hand Over and Door Open Outward, and report normalized scores in Table~\ref{t
+We evaluate behavior cloning (BC), [BCQ](http://proceedings.mlr.press/v97/fujimoto19a.html), [TD3+BC](https://proceedings.neurips.cc/paper/2021/hash/a8166da05c5a094f7dc03724b41886e5-Abstract.html), and [IQL](https://arxiv.org/abs/2110.06169) on two tasks, Hand Over and Door Open Outward, and report normalized scores in below.
 
-| **Tasks**                         | **Datasets**  | **Online PPO** | **BC**         | **BCQ**             | **TD3+BC**          | **IQL**        |
-|:---------------------------------:|:-------------:|:--------------:|:--------------:|:-------------------:|:-------------------:|:--------------:|
-| Hand Over        | random        | $100.0$        | $0.7 \pm 0.2$  | $1.0 \pm 0.1$       | $0.9 \pm 0.2$       | $0.7 \pm 0.4$  |
-|                                   | replay        | $100.0$        | $17.5 \pm 3.5$ | $61.6 \pm 4.9$      | $\bm{70.1} \pm 2.1$ | $43.1 \pm 2.3$ |
-|                                   | medium        | $100.0$        | $61.6 \pm 1.0$ | $\bm{66.1} \pm 1.9$ | $\bm{65.8} \pm 2.2$ | $57.4 \pm 1.5$ |
-|                                   | medium-expert | $100.0$        | $63.3 \pm 1.4$ | $\bm{81.7} \pm 4.9$ | $\bm{84.9} \pm 5.3$ | $67.2 \pm 3.6$ |
-|               Door OpenOutward    | random        | $100.0$        | $2.1 \pm 0.6$  | $23.8 \pm 2.9$      | $\bm{34.9} \pm 4.3$ | $3.8 \pm 1.0$  |
-|                                   | replay        | $100.0$        | $36.9\pm 4.3$  | $48.8 \pm 4.5$      | $\bm{60.5} \pm 2.6$ | $31.7 \pm 2.0$ |
-|                                   | medium        | $100.0$        | $63.9 \pm 0.7$ | $60.1 \pm 2.3$      | $\bm{66.3} \pm 0.7$ | $56.6 \pm 1.2$ |
-|                                   | medium-expert | $100.0$        | $69.0 \pm 6.4$ | $\bm{73.7} \pm 4.5$ | $\bm{71.9} \pm 3.5$ | $53.8 \pm 1.8$ |
+<table>
+    <tr>
+        <th>Tasks</th>
+        <th>Datasets</th>
+        <th>Online PPO</th>
+        <th>BC</th>
+        <th>BCQ</th>
+        <th>TD3+BC</th>
+        <th>IQL</th>
+    </tr>
+    <tr>
+        <th rowspan="4">Hand Over</th>
+        <td>random</td>
+        <td>100.0</td>
+        <td>0.7</td>
+        <td>1.0</td>
+        <td>0.9</td>
+        <td>0.7</td>
+    </tr>
+    <tr>
+        <td>replay</td>
+        <td>100.0</td>
+        <td>17.5</td>
+        <td>61.6</td>
+        <td>70.1</td>
+        <td>43.1</td>
+    </tr>
+    <tr>
+        <td>medium</td>
+        <td>100.0</td>
+        <td>61.6</td>
+        <td>66.1</td>
+        <td>65.8</td>
+        <td>57.4</td>
+    </tr>
+    <tr>
+        <td>medium-expert</td>
+        <td>100.0</td>
+        <td>63.3</td>
+        <td>81.7</td>
+        <td>84.9</td>
+        <td>67.2</td>
+    </tr>
+    <tr>
+        <th rowspan="4">Door OpenOutward</th>
+        <td>random</td>
+        <td>100.0</td>
+        <td>2.1</td>
+        <td>23.8</td>
+        <td>34.9</td>
+        <td>3.8</td>
+    </tr>
+    <tr>
+        <td>replay</td>
+        <td>100.0</td>
+        <td>36.9</td>
+        <td>48.8</td>
+        <td>60.5</td>
+        <td>31.7</td>
+    </tr>
+    <tr>
+        <td>medium</td>
+        <td>100.0</td>
+        <td>63.9</td>
+        <td>60.1</td>
+        <td>66.3</td>
+        <td>56.6</td>
+    </tr>
+    <tr>
+        <td>medium-expert</td>
+        <td>100.0</td>
+        <td>69.0</td>
+        <td>73.7</td>
+        <td>71.9</td>
+        <td>53.8</td>
+    </tr>
+</table>
 
 
 ### Multi-task/Meta results
 
 We evaluate the [multi-task PPO](https://arxiv.org/abs/1707.06347) and [ProMP](https://arxiv.org/abs/1810.06784) algorithms on MT1, ML1, MT4, ML4, MT20, and ML20. We also provided the results of random policy and using the PPO algorithm in individual task as the ground truth for comparison. The average reward for each training is shown in below.
 
+
 <table>
     <tr>
-        <td rowspan="2">Method</td>
-        <td rowspan="2">MT1</td>
-        <td rowspan="2">MT4</td>
-        <td rowspan="2">MT20</td>
-        <td rowspan="2">Method</td>
-        <td colspan="2">ML1</td>
-        <td colspan="2">ML4</td>
-        <td colspan="2">ML20</td>
+        <th rowspan="2">Method</th>
+        <th rowspan="2">MT1</th>
+        <th rowspan="2">MT4</th>
+        <th rowspan="2">MT20</th>
+        <th rowspan="2">Method</th>
+        <th colspan="2">ML1</th>
+        <th colspan="2">ML4</th>
+        <th colspan="2">ML20</th>
     </tr>
     <tr>
         <td>train</td>
