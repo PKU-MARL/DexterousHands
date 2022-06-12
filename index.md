@@ -8,6 +8,10 @@ We propose a bimanual dexterous manipulation benchmark (Bi-DexHands) according t
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 - **Cognition**: We provided the underlying relationship between our dexterous tasks and the motor skills of humans at different ages. This facilitates researchers on studying robot skill learning and development, in particular in comparison to humans.
 
+## Demo
+
+![Demo](./assets/images/quick_demo_v2.gif)
+
 ## Introduction
 
 Achieving human-level dexterity is an important open problem in robotics. However, tasks of dexterous hand manipulation, even at the baby level, are challenging to solve through reinforcement learning (RL). The difficulty lies in the high degrees of freedom and the required cooperation among heterogeneous agents (e.g., joints of fingers). In this study, we propose the **Bi**manual **Dex**terous **Hands** Benchmark (Bi-DexHands), a simulator that involves two dexterous hands with tens of bimanual manipulation tasks and thousands of target objects. Specifically, tasks in Bi-DexHands are designed to match different levels of human motor skills according to cognitive science literature. We built Bi-DexHands  in the Issac Gym; this enables highly efficient RL training,  reaching 30,000+ FPS by only one single NVIDIA RTX 3090. 
@@ -15,10 +19,6 @@ Achieving human-level dexterity is an important open problem in robotics. Howeve
 We provide a comprehensive benchmark for popular RL algorithms under different settings; this includes **Single-agent/Multi-agent RL, Offline RL, Multi-task RL, and Meta RL**. Our results show that the PPO type of on-policy algorithms can master simple manipulation tasks that are equivalent up to 48-month human babies (e.g., catching a flying object, opening a bottle), while multi-agent RL can further help to master manipulations that require skilled bimanual cooperation (e.g., lifting a pot, stacking blocks). Despite the success on each single task, when it comes to acquiring multiple manipulation skills, existing RL algorithms fail to work in most of the multi-task and the few-shot learning settings, which calls for more substantial development from the RL community. 
 
 Our project is open sourced at [https://github.com/PKU-MARL/DexterousHands](https://github.com/PKU-MARL/DexterousHands).
-
-## Demo
-
-![Demo](./assets/images/quick_demo_v2.gif)
 
 ## Framework
 Framework of Bi-DexHands, a bechmark for learning bimanual dexterous manipulation.
