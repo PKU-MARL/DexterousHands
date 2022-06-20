@@ -21,6 +21,8 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 <img src="assets/image_folder/quick_demo2.gif" align="center" width="600"/>
 </div> 
  
+For more information, please check [our paper.](https://arxiv.org/abs/2206.08686)
+
 Contents of this repo are as follows:
 
 - [Installation](#Installation)
