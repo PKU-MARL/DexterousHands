@@ -420,19 +420,28 @@ If you get a katex error run `npm install katex`.  If it persists, try
 
 ### Known issue
 
-It must be pointed out that Bi-DeHands is still under development, and there are some known issue: 
-- **ShadowHandBottleCap** and **ShadowHandLiftUnderarm** environment may report errors due to collision calculation bugs in the later stage of program runtime.
+It must be pointed out that Bi-DexHands is still under development, and there are some known issue: 
+- Some environments may report errors due to PhysX's collision calculation bugs in the later stage of program runtime.
 ```
 RuntimeError: CUDA error: an illegal memory access was encountered
 CUDA kernel errors might be asynchronously reported at some other API call,so the stacktrace below might be incorrect.
 ```
-- Although we provide the implementation, we did not tested **DDPG**, **TD3** and **MADDPG** algorithms, they may still have bugs.
+- Although we provide the implementation, we did not tested **DDPG**, **TD3**, and **MADDPG** algorithms, they may still have bugs.
 
+## Citation
+Please cite as following if you think this work is helpful for you:
+```
+@misc{2206.08686,
+Author = {Yuanpei Chen and Yaodong Yang and Tianhao Wu and Shengjie Wang and Xidong Feng and Jiechuang Jiang and Stephen Marcus McAleer and Hao Dong and Zongqing Lu and Song-Chun Zhu},
+Title = {Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning},
+Year = {2022},
+Eprint = {arXiv:2206.08686},
+}
+```
 
 ## The Team
 
-Bi-DexHands is a project contributed by 
- [Yuanpei Chen](https://github.com/cypypccpy),[Shengjie Wang](https://github.com/Shengjie-bob), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Yaodong Yang](https://www.yangyaodong.com/) at Peking University, please contact yaodong.yang@pku.edu.cn if you are interested to collaborate.
+Bi-DexHands is a project contributed by [Yuanpei Chen](https://github.com/cypypccpy), [Yaodong Yang](https://www.yangyaodong.com/), [Tianhao Wu](https://tianhaowuhz.github.io/), [Shengjie Wang](https://github.com/Shengjie-bob), [Xidong Feng](https://github.com/waterhorse1), [Jiechuang Jiang](https://github.com/jiechuanjiang), [Hao Dong](https://zsdonghao.github.io), [Zongqing Lu](https://z0ngqing.github.io), [Song-chun Zhu](http://www.stat.ucla.edu/~sczhu/) at Peking University, please contact yaodong.yang@pku.edu.cn if you are interested to collaborate.
 
 
 We also thank the list of contributors from the following two open source repositories: 
