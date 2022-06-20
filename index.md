@@ -1,5 +1,7 @@
 # Bi-DexHands: Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning
 
+![Cover](./assets/images/coverv3.jpg)
+
 We propose a bimanual dexterous manipulation benchmark (Bi-DexHands) according to literature from cognitive science for comprehensive reinforcement learning research. Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. On one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **30,000+ mean FPS** by running 2,048 environments in parallel. 
 - **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for common RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods.
@@ -202,6 +204,14 @@ Please see [our github repo](https://github.com/PKU-MARL/DexterousHands) for cod
 
 ## Citation
 
+```
+@misc{2206.08686,
+Author = {Yuanpei Chen and Yaodong Yang and Tianhao Wu and Shengjie Wang and Xidong Feng and Jiechuang Jiang and Stephen Marcus McAleer and Hao Dong and Zongqing Lu and Song-Chun Zhu},
+Title = {Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning},
+Year = {2022},
+Eprint = {arXiv:2206.08686},
+}
+```
 
 ## Contact
 
