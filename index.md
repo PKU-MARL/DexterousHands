@@ -9,9 +9,13 @@ We propose a bimanual dexterous manipulation benchmark (Bi-DexHands) according t
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 - **Cognition**: We provided the underlying relationship between our dexterous tasks and the motor skills of humans at different ages. This facilitates researchers on studying robot skill learning and development, in particular in comparison to humans.
 
-## Demo
+## Quick Demo
 
 ![Demo](./assets/images/quick_demo_v2.gif)
+
+## Concept Video
+
+![Demo](./assets/images/Concept_video.gif)
 
 ## Introduction
 
