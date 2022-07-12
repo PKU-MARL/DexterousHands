@@ -105,7 +105,8 @@ class Runner:
             bu = SeparatedReplayBuffer(config,
                                        self.envs.observation_space[agent_id],
                                        share_observation_space,
-                                       self.envs.action_space[agent_id])
+                                       self.envs.action_space[agent_id],
+                                       self.device)
             self.buffer.append(bu)
             self.trainer.append(tr)
 

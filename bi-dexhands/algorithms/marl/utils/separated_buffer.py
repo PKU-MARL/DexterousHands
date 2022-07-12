@@ -10,7 +10,7 @@ def _cast(x):
     return x.transpose(1,0,2).reshape(-1, *x.shape[2:])
 
 class SeparatedReplayBuffer(object):
-    def __init__(self, config, obs_space, share_obs_space, act_space):
+    def __init__(self, config, obs_space, share_obs_space, act_space, device):
         self.episode_length = config["episode_length"]
         self.n_rollout_threads = config["n_rollout_threads"]
         self.rnn_hidden_size = config["hidden_size"]
@@ -21,7 +21,7 @@ class SeparatedReplayBuffer(object):
         self._use_popart = config["use_popart"]
         self._use_valuenorm = config["use_valuenorm"]
         self._use_proper_time_limits = config["use_proper_time_limits"]
-        self.device = "cuda:0"
+        self.device = device
 
 
         obs_shape = get_shape_from_obs_space(obs_space)

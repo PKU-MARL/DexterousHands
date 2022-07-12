@@ -19,6 +19,41 @@ from isaacgym import gymapi
 
 
 class ShadowHandPen(BaseTask):
+    """
+    This class corresponds to the Open Pen Cap task. This environment involves two hands and a pen, we need to use two hands
+    to open the pen cap.
+
+
+    Args:
+        cfg (dict): The configuration file of the environment, which is the parameter defined in the
+            dexteroushandenvs/cfg folder
+
+        sim_params (isaacgym._bindings.linux-x86_64.gym_37.SimParams): Isaacgym simulation parameters 
+            which contains the parameter settings of the isaacgym physics engine. Also defined in the 
+            dexteroushandenvs/cfg folder
+
+        physics_engine (isaacgym._bindings.linux-x86_64.gym_37.SimType): Isaacgym simulation backend
+            type, which only contains two members: PhysX and Flex. Our environment use the PhysX backend
+
+        device_type (str): Specify the computing device for isaacgym simulation calculation, there are 
+            two options: 'cuda' and 'cpu'. The default is 'cuda'
+
+        device_id (int): Specifies the number of the computing device used when simulating. It is only 
+            useful when device_type is cuda. For example, when device_id is 1, the device used 
+            is 'cuda:1'
+
+        headless (bool): Specifies whether to visualize during training
+
+        agent_index (list): Specifies how to divide the agents of the hands, useful only when using a 
+            multi-agent algorithm. It contains two lists, representing the left hand and the right hand. 
+            Each list has six numbers from 0 to 5, representing the palm, middle finger, ring finger, 
+            tail finger, index finger, and thumb. Each part can be combined arbitrarily, and if placed 
+            in the same list, it means that it is divided into the same agent. The default setting is
+            [[[0, 1, 2, 3, 4, 5]], [[0, 1, 2, 3, 4, 5]]], which means that the two whole hands are 
+            regarded as one agent respectively.
+
+        is_multi_agent (bool): Specifies whether it is a multi-agent environment
+    """
     def __init__(self, cfg, sim_params, physics_engine, device_type, device_id, headless, agent_index=[[[0, 1, 2, 3, 4, 5]], [[0, 1, 2, 3, 4, 5]]], is_multi_agent=False):
         self.cfg = cfg
         self.sim_params = sim_params
@@ -209,6 +244,9 @@ class ShadowHandPen(BaseTask):
         self.total_resets = 0
 
     def create_sim(self):
+        """
+        Allocates which device will simulate and which device will render the scene. Defines the simulation type to be used
+        """
         self.dt = self.sim_params.dt
         self.up_axis_idx = self.set_sim_params_up_axis(self.sim_params, self.up_axis)
 
@@ -217,11 +255,24 @@ class ShadowHandPen(BaseTask):
         self._create_envs(self.num_envs, self.cfg["env"]['envSpacing'], int(np.sqrt(self.num_envs)))
 
     def _create_ground_plane(self):
+        """
+        Adds ground plane to simulation
+        """
         plane_params = gymapi.PlaneParams()
         plane_params.normal = gymapi.Vec3(0.0, 0.0, 1.0)
         self.gym.add_ground(self.sim, plane_params)
 
     def _create_envs(self, num_envs, spacing, num_per_row):
+        """
+        Create multiple parallel isaacgym environments
+
+        Args:
+            num_envs (int): The total number of environment 
+
+            spacing (float): Specifies half the side length of the square area occupied by each environment
+
+            num_per_row (int): Specify how many environments in a row
+        """
         lower = gymapi.Vec3(-spacing, -spacing, 0.0)
         upper = gymapi.Vec3(spacing, spacing, spacing)
 
@@ -543,6 +594,21 @@ class ShadowHandPen(BaseTask):
         self.ball_indices = to_torch(self.ball_indices, dtype=torch.long, device=self.device)
 
     def compute_reward(self, actions):
+        """
+        Compute the reward of all environment. The core function is compute_hand_reward(
+            self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
+            self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot, self.pen_right_handle_pos, self.pen_left_handle_pos, 
+            self.left_hand_pos, self.right_hand_pos, self.right_hand_ff_pos, self.right_hand_mf_pos, self.right_hand_rf_pos, self.right_hand_lf_pos, self.right_hand_th_pos, 
+            self.left_hand_ff_pos, self.left_hand_mf_pos, self.left_hand_rf_pos, self.left_hand_lf_pos, self.left_hand_th_pos, 
+            self.dist_reward_scale, self.rot_reward_scale, self.rot_eps, self.actions, self.action_penalty_scale,
+            self.success_tolerance, self.reach_goal_bonus, self.fall_dist, self.fall_penalty,
+            self.max_consecutive_successes, self.av_factor, (self.object_type == "pen")
+        )
+        , which we will introduce in detail there
+
+        Args:
+            actions (tensor): Actions of agents in the all environment 
+        """
         self.rew_buf[:], self.reset_buf[:], self.reset_goal_buf[:], self.progress_buf[:], self.successes[:], self.consecutive_successes[:] = compute_hand_reward(
             self.rew_buf, self.reset_buf, self.reset_goal_buf, self.progress_buf, self.successes, self.consecutive_successes,
             self.max_episode_length, self.object_pos, self.object_rot, self.goal_pos, self.goal_rot, self.pen_right_handle_pos, self.pen_left_handle_pos, 
@@ -568,6 +634,11 @@ class ShadowHandPen(BaseTask):
                 print("Post-Reset average consecutive successes = {:.1f}".format(self.total_successes/self.total_resets))
 
     def compute_observations(self):
+        """
+        Compute the observations of all environment. The core function is self.compute_full_state(True), 
+        which we will introduce in detail there
+
+        """
         self.gym.refresh_dof_state_tensor(self.sim)
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_rigid_body_state_tensor(self.sim)
@@ -652,6 +723,38 @@ class ShadowHandPen(BaseTask):
             self.compute_full_state(True)
 
     def compute_full_state(self, asymm_obs=False):
+        """
+        Compute the observations of all environment. The observation is composed of three parts: 
+        the state values of the left and right hands, and the information of objects and target. 
+        The state values of the left and right hands were the same for each task, including hand 
+        joint and finger positions, velocity, and force information. The detail 428-dimensional 
+        observational space as shown in below:
+
+        Index       Description
+        0 - 23	    right shadow hand dof position
+        24 - 47	    right shadow hand dof velocity
+        48 - 71	    right shadow hand dof force
+        72 - 136	right shadow hand fingertip pose, linear velocity, angle velocity (5 x 13)
+        137 - 166	right shadow hand fingertip force, torque (5 x 6)
+        167 - 169	right shadow hand base position
+        170 - 172	right shadow hand base rotation
+        173 - 198	right shadow hand actions
+        199 - 222	left shadow hand dof position
+        223 - 246	left shadow hand dof velocity
+        247 - 270	left shadow hand dof force
+        271 - 335	left shadow hand fingertip pose, linear velocity, angle velocity (5 x 13)
+        336 - 365	left shadow hand fingertip force, torque (5 x 6)
+        366 - 368	left shadow hand base position
+        369 - 371	left shadow hand base rotation
+        372 - 397	left shadow hand actions
+        398 - 404	object pose
+        405 - 407	object linear velocity
+        408 - 410	object angle velocity
+        411 - 417	goal pose
+        418 - 421	goal rot - object rot
+        422 - 424	pen body position
+        425 - 427	pen cap position
+        """
         num_ft_states = 13 * int(self.num_fingertips / 2)  # 65
         num_ft_force_torques = 6 * int(self.num_fingertips / 2)  # 30
 
@@ -707,6 +810,16 @@ class ShadowHandPen(BaseTask):
 
 
     def reset_target_pose(self, env_ids, apply_reset=False):
+        """
+        Reset and randomize the goal pose
+
+        Args:
+            env_ids (tensor): The index of the environment that needs to reset goal pose
+
+            apply_reset (bool): Whether to reset the goal directly here, usually used 
+            when the same task wants to complete multiple goals
+
+        """
         rand_floats = torch_rand_float(-1.0, 1.0, (len(env_ids), 4), device=self.device)
 
         new_rot = randomize_rotation(rand_floats[:, 0], rand_floats[:, 1], self.x_unit_tensor[env_ids], self.y_unit_tensor[env_ids])
@@ -728,6 +841,16 @@ class ShadowHandPen(BaseTask):
         self.reset_goal_buf[env_ids] = 0
 
     def reset(self, env_ids, goal_env_ids):
+        """
+        Reset and randomize the environment
+
+        Args:
+            env_ids (tensor): The index of the environment that needs to reset
+
+            goal_env_ids (tensor): The index of the environment that only goals need reset
+
+        """
+
         # randomization can happen only at reset time, since it can reset actor positions on GPU
         if self.randomize:
             self.apply_randomizations(self.randomization_params)
@@ -822,6 +945,22 @@ class ShadowHandPen(BaseTask):
 
 
     def pre_physics_step(self, actions):
+        """
+        The pre-processing of the physics step. Determine whether the reset environment is needed, 
+        and calculate the next movement of Shadowhand through the given action. The 52-dimensional 
+        action space as shown in below:
+        
+        Index   Description
+        0 - 19 	right shadow hand actuated joint
+        20 - 22	right shadow hand base translation
+        23 - 25	right shadow hand base rotation
+        26 - 45	left shadow hand actuated joint
+        46 - 48	left shadow hand base translation
+        49 - 51	left shadow hand base rotatio
+
+        Args:
+            actions (tensor): Actions of agents in the all environment 
+        """
         env_ids = self.reset_buf.nonzero(as_tuple=False).squeeze(-1)
         goal_env_ids = self.reset_goal_buf.nonzero(as_tuple=False).squeeze(-1)
 
@@ -877,6 +1016,11 @@ class ShadowHandPen(BaseTask):
                                                 gymtorch.unwrap_tensor(all_hand_indices), len(all_hand_indices))  
 
     def post_physics_step(self):
+        """
+        The post-processing of the physics step. Compute the observation and reward, and visualize auxiliary 
+        lines for debug when needed
+        
+        """
         self.progress_buf += 1
         self.randomize_buf += 1
 
@@ -932,6 +1076,69 @@ def compute_hand_reward(
     success_tolerance: float, reach_goal_bonus: float, fall_dist: float,
     fall_penalty: float, max_consecutive_successes: int, av_factor: float, ignore_z_rot: bool
 ):
+    """
+    Compute the reward of all environment.
+
+    Args:
+        rew_buf (tensor): The reward buffer of all environments at this time
+
+        reset_buf (tensor): The reset buffer of all environments at this time
+
+        reset_goal_buf (tensor): The only-goal reset buffer of all environments at this time
+
+        progress_buf (tensor): The porgress buffer of all environments at this time
+
+        successes (tensor): The successes buffer of all environments at this time
+
+        consecutive_successes (tensor): The consecutive successes buffer of all environments at this time
+
+        max_episode_length (float): The max episode length in this environment
+
+        object_pos (tensor): The position of the object
+
+        object_rot (tensor): The rotation of the object
+
+        target_pos (tensor): The position of the target
+
+        target_rot (tensor): The rotate of the target
+
+        pen_left_handle_pos (tensor): The position of the left handle of the pen
+
+        pen_right_handle_pos (tensor): The position of the right handle of the pen
+
+        left_hand_pos, right_hand_pos (tensor): The position of the bimanual hands
+
+        right_hand_ff_pos, right_hand_mf_pos, right_hand_rf_pos, right_hand_lf_pos, right_hand_th_pos (tensor): The position of the five fingers 
+            of the right hand
+
+        left_hand_ff_pos, left_hand_mf_pos, left_hand_rf_pos, left_hand_lf_pos, left_hand_th_pos (tensor): The position of the five fingers 
+            of the left hand
+
+        dist_reward_scale (float): The scale of the distance reward
+
+        rot_reward_scale (float): The scale of the rotation reward
+
+        rot_eps (float): The epsilon of the rotation calculate
+
+        actions (tensor): The action buffer of all environments at this time
+
+        action_penalty_scale (float): The scale of the action penalty reward
+
+        success_tolerance (float): The tolerance of the success determined
+
+        reach_goal_bonus (float): The reward given when the object reaches the goal
+
+        fall_dist (float): When the object is far from the Shadowhand, it is judged as falling
+
+        fall_penalty (float): The reward given when the object is fell
+
+        max_consecutive_successes (float): The maximum of the consecutive successes
+
+        av_factor (float): The average factor for calculate the consecutive successes
+
+        ignore_z_rot (bool): Is it necessary to ignore the rot of the z-axis, which is usually used 
+            for some specific objects (e.g. pen)
+    """
     # Distance from the hand to the object
     goal_dist = torch.norm(target_pos - object_pos, p=2, dim=-1)
     # goal_dist = target_pos[:, 2] - object_pos[:, 2]
