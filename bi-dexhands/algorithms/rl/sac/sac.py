@@ -98,6 +98,7 @@ class SAC:
         self.warm_up = True
 
         # Log
+        log_dir = log_dir + "_seed{}".format(self.vec_env.task.cfg["seed"])
         self.log_dir = log_dir
         self.print_log = print_log
         self.writer = SummaryWriter(log_dir=self.log_dir, flush_secs=10)
@@ -140,8 +141,8 @@ class SAC:
                     next_obs, rews, dones, infos = self.vec_env.step(actions)
                     current_obs.copy_(next_obs)
         else:
-            rewbuffer = deque(maxlen=self.num_transitions_per_env)
-            lenbuffer = deque(maxlen=self.num_transitions_per_env)
+            rewbuffer = deque(maxlen=100)
+            lenbuffer = deque(maxlen=100)
             cur_reward_sum = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
             cur_episode_length = torch.zeros(self.vec_env.num_envs, dtype=torch.float, device=self.device)
 
@@ -180,7 +181,7 @@ class SAC:
                         cur_reward_sum[new_ids] = 0
                         cur_episode_length[new_ids] = 0
 
-                    if self.storage.step > self.batch_size:
+                    if self.storage.step >= self.batch_size:
                         self.warm_up = False
 
                     if self.warm_up == False:
@@ -197,7 +198,6 @@ class SAC:
                 collection_time = stop - start
 
                 mean_trajectory_length, mean_reward = self.storage.get_statistics()
-
                 # Learning step
                 start = stop
                 # TODO: need check the buffer size before update
@@ -238,11 +238,13 @@ class SAC:
                 self.writer.add_scalar('Episode/' + key, value, locs['it'])
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
 
+        fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
 
         self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
         self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
         if len(locs['rewbuffer']) > 0:
             self.writer.add_scalar('Train/mean_reward', statistics.mean(locs['rewbuffer']), locs['it'])
+            self.writer.add_scalar('Train/FPS',fps,locs['it'])
             self.writer.add_scalar('Train/mean_episode_length', statistics.mean(locs['lenbuffer']), locs['it'])
             self.writer.add_scalar('Train/mean_reward/time', statistics.mean(locs['rewbuffer']), self.tot_time)
             self.writer.add_scalar('Train/mean_episode_length/time', statistics.mean(locs['lenbuffer']), self.tot_time)
@@ -250,7 +252,7 @@ class SAC:
         self.writer.add_scalar('Train2/mean_reward/step', locs['mean_reward'], locs['it'])
         self.writer.add_scalar('Train2/mean_episode_length/episode', locs['mean_trajectory_length'], locs['it'])
 
-        fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
+        # fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
 
         str = f" \033[1m Learning iteration {locs['it']}/{locs['num_learning_iterations']} \033[0m "
 
@@ -300,15 +302,14 @@ class SAC:
                 
                 # if learn_ep >= self.num_learning_epochs:
                 #     break
-
                 obs_batch = self.storage.observations[indices]
-                nextobs_batch = self.storage.next_observations[indices]
                 if self.asymmetric:
                     states_batch = self.storage.states[indices]
                 else:
                     states_batch = None
                 actions_batch = self.storage.actions[indices]
                 rewards_batch = self.storage.rewards[indices]
+                nextobs_batch = self.storage.next_observations[indices]
                 dones_batch = self.storage.dones[indices]
 
                 data = {'obs': obs_batch,

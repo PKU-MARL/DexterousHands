@@ -51,9 +51,23 @@ class ReplayBuffer:
         return trajectory_lengths.float().mean(), self.rewards[:self.step].mean()
 
     def mini_batch_generator(self, num_mini_batches):
+        # batch_size = self.num_envs * self.batch_size
+        # mini_batch_size = batch_size // num_mini_batches
+
+        # if self.sampler == "sequential":
+        #     # For physics-based RL, each environment is already randomized. There is no value to doing random sampling
+        #     # but a lot of CPU overhead during the PPO process. So, we can just switch to a sequential sampler instead
+        #     subset = SequentialSampler(range(batch_size))
+        # elif self.sampler == "random":
+        #     subset = SubsetRandomSampler(range(batch_size))
+
+        # batch = BatchSampler(subset, mini_batch_size, drop_last=True)
+        # return batch
+
         #TODO: 可以随机选择batch_size
         batch_size = self.batch_size
         mini_batch_size = batch_size // num_mini_batches
+
         batch = []
         # if self.sampler == "sequential":
         #     # For physics-based RL, each environment is already randomized. There is no value to doing random sampling
@@ -64,7 +78,7 @@ class ReplayBuffer:
         for _ in range(num_mini_batches):
             if self.fullfill == True:
                 subset = random.sample(range(self.replay_size), mini_batch_size)
-                print("fullfill")
+                # print("fullfill")
             else:
                 subset = random.sample(range(self.step), mini_batch_size)
         # batch = BatchSampler(subset, mini_batch_size, drop_last=True)
