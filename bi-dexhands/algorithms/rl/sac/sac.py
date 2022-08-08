@@ -26,20 +26,21 @@ class SAC:
     #TODO： now，obs == state ？
     def __init__(self,
                  vec_env,
-                 actor_critic = MLPActorCritic,
-                 ac_kwargs=dict(),
-                 num_transitions_per_env=8,
-                 num_learning_epochs=5,
-                 num_mini_batches=100,
-                 replay_size=100000,
-                 gamma=0.99,
-                 polyak=0.99,
-                 learning_rate=1e-3,
-                 max_grad_norm =0.5,
-                 entropy_coef=0.2,
-                 use_clipped_value_loss=True,
-                 reward_scale=1,
-                 batch_size=32,
+                 cfg_train,
+                #  actor_critic = MLPActorCritic,
+                #  ac_kwargs=dict(),
+                #  num_transitions_per_env=8,
+                #  num_learning_epochs=5,
+                #  num_mini_batches=100,
+                #  replay_size=100000,
+                #  gamma=0.99,
+                #  polyak=0.99,
+                #  learning_rate=1e-3,
+                #  max_grad_norm =0.5,
+                #  entropy_coef=0.2,
+                #  use_clipped_value_loss=True,
+                #  reward_scale=1,
+                #  batch_size=32,
                  device='cpu',
                  sampler='random',
                  log_dir='run',
@@ -59,18 +60,21 @@ class SAC:
         self.observation_space = vec_env.observation_space
         self.action_space = vec_env.action_space
         self.state_space = vec_env.state_space
-
+        learn_cfg = cfg_train["learn"]
         self.device = device
         self.asymmetric = asymmetric
-        self.learning_rate = learning_rate
-
+        self.learning_rate = learn_cfg["learning_rate"]
+        self.replay_size = learn_cfg["replay_size"]
+        self.batch_size=learn_cfg["batch_size"]
+        self.num_transitions_per_env=learn_cfg["nsteps"]
         # SAC components
         self.vec_env = vec_env
-        self.actor_critic = actor_critic(vec_env.observation_space, vec_env.action_space, **ac_kwargs).to(self.device)
+        ac_kwargs = dict(hidden_sizes=[learn_cfg["hidden_nodes"]]* learn_cfg["hidden_layer"])
+        self.actor_critic = MLPActorCritic(vec_env.observation_space, vec_env.action_space, **ac_kwargs).to(self.device)
         print(self.actor_critic)
         self.actor_critic_targ = deepcopy(self.actor_critic)
 
-        self.storage = ReplayBuffer(vec_env.num_envs, replay_size, batch_size, num_transitions_per_env, self.observation_space.shape,
+        self.storage = ReplayBuffer(vec_env.num_envs, self.replay_size, self.batch_size, self.num_transitions_per_env, self.observation_space.shape,
                                      self.state_space.shape, self.action_space.shape, self.device, sampler)
 
         # Freeze target networks with respect to optimizers (only update via polyak averaging)
@@ -85,16 +89,16 @@ class SAC:
 
         #SAC parameters
 
-        self.num_transitions_per_env = num_transitions_per_env
-        self.num_learning_epochs = num_learning_epochs
-        self.num_mini_batches = num_mini_batches
-        self.entropy_coef = entropy_coef
-        self.gamma = gamma
-        self.polyak = polyak
-        self.max_grad_norm = max_grad_norm
-        self.use_clipped_value_loss = use_clipped_value_loss
-        self.reward_scale = reward_scale
-        self.batch_size = batch_size
+        self.num_transitions_per_env = learn_cfg["nsteps"]
+        self.num_learning_epochs = learn_cfg["noptepochs"]
+        self.num_mini_batches = learn_cfg["nminibatches"]
+        self.entropy_coef = learn_cfg["ent_coef"]
+        self.gamma = learn_cfg["gamma"]
+        self.polyak = learn_cfg["polyak"]
+        self.max_grad_norm = learn_cfg.get("max_grad_norm", 2.0)
+        self.use_clipped_value_loss = learn_cfg.get("use_clipped_value_loss", False)
+        self.reward_scale = learn_cfg["reward_scale"]
+        self.batch_size = learn_cfg["batch_size"]
         self.warm_up = True
 
         # Log

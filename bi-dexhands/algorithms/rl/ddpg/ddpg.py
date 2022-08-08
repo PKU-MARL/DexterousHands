@@ -25,22 +25,7 @@ class DDPG:
     #TODO： now，obs == state ？
     def __init__(self,
                  vec_env,
-                 actor_critic = MLPActorCritic,
-                 ac_kwargs=dict(),
-                 num_transitions_per_env=1000,
-                 num_learning_epochs=50,
-                 num_mini_batches=100,
-                 replay_size=int(1e6),
-                 gamma=0.99,
-                 polyak=0.995,
-                 learning_rate=1e-3,
-                 max_grad_norm =0.5,
-                 act_noise=0.1,
-                 target_noise=0.2,
-                 noise_clip=0.5,
-                 use_clipped_value_loss=True,
-                 reward_scale=1,
-                 batch_size=64,
+                 cfg_train,
                  device='cpu',
                  sampler='random',
                  log_dir='run',
@@ -64,29 +49,32 @@ class DDPG:
 
         self.device = device
         self.asymmetric = asymmetric
-        self.learning_rate = learning_rate
-
+        learn_cfg = cfg_train["learn"]
+        self.learning_rate = learn_cfg["learning_rate"]
         #DDDPG parameters
 
-        self.num_transitions_per_env = num_transitions_per_env
-        self.num_learning_epochs = num_learning_epochs
-        self.num_mini_batches = num_mini_batches
-        self.gamma = gamma
-        self.polyak = polyak
-        self.max_grad_norm = max_grad_norm
-        self.target_noise = target_noise
-        self.act_noise = act_noise
-        self.noise_clip= noise_clip
-        self.use_clipped_value_loss = use_clipped_value_loss
+        self.num_transitions_per_env = learn_cfg["nsteps"]
+        self.num_learning_epochs = learn_cfg["noptepochs"]
+        self.num_mini_batches = learn_cfg["nminibatches"]
+        self.gamma = learn_cfg["gamma"]
+        self.polyak = learn_cfg["polyak"]
+        self.max_grad_norm = learn_cfg.get("max_grad_norm", 2.0)
+        self.target_noise = learn_cfg["target_noise"]
+        self.act_noise = learn_cfg["act_noise"]
+        self.noise_clip= learn_cfg["noise_clip"]
+        self.use_clipped_value_loss = learn_cfg.get("use_clipped_value_loss", False)
+        self.replay_size = learn_cfg["replay_size"]
+        self.batch_size=learn_cfg["batch_size"]
+        self.num_transitions_per_env=learn_cfg["nsteps"]
 
         # DDPG components
         self.vec_env = vec_env
-        self.actor_critic = actor_critic(vec_env.observation_space, vec_env.action_space,self.act_noise, self.device, **ac_kwargs).to(self.device)
+        ac_kwargs = dict(hidden_sizes=[learn_cfg["hidden_nodes"]]* learn_cfg["hidden_layer"])
+        self.actor_critic = MLPActorCritic(vec_env.observation_space, vec_env.action_space,self.act_noise, self.device, **ac_kwargs).to(self.device)        
         self.actor_critic_targ = deepcopy(self.actor_critic)
 
-        self.storage = ReplayBuffer(vec_env.num_envs, replay_size, batch_size, num_transitions_per_env, self.observation_space.shape,
-                                     self.state_space.shape, self.action_space.shape, self.device, sampler)
-
+        self.storage = ReplayBuffer(vec_env.num_envs, self.replay_size, self.batch_size, self.num_transitions_per_env, self.observation_space.shape,
+                                        self.state_space.shape, self.action_space.shape, self.device, sampler)
         # Freeze target networks with respect to optimizers (only update via polyak averaging)
         for p in self.actor_critic_targ.parameters():
             p.requires_grad = False
@@ -99,18 +87,8 @@ class DDPG:
 
         #DDDPG parameters
 
-        self.num_transitions_per_env = num_transitions_per_env
-        self.num_learning_epochs = num_learning_epochs
-        self.num_mini_batches = num_mini_batches
-        self.gamma = gamma
-        self.polyak = polyak
-        self.max_grad_norm = max_grad_norm
-        self.target_noise = target_noise
-        self.act_noise = act_noise
-        self.noise_clip= noise_clip
-        self.use_clipped_value_loss = use_clipped_value_loss
-        self.reward_scale = reward_scale
-        self.batch_size = batch_size
+        self.reward_scale = learn_cfg["reward_scale"]
+        self.batch_size = learn_cfg["batch_size"]
         self.warm_up = True
         # Log
         self.log_dir = log_dir

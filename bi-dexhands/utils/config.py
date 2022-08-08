@@ -61,80 +61,15 @@ def set_seed(seed, torch_deterministic=False):
 
 def retrieve_cfg(args, use_rlg_config=False):
 
-    #TODO: add config files of sac, td3
-    # 这里的设计有点不合理 可以修正
-    if args.task == "ShadowHandOver":
-        return os.path.join(args.logdir, "shadow_hand_over/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo) , "cfg/shadow_hand_over.yaml"
-    elif args.task == "ShadowHandCatchOverarm":
-        return os.path.join(args.logdir, "shadow_hand_catch_overarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_catch_overarm.yaml"
-    elif args.task == "ShadowHandCatchUnderarm":
-        return os.path.join(args.logdir, "shadow_hand_catch_underarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_catch_underarm.yaml"
-    elif args.task == "ShadowHandTwoCatchUnderarm":
-        return os.path.join(args.logdir, "shadow_hand_two_catch_underarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_two_catch_underarm.yaml"
-    elif args.task == "ShadowHandCatchAbreast":
-        return os.path.join(args.logdir, "shadow_hand_catch_abreast/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_catch_abreast.yaml"
-    elif args.task == "ShadowHandReOrientation":
-        return os.path.join(args.logdir, "shadow_hand_re_orientation/{}/{}".format(args.algo, args.algo)), "cfg/{}/re_orientation_config.yaml".format(args.algo), "cfg/shadow_hand_re_orientation.yaml"
-    elif args.task == "ShadowHandOverOverarm":
-        return os.path.join(args.logdir, "shadow_hand_over_overarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_over_overarm.yaml"
-    # elif args.task == "ShadowHand":
-    #     return os.path.join(args.logdir, "shadow_hand/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand.yaml"
-    elif args.task == "OneFrankaCabinet":
-        return os.path.join(args.logdir, "franka_cabinet/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/franka_cabinet.yaml"
-    elif args.task == "ShadowHandLiftOverarm":
-        return os.path.join(args.logdir, "shadow_hand_lift_overarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/lift_config.yaml".format(args.algo), "cfg/shadow_hand_lift_overarm.yaml"
-    elif args.task == "ShadowHandLiftUnderarm":
-        return os.path.join(args.logdir, "shadow_hand_lift_underarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/lift_config.yaml".format(args.algo), "cfg/shadow_hand_lift_underarm.yaml"
-    elif args.task == "ShadowHandLift":
-        return os.path.join(args.logdir, "shadow_hand_lift/{}/{}".format(args.algo, args.algo)), "cfg/{}/lift_config.yaml".format(args.algo), "cfg/shadow_hand_lift.yaml"
-    elif args.task == "Humanoid":
-        return os.path.join(args.logdir, "humanoid/{}/{}".format(args.algo, args.algo)), "cfg/{}/humanoid_config.yaml".format(args.algo), "cfg/humanoid.yaml"
-    elif args.task == "ShadowHandThrowAbreast":
-        return os.path.join(args.logdir, "shadow_hand_throw_abreast/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_throw_abreast.yaml"
-    elif args.task == "ShadowHandCatchOver2Underarm":
-        return os.path.join(args.logdir, "shadow_hand_catch_over2underarm/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_catch_over2underarm.yaml"
-    elif args.task == "ShadowHandTest":
-        return os.path.join(args.logdir, "shadow_hand_test/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_test.yaml"
-    elif args.task == "ShadowHandLiftUnderarm2":
-        return os.path.join(args.logdir, "shadow_hand_lift_underarm2/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_lift_underarm2.yaml"
-    elif args.task == "ShadowHandBottleCap":
-        return os.path.join(args.logdir, "shadow_hand_bottle_cap/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_bottle_cap.yaml"
-    elif args.task == "ShadowHandDoorCloseInward":
-        return os.path.join(args.logdir, "shadow_hand_door_close_inward/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_door_close_inward.yaml"
-    elif args.task == "ShadowHandDoorCloseOutward":
-        return os.path.join(args.logdir, "shadow_hand_door_close_outward/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_door_close_outward.yaml"
-    elif args.task == "ShadowHandDoorOpenInward":
-        return os.path.join(args.logdir, "shadow_hand_door_open_inward/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_door_open_inward.yaml"
-    elif args.task == "ShadowHandDoorOpenOutward":
-        return os.path.join(args.logdir, "shadow_hand_door_open_outward/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_door_open_outward.yaml"
-    elif args.task == "ShadowHandKettle":
-        return os.path.join(args.logdir, "shadow_hand_kettle/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_kettle.yaml"
-    elif args.task == "ShadowHandPen":
-        return os.path.join(args.logdir, "shadow_hand_pen/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_pen.yaml"
-    elif args.task == "ShadowHandBlockStack":
-        return os.path.join(args.logdir, "shadow_hand_block_stack/{}/{}".format(args.algo, args.algo)), "cfg/{}/stack_block_config.yaml".format(args.algo), "cfg/shadow_hand_block_stack.yaml"
-    elif args.task == "ShadowHandSwitch":
-        return os.path.join(args.logdir, "shadow_hand_switch/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_switch.yaml"
-    elif args.task == "ShadowHandMeta":
-        return os.path.join(args.logdir, "shadow_hand_meta/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta.yaml"
-    elif args.task == "ShadowHandLiftCup":
-        return os.path.join(args.logdir, "shadow_hand_lift_cup/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_lift_cup.yaml"
-    elif args.task == "ShadowHandMetaMT1":
-        return os.path.join(args.logdir, "shadow_hand_meta_mt1/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt1.yaml"
-    elif args.task == "ShadowHandMetaML1":
-        return os.path.join(args.logdir, "shadow_hand_meta_ml1/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_ml1.yaml"
-    elif args.task == "ShadowHandMetaMT4":
-        return os.path.join(args.logdir, "shadow_hand_meta_mt4/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt4.yaml"
-    elif args.task == "ShadowHandPushBlock":
-        return os.path.join(args.logdir, "shadow_hand_push_block/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_push_block.yaml"
-    elif args.task == "ShadowHandSwingCup":
-        return os.path.join(args.logdir, "shadow_hand_swing_cup/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_swing_cup.yaml"
-    elif args.task == "ShadowHandGraspAndPlace":
-        return os.path.join(args.logdir, "shadow_hand_grasp_and_place/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_grasp_and_place.yaml"
-    elif args.task == "ShadowHandScissors":
-        return os.path.join(args.logdir, "shadow_hand_scissors/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/shadow_hand_scissors.yaml"
-    elif args.task == "ShadowHandMetaMT20":
-        return os.path.join(args.logdir, "shadow_hand_meta_mt20/{}/{}".format(args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/shadow_hand_meta_mt20.yaml"
+    if args.task in ["ShadowHandOver", "ShadowHandCatchUnderarm", "ShadowHandTwoCatchUnderarm", "ShadowHandCatchAbreast", "ShadowHandReOrientation",
+                    "ShadowHandLiftUnderarm", "ShadowHandCatchOver2Underarm", "ShadowHandBottleCap", "ShadowHandDoorCloseInward", "ShadowHandDoorOpenInward",
+                    "ShadowHandDoorOpenInward", "ShadowHandDoorOpenOutward", "ShadowHandKettle", "ShadowHandPen", "ShadowHandBlockStack", "ShadowHandSwitch",
+                    "ShadowHandPushBlock", "ShadowHandSwingCup", "ShadowHandGraspAndPlace", "ShadowHandScissors"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
+
+    elif args.task in ["ShadowHandMetaML1", "ShadowHandMetaMT1", "ShadowHandMetaML4", "ShadowHandMetaMT4", "ShadowHandMetaMT20", "ShadowHandMetaML20"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/{}.yaml".format(args.task)
+
     else:
         warn_task_name()
 

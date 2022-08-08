@@ -14,28 +14,14 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from algorithms.rl.ppo import RolloutStorage
+from algorithms.rl.ppo import ActorCritic
 
+import copy
 
 class PPO:
-
     def __init__(self,
                  vec_env,
-                 actor_critic_class,
-                 num_transitions_per_env,
-                 num_learning_epochs,
-                 num_mini_batches,
-                 clip_param=0.2,
-                 gamma=0.998,
-                 lam=0.95,
-                 init_noise_std=1.0,
-                 value_loss_coef=1.0,
-                 entropy_coef=0.0,
-                 learning_rate=1e-3,
-                 max_grad_norm=0.5,
-                 use_clipped_value_loss=True,
-                 schedule="fixed",
-                 desired_kl=None,
-                 model_cfg=None,
+                 cfg_train,
                  device='cpu',
                  sampler='sequential',
                  log_dir='run',
@@ -54,34 +40,38 @@ class PPO:
         self.observation_space = vec_env.observation_space
         self.action_space = vec_env.action_space
         self.state_space = vec_env.state_space
-
+        self.cfg_train = copy.deepcopy(cfg_train)
+        learn_cfg = self.cfg_train["learn"]
         self.device = device
         self.asymmetric = asymmetric
-
-        self.desired_kl = desired_kl
-        self.schedule = schedule
-        self.step_size = learning_rate
+        self.desired_kl = learn_cfg.get("desired_kl", None)
+        self.schedule = learn_cfg.get("schedule", "fixed")
+        self.step_size = learn_cfg["optim_stepsize"]
+        self.init_noise_std = learn_cfg.get("init_noise_std", 0.3)
+        self.model_cfg = self.cfg_train["policy"]
+        self.num_transitions_per_env=learn_cfg["nsteps"]
+        self.learning_rate=learn_cfg["optim_stepsize"]
 
         # PPO components
         self.vec_env = vec_env
-        self.actor_critic = actor_critic_class(self.observation_space.shape, self.state_space.shape, self.action_space.shape,
-                                               init_noise_std, model_cfg, asymmetric=asymmetric)
+        self.actor_critic = ActorCritic(self.observation_space.shape, self.state_space.shape, self.action_space.shape,
+                                               self.init_noise_std, self.model_cfg, asymmetric=asymmetric)
         self.actor_critic.to(self.device)
-        self.storage = RolloutStorage(self.vec_env.num_envs, num_transitions_per_env, self.observation_space.shape,
+        self.storage = RolloutStorage(self.vec_env.num_envs, self.num_transitions_per_env, self.observation_space.shape,
                                       self.state_space.shape, self.action_space.shape, self.device, sampler)
-        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=self.learning_rate)
 
         # PPO parameters
-        self.clip_param = clip_param
-        self.num_learning_epochs = num_learning_epochs
-        self.num_mini_batches = num_mini_batches
-        self.num_transitions_per_env = num_transitions_per_env
-        self.value_loss_coef = value_loss_coef
-        self.entropy_coef = entropy_coef
-        self.gamma = gamma
-        self.lam = lam
-        self.max_grad_norm = max_grad_norm
-        self.use_clipped_value_loss = use_clipped_value_loss
+        self.clip_param = learn_cfg["cliprange"]
+        self.num_learning_epochs = learn_cfg["noptepochs"]
+        self.num_mini_batches = learn_cfg["nminibatches"]
+        self.num_transitions_per_env = self.num_transitions_per_env
+        self.value_loss_coef = learn_cfg.get("value_loss_coef", 2.0)
+        self.entropy_coef = learn_cfg["ent_coef"]
+        self.gamma = learn_cfg["gamma"]
+        self.lam = learn_cfg["lam"]
+        self.max_grad_norm = learn_cfg.get("max_grad_norm", 2.0)
+        self.use_clipped_value_loss = learn_cfg.get("use_clipped_value_loss", False)
 
         # Log
         self.log_dir = log_dir

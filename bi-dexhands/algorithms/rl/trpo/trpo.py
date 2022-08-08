@@ -14,31 +14,32 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from algorithms.rl.trpo import RolloutStorage
-
+from algorithms.rl.trpo import ActorCritic
 
 class TRPO:
 
     def __init__(self,
                  vec_env,
-                 actor_critic_class,
-                 num_transitions_per_env,
-                 num_learning_epochs,
-                 num_mini_batches,
-                 clip_param=0.2,
-                 gamma=0.998,
-                 lam=0.95,
-                 init_noise_std=1.0,
-                 damping = 0.1,
-                 cg_nsteps = 10,
-                 max_kl = 1e-2,
-                 max_num_backtrack= 10,
-                 accept_ratio = 0.1,
-                 step_fraction = 1,
-                 learning_rate=1e-3,
-                 max_grad_norm=0.5,
-                 use_clipped_value_loss=True,
-                 schedule="fixed",
-                 model_cfg=None,
+                 cfg_train,
+                #  actor_critic_class,
+                #  num_transitions_per_env,
+                #  num_learning_epochs,
+                #  num_mini_batches,
+                #  clip_param=0.2,
+                #  gamma=0.998,
+                #  lam=0.95,
+                #  init_noise_std=1.0,
+                #  damping = 0.1,
+                #  cg_nsteps = 10,
+                #  max_kl = 1e-2,
+                #  max_num_backtrack= 10,
+                #  accept_ratio = 0.1,
+                #  step_fraction = 1,
+                #  learning_rate=1e-3,
+                #  max_grad_norm=0.5,
+                #  use_clipped_value_loss=True,
+                #  schedule="fixed",
+                #  model_cfg=None,
                  device='cpu',
                  sampler='sequential',
                  log_dir='run',
@@ -60,35 +61,37 @@ class TRPO:
 
         self.device = device
         self.asymmetric = asymmetric
-
-        self.schedule = schedule
-        self.step_size = learning_rate
-
+        learn_cfg = cfg_train["learn"]
+        self.schedule = learn_cfg.get("schedule", "fixed")
+        self.step_size = learn_cfg["optim_stepsize"]
+        self.init_noise_std = learn_cfg.get("init_noise_std", 0.3)
+        self.model_cfg = cfg_train["policy"]
+        self.num_transitions_per_env = learn_cfg["nsteps"]
+        self.learning_rate=learn_cfg["optim_stepsize"]
         # PPO components
         self.vec_env = vec_env
-        self.actor_critic = actor_critic_class(self.observation_space.shape, self.state_space.shape, self.action_space.shape,
-                                               init_noise_std, model_cfg, asymmetric=asymmetric)
+        self.actor_critic = ActorCritic(self.observation_space.shape, self.state_space.shape, self.action_space.shape,
+                                               self.init_noise_std, self.model_cfg, asymmetric=asymmetric)
         self.actor_critic.to(self.device)
-        self.storage = RolloutStorage(self.vec_env.num_envs, num_transitions_per_env, self.observation_space.shape,
+        self.storage = RolloutStorage(self.vec_env.num_envs, self.num_transitions_per_env, self.observation_space.shape,
                                       self.state_space.shape, self.action_space.shape, self.device, sampler)
-        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=learning_rate)
+        self.optimizer = optim.Adam(self.actor_critic.parameters(), lr=self.learning_rate)
 
         # TRPO parameters
-        self.clip_param = clip_param
-        self.num_learning_epochs = num_learning_epochs
-        self.num_mini_batches = num_mini_batches
-        self.num_transitions_per_env = num_transitions_per_env
-        self.damping = damping
-        self.cg_nsteps = cg_nsteps
-        self.max_kl= max_kl
-        self.max_num_backtrack =max_num_backtrack
-        self.accept_ratio = accept_ratio
-        self.step_fraction = step_fraction
+        self.clip_param = learn_cfg["cliprange"]
+        self.num_learning_epochs = learn_cfg["noptepochs"]
+        self.num_mini_batches = learn_cfg["nminibatches"]
+        self.damping = learn_cfg["damping"]
+        self.cg_nsteps = learn_cfg["cg_nsteps"]
+        self.max_kl= learn_cfg["max_kl"]
+        self.max_num_backtrack = learn_cfg["max_num_backtrack"]
+        self.accept_ratio = learn_cfg["accept_ratio"]
+        self.step_fraction = learn_cfg["step_fraction"]
 
-        self.gamma = gamma
-        self.lam = lam
-        self.max_grad_norm = max_grad_norm
-        self.use_clipped_value_loss = use_clipped_value_loss
+        self.gamma = learn_cfg["gamma"]
+        self.lam = learn_cfg["lam"]
+        self.max_grad_norm = learn_cfg.get("max_grad_norm", 2.0)
+        self.use_clipped_value_loss = learn_cfg.get("use_clipped_value_loss", False)
 
         # Log
         self.log_dir = log_dir

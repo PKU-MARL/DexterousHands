@@ -18,7 +18,7 @@ Reaching human-level sophistication of hand dexterity and bimanual coordination 
 - **Quick Demos**
 
 <div align=center>
-<img src="assets/image_folder/quick_demo2.gif" align="center" width="600"/>
+<img src="assets/image_folder/quick_demo3.gif" align="center" width="600"/>
 </div> 
  
 

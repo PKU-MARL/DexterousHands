@@ -11,7 +11,7 @@ import random
 
 from utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
 from utils.parse_task import parse_task
-from utils.process_sarl import *
+from utils.process_sarl import process_sarl
 from utils.process_marl import process_MultiAgentRL, get_AgentIndex
 from utils.process_mtrl import *
 from utils.process_metarl import *
@@ -38,7 +38,7 @@ def train():
     elif args.algo in ["ppo","ddpg","sac","td3","trpo"]:
         task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
 
-        sarl = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
+        sarl = eval('process_sarl')(args, env, cfg_train, logdir)
 
         iterations = cfg_train["learn"]["max_iterations"]
         if args.max_iterations > 0:
