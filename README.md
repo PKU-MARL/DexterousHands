@@ -431,6 +431,11 @@ CUDA kernel errors might be asynchronously reported at some other API call,so th
 ```
 - Although we provide the implementation, we did not tested **DDPG**, **TD3**, and **MADDPG** algorithms, they may still have bugs.
 
+## Future Plan
+ - [ ] Normalized reward function
+ - [ ] Benchmark other RL algorithms
+ - [ ] Add fatory environment (see [this](https://sites.google.com/nvidia.com/factory))
+
 ## Citation
 Please cite as following if you think this work is helpful for you:
 ```
