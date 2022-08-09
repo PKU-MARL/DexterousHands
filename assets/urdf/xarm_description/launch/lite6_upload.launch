@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<launch>
+
+  <arg name="limited" default="false" doc="If true, limits joint range [-PI, PI] on all joints." />
+  <arg name="add_gripper" default="false" doc="If true, will attach xarm_gripper from UFACTORY to the end" />
+  <arg name="add_vacuum_gripper" default="false" doc="If true, will attach vacuum gripper from UFACTORY to the end" />
+  <arg name="robot_type" default="lite" />
+  
+  <param name="robot_description"
+    command="$(find xacro)/xacro
+    --inorder '$(find xarm_description)/urdf/$(arg robot_type)6_robot.urdf.xacro'
+    limited:=$(arg limited) add_gripper:=$(arg add_gripper) add_vacuum_gripper:=$(arg add_vacuum_gripper)" />
+</launch>

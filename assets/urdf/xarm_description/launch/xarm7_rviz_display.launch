@@ -1,0 +1,27 @@
+<?xml version="1.0"?>
+<launch>
+
+  <!--test cmd: roslaunch xarm_description xarm7_rviz_test.launch limited:=true-->
+
+  <arg name="limited" default="True" doc="If true, limits joint range (-PI, PI) on all joints." />
+  <arg name="add_gripper" default="false" doc="If true, will load xarm5 with gripper from UFACTORY attached." />
+  <arg name="joint_state_source" default="[/joint_states]" />
+  <arg name="joint_state_publisher_gui" default="true" />
+
+  <include file="$(find xarm_description)/launch/xarm7_upload.launch" >
+    <arg name="limited" value="$(arg limited)"/>
+    <arg name="add_gripper" value="$(arg add_gripper)" />
+  </include>
+
+  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher">
+    <param name="use_gui" value="$(arg joint_state_publisher_gui)"/>
+    <rosparam param="source_list" subst_value="True">$(arg joint_state_source)</rosparam>
+  </node>
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="robot_state_publisher" />
+
+  <arg name="config" default="true" />
+  <arg unless="$(arg config)" name="command_args" value="" />
+  <arg     if="$(arg config)" name="command_args" value="-d $(find xarm_description)/launch/display.rviz" />
+  
+  <node name="rviz" pkg="rviz" type="rviz" args="$(arg command_args)" output="screen"/>
+</launch>

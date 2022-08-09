@@ -38,7 +38,10 @@ Contents of this repo are as follows:
   - [Plotting](#Plotting)
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
-- [Building the Documentation](#Building-the-Documentation)
+- [Future Plan](#Future-Plan)
+- [Customizing your Environments](docs/customize-the-environment.md)
+- [How to change the type of dexterous hand](docs/Change-the-type-of-dexterous-hand.md)
+- [How to add a robotic arm drive to the dexterous hand](docs/Add-a-robotic-arm-drive-to-the-dexterous-hand.md)
 - [The Team](#The-Team)
 - [License](#License)
 <br></br>

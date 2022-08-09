@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="lite6" >
+  <xacro:macro name="lite6_robot" params="prefix:='' namespace:='xarm' limited:='false' effort_control:='false' 
+    velocity_control:='false' attach_to:='world' xyz:='0 0 0' rpy:='0 0 0' load_gazebo_plugin:='true' rs_d435i:='false'
+    add_other_geometry:='false' 
+    geometry_type:='box' geometry_mass:='0.1' 
+    geometry_radius:='0.1' geometry_height:='0.1' 
+    geometry_length:='0.1' geometry_width:='0.1'
+    geometry_mesh_filename:=''
+    geometry_mesh_origin_xyz:='0 0 0'
+    geometry_mesh_origin_rpy:='0 0 0'
+    geometry_mesh_tcp_xyz:='0 0 0'
+    geometry_mesh_tcp_rpy:='0 0 0' ">
+
+    <!-- include lite6 relative macros: -->
+    <xacro:include filename="$(find xarm_description)/urdf/lite6.urdf.xacro" />
+    <xacro:include filename="$(find xarm_description)/urdf/lite6.transmission.xacro" />
+    <xacro:include filename="$(find xarm_description)/urdf/lite6.gazebo.xacro" />
+
+    <!-- gazebo_plugin -->
+    <xacro:if value="${load_gazebo_plugin}">
+    <xacro:include filename="$(find xarm_description)/urdf/common.gazebo.xacro" />
+    <xacro:gazebo_ros_control_plugin namespace="${namespace}"/>
+    </xacro:if>
+
+    <!-- add one world link if no 'attach_to' specified  -->
+    <xacro:if value="${attach_to == 'world'}">
+      <link name="world" />
+    </xacro:if>
+
+    <joint name="${prefix}world_joint" type="fixed">
+      <parent link="${attach_to}" />
+      <child link = "${prefix}link_base" />
+      <origin xyz="${xyz}" rpy="${rpy}" />
+    </joint>
+
+    <xacro:if value="${limited}">
+      <xacro:lite6_urdf prefix="${prefix}"
+        joint1_lower_limit="${-pi}"   joint1_upper_limit="${pi}"
+        joint2_lower_limit="${-2.61799}"  joint2_upper_limit="${2.61799}"
+        joint3_lower_limit="${-0.061087}" joint3_upper_limit="${5.235988}"
+        joint4_lower_limit="${-pi}"   joint4_upper_limit="${pi}"
+        joint5_lower_limit="${-2.1642}"   joint5_upper_limit="${2.1642}"
+        joint6_lower_limit="${-pi}"   joint6_upper_limit="${pi}"
+        rs_d435i="${rs_d435i}"/>
+    </xacro:if>
+    <xacro:unless value="${limited}">
+      <xacro:lite6_urdf prefix="${prefix}" rs_d435i="${rs_d435i}"/>
+    </xacro:unless>
+
+    <xacro:lite6_transmission prefix="${prefix}" hard_interface="$(eval 'EffortJointInterface' if ${effort_control} else 'VelocityJointInterface' if ${velocity_control} else 'PositionJointInterface')" />
+    
+    <xacro:lite6_gazebo prefix="${prefix}" />
+
+    <xacro:if value="${add_other_geometry}">
+      <xacro:include filename="$(find xarm_description)/urdf/other_geometry.urdf.xacro" />
+      <xacro:other_geometry prefix="${prefix}" attach_to="${prefix}link_eef"
+        geometry_type="${geometry_type}" geometry_mass="${geometry_mass}" 
+        geometry_height="${geometry_height}" geometry_radius="${geometry_radius}"
+        geometry_length="${geometry_length}" geometry_width="${geometry_width}"
+        geometry_mesh_filename="${geometry_mesh_filename}" 
+        geometry_mesh_origin_xyz="${geometry_mesh_origin_xyz}" geometry_mesh_origin_rpy="${geometry_mesh_origin_rpy}"
+        geometry_mesh_tcp_xyz="${geometry_mesh_tcp_xyz}" geometry_mesh_tcp_rpy="${geometry_mesh_tcp_rpy}"
+      />
+    </xacro:if>
+
+  </xacro:macro>
+
+</robot>

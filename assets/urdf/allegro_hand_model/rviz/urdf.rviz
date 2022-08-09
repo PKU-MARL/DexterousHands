@@ -1,0 +1,37 @@
+Panels:
+  - Class: rviz/Displays
+    Name: Displays
+  - Class: rviz/Views
+    Name: Views
+Visualization Manager:
+  Displays:
+    - Class: rviz/Grid
+      Name: Grid
+      Value: true
+    - Alpha: 0.8
+      Class: rviz/RobotModel
+      Enabled: true
+      Name: RobotModel
+      Robot Description: robot_description
+      Value: true
+    - Class: rviz/TF
+      Name: TF
+      Value: false
+  Global Options:
+    Fixed Frame: base_link
+    Frame Rate: 30
+  Name: root
+  Tools:
+    - Class: rviz/MoveCamera
+  Value: true
+  Views:
+    Current:
+      Class: rviz/Orbit
+      Distance: 1.7
+      Name: Current View
+      Pitch: 0.33
+      Value: Orbit (rviz)
+      Yaw: 5.5
+Window Geometry:
+  Height: 800
+  Width: 1200

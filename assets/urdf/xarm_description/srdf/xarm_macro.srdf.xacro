@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<robot xmlns:xacro="http://wiki.ros.org/xacro" name="xarm_srdf">
+  <xacro:macro name="xarm_macro_srdf" params="prefix:='' dof:=7 robot_type:='xarm'
+    add_gripper:='false' add_vacuum_gripper:='false' add_other_geometry:='false' "> 
+    
+    <xacro:if value="${dof == 5}">
+      <xacro:include filename="$(find xarm_description)/srdf/_xarm5_macro.srdf.xacro" />
+      <xacro:xarm5_macro_srdf prefix="${prefix}" 
+        add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}" />
+    </xacro:if>
+    
+    <xacro:if value="${dof == 6}">
+      <xacro:if value="${robot_type == 'lite'}">
+        <xacro:include filename="$(find xarm_description)/srdf/_lite6_macro.srdf.xacro" />
+        <xacro:lite6_macro_srdf prefix="${prefix}" 
+          add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+      </xacro:if>
+      <xacro:unless value="${robot_type == 'lite'}">
+        <xacro:include filename="$(find xarm_description)/srdf/_xarm6_macro.srdf.xacro" />
+        <xacro:xarm6_macro_srdf prefix="${prefix}" 
+          add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+      </xacro:unless>
+    </xacro:if>
+
+    <xacro:unless value="${dof == 5 or dof == 6}">
+      <xacro:include filename="$(find xarm_description)/srdf/_xarm7_macro.srdf.xacro" />
+      <xacro:xarm7_macro_srdf prefix="${prefix}" 
+        add_gripper="${add_gripper}" add_vacuum_gripper="${add_vacuum_gripper}" add_other_geometry="${add_other_geometry}"  />
+    </xacro:unless>
+  </xacro:macro>
+</robot>

@@ -1,0 +1,44 @@
+Background\ ColorR=0.0941176
+Background\ ColorG=0
+Background\ ColorB=0.466667
+Fixed\ Frame=/base_link
+Target\ Frame=<Fixed Frame>
+Grid.Alpha=0.5
+Grid.Cell\ Size=0.5
+Grid.ColorR=0.898039
+Grid.ColorG=0.898039
+Grid.ColorB=0.898039
+Grid.Enabled=1
+Grid.Line\ Style=0
+Grid.Line\ Width=0.03
+Grid.Normal\ Cell\ Count=0
+Grid.OffsetX=0
+Grid.OffsetY=0
+Grid.OffsetZ=0
+Grid.Plane=0
+Grid.Plane\ Cell\ Count=10
+Grid.Reference\ Frame=<Fixed Frame>
+Robot\ Model.Alpha=1
+Robot\ Model.Collision\ Enabled=0
+Robot\ Model.Enabled=1
+Robot\ Model.Robot\ Description=robot_description
+Robot\ Model.TF\ Prefix=
+Robot\ Model.Update\ Interval=0
+Robot\ Model.Visual\ Enabled=1
+Robot\:\ Robot\ Model\ Link\ base_linkShow\ Axes=0
+Robot\:\ Robot\ Model\ Link\ base_linkShow\ Trail=0
+Robot\:\ Robot\ Model\ Link\ legShow\ Axes=0
+Robot\:\ Robot\ Model\ Link\ legShow\ Trail=0
+Tool\ 2D\ Nav\ GoalTopic=goal
+Tool\ 2D\ Pose\ EstimateTopic=initialpose
+Camera\ Type=rviz::OrbitViewController
+Camera\ Config=1.15779 3.76081 2.16475 0 0 0
+Property\ Grid\ State=selection=.Global StatusTopStatus;expanded=.Global Options,Grid.Enabled,Robot Model.Enabled;scrollpos=0,0;splitterpos=150,285;ispageselected=1
+[Display0]
+Name=Grid
+Package=rviz
+ClassName=rviz::GridDisplay
+[Display1]
+Name=Robot Model
+Package=rviz
+ClassName=rviz::RobotModelDisplay

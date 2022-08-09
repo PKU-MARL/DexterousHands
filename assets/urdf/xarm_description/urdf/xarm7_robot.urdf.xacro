@@ -1,0 +1,37 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm7">
+  <xacro:arg name="prefix" default=""/>
+  <xacro:arg name="ros_namespace" default="xarm"/>
+  <xacro:arg name="limited" default="false"/>
+  <xacro:arg name="effort_control" default="false"/>
+  <xacro:arg name="velocity_control" default="false"/>
+
+  <xacro:arg name="add_other_geometry" default="false"/>
+  <xacro:arg name="geometry_type" default="box"/>
+  <xacro:arg name="geometry_mass" default="0.1"/>
+  <xacro:arg name="geometry_height" default="0.1"/>
+  <xacro:arg name="geometry_radius" default="0.1"/>
+  <xacro:arg name="geometry_length" default="0.1"/>
+  <xacro:arg name="geometry_width" default="0.1"/>
+  <xacro:arg name="geometry_mesh_filename" default=""/>
+  <xacro:arg name="geometry_mesh_origin_xyz" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_origin_rpy" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_tcp_xyz" default="0 0 0"/>
+  <xacro:arg name="geometry_mesh_tcp_rpy" default="0 0 0"/>
+  
+  <xacro:arg name="add_realsense_d435i" default="false"/>
+
+  <!-- load xarm7 robot -->
+  <xacro:include filename="$(find xarm_description)/urdf/xarm7_robot_macro.xacro" />
+  <xacro:xarm7_robot prefix="$(arg prefix)" namespace="$(arg ros_namespace)" limited="$(arg limited)" 
+    effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"
+    rs_d435i="$(arg add_realsense_d435i)"
+    add_other_geometry="$(arg add_other_geometry)" 
+    geometry_type="$(arg geometry_type)" geometry_mass="$(arg geometry_mass)"
+    geometry_height="$(arg geometry_height)" geometry_radius="$(arg geometry_radius)"
+    geometry_length="$(arg geometry_length)" geometry_width="$(arg geometry_width)"
+    geometry_mesh_filename="$(arg geometry_mesh_filename)"
+    geometry_mesh_origin_xyz="$(arg geometry_mesh_origin_xyz)" geometry_mesh_origin_rpy="$(arg geometry_mesh_origin_rpy)"
+    geometry_mesh_tcp_xyz="$(arg geometry_mesh_tcp_xyz)" geometry_mesh_tcp_rpy="$(arg geometry_mesh_tcp_rpy)" />
+
+</robot>

@@ -1,0 +1,69 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm_vacuum_gripper">
+<!--
+  Author: Jason Peng <jason@ufactory.cc>
+-->
+  <xacro:macro name="xarm_vacuum_gripper_urdf" params="prefix:='' attach_to:='' rpy:='0 0 0' xyz:='0 0 0' effort_control:='false' velocity_control:='false' ">
+  <xacro:unless value="${attach_to == ''}">
+    <joint name="${prefix}vacuum_gripper_fix" type="fixed">
+      <parent link="${attach_to}"/>
+      <child link="${prefix}xarm_vacuum_gripper_link"/>
+      <origin xyz="${xyz}" rpy="${rpy}"/>
+    </joint>
+  </xacro:unless>
+  <link
+    name="${prefix}xarm_vacuum_gripper_link">
+    <inertial>
+      <origin
+        xyz="0.0 0.0 0.055"
+        rpy="0 0 0" />
+      <mass
+        value="0.656" />
+      <inertia
+        ixx="0.00047106"
+        ixy="3.9292E-07"
+        ixz="2.6537E-06"
+        iyy="0.00033072"
+        iyz="-1.0975E-05"
+        izz="0.00025642" />
+    </inertial>
+    <visual>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://xarm_description/meshes/vacuum_gripper/visual/vacuum_gripper.STL" />
+      </geometry>
+      <material name="White">
+        <color rgba="1.0 1.0 1.0 1.0"/>
+      </material>
+    </visual>
+    <collision>
+      <origin
+        xyz="0 0 0"
+        rpy="0 0 0" />
+      <geometry>
+        <mesh
+          filename="package://xarm_description/meshes/vacuum_gripper/collision/vacuum_gripper.STL" />
+      </geometry>
+    </collision>
+  </link>
+
+  <link name="${prefix}link_tcp" />
+
+  <joint
+    name="${prefix}joint_tcp"
+    type="fixed">
+    <origin
+      xyz="0 0 0.126"
+      rpy="0 0 0" />
+    <parent
+      link="${prefix}xarm_vacuum_gripper_link" />
+    <child
+      link="${prefix}link_tcp" />
+  </joint>
+
+  </xacro:macro>
+
+</robot>

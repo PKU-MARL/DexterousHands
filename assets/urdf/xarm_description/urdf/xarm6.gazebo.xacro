@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro">
+
+  <xacro:macro name="xarm6_gazebo" params="prefix">
+
+    <gazebo reference="${prefix}link_base">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link1">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link2">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link3">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link4">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link5">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+    <gazebo reference="${prefix}link6">
+      <selfCollide>true</selfCollide>
+    </gazebo>
+
+  </xacro:macro>
+
+</robot>

@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package format="2">
+  <name>xarm_description</name>
+  <version>0.1.0</version>
+  <description> The xarm_description package </description>
+
+  <author email="jimy92@163.com">Jimy Zhang</author>
+  <maintainer email="jason@ufactory.cc">Jason Peng</maintainer>
+  <license>BSD</license>
+
+  <!-- <url type="website">http://wiki.ros.org/xarm_description</url> -->
+
+  <buildtool_depend>catkin</buildtool_depend>
+
+  <export>
+  </export>
+</package>

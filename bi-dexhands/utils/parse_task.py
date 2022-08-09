@@ -26,6 +26,10 @@ from tasks.shadow_hand_re_orientation import ShadowHandReOrientation
 from tasks.shadow_hand_kettle import ShadowHandKettle
 from tasks.shadow_hand_block_stack import ShadowHandBlockStack
 
+# Allegro hand
+from tasks.allegro_hand_over import AllegroHandOver
+from tasks.allegro_hand_catch_underarm import AllegroHandCatchUnderarm
+
 # Meta
 from tasks.shadow_hand_meta.shadow_hand_meta_mt1 import ShadowHandMetaMT1
 from tasks.shadow_hand_meta.shadow_hand_meta_ml1 import ShadowHandMetaML1

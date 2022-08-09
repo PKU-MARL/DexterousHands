@@ -1,0 +1,34 @@
+<?xml version='1.0' encoding='utf-8'?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm7">
+  <xacro:arg name="prefix" default=""/>
+  <xacro:arg name="ros_namespace" default="xarm"/>
+  <xacro:arg name="limited" default="false"/>
+  <xacro:arg name="effort_control" default="false"/>
+  <xacro:arg name="velocity_control" default="false"/>
+  <!-- To add realsense d435i and gripper, set 'add_realsense_d435i' = true -->
+  <xacro:arg name="add_realsense_d435i" default="false"/> 
+  <xacro:arg name="use_gazebo_camera" default="false"/>
+
+  <!-- load xarm7 robot -->
+  <xacro:include filename="$(find xarm_description)/urdf/xarm7_robot_macro.xacro" />
+  
+  <!-- Attach gripper --> 
+  <xacro:include filename="$(find xarm_gripper)/urdf/xarm_gripper_model.xacro" />
+
+  <xacro:xarm7_robot prefix="$(arg prefix)" namespace="$(arg ros_namespace)" limited="$(arg limited)" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)" rs_d435i="$(arg add_realsense_d435i)"/>
+  
+  <xacro:if value="$(arg add_realsense_d435i)">
+    <xacro:load_gripper attach_to="$(arg prefix)link_eef" xyz="0 0 0.003" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)" robot_dof="7" />
+  </xacro:if>
+  <xacro:unless value="$(arg add_realsense_d435i)">
+    <xacro:load_gripper attach_to="$(arg prefix)link_eef" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)" robot_dof="7" />
+  </xacro:unless>
+
+  <xacro:if value="$(arg use_gazebo_camera)">
+    <!-- <xacro:include filename="$(find kinect_v2)/urdf/kinect_v2.urdf.xacro" />
+    <xacro:kinect_v2  parent="link_base">
+    </xacro:kinect_v2> -->
+    <xacro:include filename="$(find xarm_description)/urdf/camera.gazebo.xacro" />
+    <xacro:camera_gazebo prefix="$(arg prefix)" />
+  </xacro:if>
+</robot>

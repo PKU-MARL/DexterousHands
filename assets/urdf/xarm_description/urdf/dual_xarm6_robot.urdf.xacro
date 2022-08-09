@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<robot xmlns:xacro="http://ros.org/wiki/xacro" name="xarm6" >
+  <xacro:arg name="prefix_1" default="L_" />
+  <xacro:arg name="prefix_2" default="R_" />
+  <xacro:arg name="ros_namespace" default="xarm"/>
+  <xacro:arg name="limited" default="false"/>
+  <xacro:arg name="effort_control" default="false"/>
+  <xacro:arg name="velocity_control" default="false"/>
+  <xacro:arg name="add_gripper" default="false"/>
+
+  <xacro:include filename="$(find xarm_description)/urdf/xarm6_robot_macro.xacro" />
+  <xacro:include filename="$(find xarm_gripper)/urdf/xarm_gripper_model.xacro" />
+
+  <!-- ground instead of world, for the arms to attach -->
+  <link name="ground" />
+
+  <!-- launch left arm -->
+  <xacro:xarm6_robot prefix="$(arg prefix_1)" namespace="$(arg ros_namespace)" limited="$(arg limited)" attach_to="ground" xyz="0 0 0" rpy="0 0 0" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"/>
+  <xacro:if value="$(arg add_gripper)">
+    <xacro:load_gripper attach_to="$(arg prefix_1)link6" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)" />
+  </xacro:if>
+
+  <!-- launch right arm -->
+  <xacro:xarm6_robot prefix="$(arg prefix_2)" namespace="$(arg ros_namespace)" limited="$(arg limited)" attach_to="ground" xyz="0 1 0" rpy="0 0 0" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)"/>
+  <xacro:if value="$(arg add_gripper)">
+    <xacro:load_gripper attach_to="$(arg prefix_2)link6" effort_control="$(arg effort_control)" velocity_control="$(arg velocity_control)" />
+  </xacro:if>
+
+</robot>

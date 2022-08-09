@@ -1,0 +1,21 @@
+<package>
+  <name>allegro_hand_model</name>
+  <version>0.5.0</version>
+
+  <description>This package contains allegro hand urdf.</description>
+  <author email="jean.cho@wonik.com">jean!!</author>
+
+  <maintainer email="jean.cho@wonik.com">jean!!</maintainer>
+
+  <license>wonik</license>
+  <url>http://wiki.wonikrobotics.com/AllegroHandWiki/index.php/Allegro_Hand</url>
+
+  <buildtool_depend>catkin</buildtool_depend>
+  <build_depend>roslaunch</build_depend>
+  <run_depend>joint_state_publisher</run_depend>
+  <run_depend>joint_state_publisher_gui</run_depend>
+  <run_depend>robot_state_publisher</run_depend>
+  <run_depend>rviz</run_depend>
+  <run_depend>xacro</run_depend>
+
+</package>
