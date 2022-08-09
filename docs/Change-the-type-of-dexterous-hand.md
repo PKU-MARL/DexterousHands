@@ -1,14 +1,14 @@
 # How to change the type of dexterous hand
 The default dexterous hand used by Bi-DexHands framework is the Shadow Hand. We know there is more type of dexterous hands than the shadow hand like allegro hand, trifinger, et al, and supporting other dexterous hands helps to advance research and community development. 
 
-We provide an [example](bi-dexhands/tasks/allegro_hand_over.py) for using allegro hand to complete Hand Over task. Pass `--task=AllegroHandOver`to use this environment.
+We provide an [example](../bi-dexhands/tasks/allegro_hand_over.py) for using allegro hand to complete Hand Over task. Pass `--task=AllegroHandOver`to use this environment.
 
 <div align=center>
-<img src="assets/image_folder/allegro_hand_over.gif" align="center" width="600"/>
+<img src="../assets/image_folder/allegro_hand_over.gif" align="center" width="600"/>
 </div> 
 
 ## A brief introduction to the main modification
-Prepare the [urdf/mjcf](assets/urdf/allegro_hand_model/urdf/allegro_hand_r.urdf) model file for the new dexterous hand and import it into the environment: 
+Prepare the [urdf/mjcf](../assets/urdf/allegro_hand_model/urdf/allegro_hand_r.urdf) model file for the new dexterous hand and import it into the environment: 
 ```python
 allegro_hand_asset_file = "urdf/allegro_hand_model/urdf/allegro_hand_r.urdf"
 allegro_hand_another_asset_file = "urdf/allegro_hand_model/urdf/allegro_hand_r.urdf"

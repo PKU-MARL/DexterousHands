@@ -4,11 +4,11 @@ Using a robotic arm drive at the base of the dexterous hand not only makes the e
 We provide an example of an allegro hand to add a X-Arm 6 to complete the Catch Underarm task. Pass `--task=AllegroHandCatchUnderarm`to use this environment.
 
 <div align=center>
-<img src="assets/image_folder/allegro_catch_underarm.gif" align="center" width="600"/>
+<img src="../assets/image_folder/allegro_catch_underarm.gif" align="center" width="600"/>
 </div> 
 
 ## A brief introduction to the main modification
-First, combine the model file [(urdf/mjcf)](assets/urdf/xarm_description/urdf/xarm6.urdf) of the robotic arm with the dexterous hand and load the model in the environment:
+First, combine the model file [(urdf/mjcf)](../assets/urdf/xarm_description/urdf/xarm6.urdf) of the robotic arm with the dexterous hand and load the model in the environment:
 ```python
 allegro_hand_asset_file = "urdf/xarm_description/urdf/xarm6.urdf"
 allegro_hand_another_asset_file = "urdf/xarm_description/urdf/xarm6.urdf"
@@ -36,7 +36,7 @@ self.cur_targets[:, self.actuated_dof_indices + 28] = tensor_clamp(self.cur_targ
                                                                 self.allegro_hand_dof_lower_limits[self.actuated_dof_indices + 6], self.allegro_hand_dof_upper_limits[self.actuated_dof_indices + 6])
 ```
 
-Other similar methods of dealing with different DoFs can refer to [this](docs/Change the type of dexterous hand.md).
+Other similar methods of dealing with different DoFs can refer to [this](../docs/Change-the-type-of-dexterous-hand.md).
 
 The initial DoF of the robotic arm can be adjusted here:
 ```python
