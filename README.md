@@ -438,6 +438,7 @@ CUDA kernel errors might be asynchronously reported at some other API call,so th
  - [ ] Normalized reward function
  - [ ] Benchmark other RL algorithms
  - [ ] Add fatory environment (see [this](https://sites.google.com/nvidia.com/factory))
+ - [ ] Add support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games)
 
 ## Citation
 Please cite as following if you think this work is helpful for you:
