@@ -51,18 +51,18 @@ For more information about this work, please check [our paper.](https://arxiv.or
 ****
 ## Installation
 
-Details regarding installation of IsaacGym can be found [here](https://developer.nvidia.com/isaac-gym). **We currently support the `Preview Release 3` version of IsaacGym.**
+Details regarding installation of IsaacGym can be found [here](https://developer.nvidia.com/isaac-gym). **We currently support the `Preview Release 3/4` version of IsaacGym.**
 
 ### Pre-requisites
 
-The code has been tested on Ubuntu 18.04 with Python 3.7. The minimum recommended NVIDIA driver
+The code has been tested on Ubuntu 18.04/20.04 with Python 3.7/3.8. The minimum recommended NVIDIA driver
 version for Linux is `470.74` (dictated by support of IsaacGym).
 
 It uses [Anaconda](https://www.anaconda.com/) to create virtual environments.
 To install Anaconda, follow instructions [here](https://docs.anaconda.com/anaconda/install/linux/).
 
 Ensure that Isaac Gym works on your system by running one of the examples from the `python/examples` 
-directory, like `joint_monkey.py`. Please follow troubleshooting steps described in the Isaac Gym Preview 3 
+directory, like `joint_monkey.py`. Please follow troubleshooting steps described in the Isaac Gym Preview Release 3/4
 install instructions if you have any trouble running the samples.
 
 Once Isaac Gym is installed and samples work within your current python environment, install this repo:
