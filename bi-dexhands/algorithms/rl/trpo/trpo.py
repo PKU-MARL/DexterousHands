@@ -1,6 +1,11 @@
 from datetime import datetime
+from email.errors import ObsoleteHeaderDefect
+from hashlib import new
+from multiprocessing.spawn import old_main_modules
 import os
 import time
+
+from matplotlib.pyplot import step
 
 from gym.spaces import Space
 
@@ -11,35 +16,20 @@ from collections import deque
 import torch
 import torch.nn as nn
 import torch.optim as optim
+from torch.distributions import kl_divergence
+
 from torch.utils.tensorboard import SummaryWriter
 
 from algorithms.rl.trpo import RolloutStorage
 from algorithms.rl.trpo import ActorCritic
+
+import copy
 
 class TRPO:
 
     def __init__(self,
                  vec_env,
                  cfg_train,
-                #  actor_critic_class,
-                #  num_transitions_per_env,
-                #  num_learning_epochs,
-                #  num_mini_batches,
-                #  clip_param=0.2,
-                #  gamma=0.998,
-                #  lam=0.95,
-                #  init_noise_std=1.0,
-                #  damping = 0.1,
-                #  cg_nsteps = 10,
-                #  max_kl = 1e-2,
-                #  max_num_backtrack= 10,
-                #  accept_ratio = 0.1,
-                #  step_fraction = 1,
-                #  learning_rate=1e-3,
-                #  max_grad_norm=0.5,
-                #  use_clipped_value_loss=True,
-                #  schedule="fixed",
-                #  model_cfg=None,
                  device='cpu',
                  sampler='sequential',
                  log_dir='run',
@@ -58,15 +48,16 @@ class TRPO:
         self.observation_space = vec_env.observation_space
         self.action_space = vec_env.action_space
         self.state_space = vec_env.state_space
-
+        self.cfg_train = copy.deepcopy(cfg_train)
+        learn_cfg = self.cfg_train["learn"]
         self.device = device
         self.asymmetric = asymmetric
-        learn_cfg = cfg_train["learn"]
+
         self.schedule = learn_cfg.get("schedule", "fixed")
         self.step_size = learn_cfg["optim_stepsize"]
         self.init_noise_std = learn_cfg.get("init_noise_std", 0.3)
-        self.model_cfg = cfg_train["policy"]
-        self.num_transitions_per_env = learn_cfg["nsteps"]
+        self.model_cfg = self.cfg_train["policy"]
+        self.num_transitions_per_env=learn_cfg["nsteps"]
         self.learning_rate=learn_cfg["optim_stepsize"]
         # PPO components
         self.vec_env = vec_env
@@ -81,10 +72,11 @@ class TRPO:
         self.clip_param = learn_cfg["cliprange"]
         self.num_learning_epochs = learn_cfg["noptepochs"]
         self.num_mini_batches = learn_cfg["nminibatches"]
+        self.num_transitions_per_env = self.num_transitions_per_env
         self.damping = learn_cfg["damping"]
         self.cg_nsteps = learn_cfg["cg_nsteps"]
         self.max_kl= learn_cfg["max_kl"]
-        self.max_num_backtrack = learn_cfg["max_num_backtrack"]
+        self.max_num_backtrack =learn_cfg["max_num_backtrack"]
         self.accept_ratio = learn_cfg["accept_ratio"]
         self.step_fraction = learn_cfg["step_fraction"]
 
@@ -212,11 +204,14 @@ class TRPO:
                 ep_string += f"""{f'Mean episode {key}:':>{pad}} {value:.4f}\n"""
         mean_std = self.actor_critic.log_std.exp().mean()
 
+        fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
+
         self.writer.add_scalar('Loss/value_function', locs['mean_value_loss'], locs['it'])
         self.writer.add_scalar('Loss/surrogate', locs['mean_surrogate_loss'], locs['it'])
         self.writer.add_scalar('Policy/mean_noise_std', mean_std.item(), locs['it'])
         if len(locs['rewbuffer']) > 0:
             self.writer.add_scalar('Train/mean_reward', statistics.mean(locs['rewbuffer']), locs['it'])
+            self.writer.add_scalar('Train/FPS',fps,locs['it'])
             self.writer.add_scalar('Train/mean_episode_length', statistics.mean(locs['lenbuffer']), locs['it'])
             self.writer.add_scalar('Train/mean_reward/time', statistics.mean(locs['rewbuffer']), self.tot_time)
             self.writer.add_scalar('Train/mean_episode_length/time', statistics.mean(locs['lenbuffer']), self.tot_time)
@@ -224,7 +219,7 @@ class TRPO:
         self.writer.add_scalar('Train2/mean_reward/step', locs['mean_reward'], locs['it'])
         self.writer.add_scalar('Train2/mean_episode_length/episode', locs['mean_trajectory_length'], locs['it'])
 
-        fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
+        # fps = int(self.num_transitions_per_env * self.vec_env.num_envs / (locs['collection_time'] + locs['learn_time']))
 
         str = f" \033[1m Learning iteration {locs['it']}/{locs['num_learning_iterations']} \033[0m "
 
@@ -289,33 +284,36 @@ class TRPO:
 
                 # Optimize policy
                 # 1. find search direction for network parameter optimization, use conjugate gradient (CG)
-                a_loss = -torch.squeeze(advantages_batch) * torch.exp(actions_log_prob_batch - old_actions_log_prob_batch)
+                a_loss = -torch.squeeze(advantages_batch) * torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))
                 a_loss = a_loss.mean()
-                g = torch.autograd.grad(a_loss, self.actor_critic.actor.parameters())
-                flat_g = torch.cat([grad.view(-1) for grad in g]).data
+
+                g = torch.autograd.grad(a_loss, self.actor_critic.actor.parameters(), retain_graph=True)
+                flat_g = torch.cat([grad.view(-1) for grad in g]).detach()
 
                 #KL
                 kl = torch.sum(
                     sigma_batch - old_sigma_batch + (
                                 torch.square(old_sigma_batch.exp()) + torch.square(old_mu_batch - mu_batch)) / (
-                                2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1)
+                                2.0 * torch.square(sigma_batch.exp())) - 0.5, axis=-1, keepdim=True)
                 kl = torch.mean(kl)
 
                 Av = lambda v: self.kl_hessian_times_vector(v,kl)
-                step_dir = self.conjugate_gradient(Av, - flat_g, nsteps=self.cg_nsteps)
+
+                step_dir = self.conjugate_gradient(Av, -flat_g, nsteps=self.cg_nsteps)
 
                 # 2. find maximum stepsize along the search direction
-                sAs = 0.5 * (step_dir * Av(step_dir)).sum(0)
+                sAs = (step_dir * Av(step_dir)).sum(0)
                 beta = torch.sqrt(2 * self.max_kl / sAs)
-                full_step = (beta * step_dir).data.numpy()
+                full_step = (beta * step_dir).data
 
                 # 3. do line search along the found direction, with maximum change = full_step
-                evaluate_policy = lambda x: self.get_aloss_logp(obs_batch,states_batch,actions_batch,advantages_batch,old_actions_log_prob_batch)
-                a_old_loss, old_logp = evaluate_policy(None)
-                success, new_params = self.line_search(evaluate_policy, full_step, flat_g,max_num_backtrack = self.max_num_backtrack,
+                evaluate_policy = lambda x: self.get_aloss_logp(obs_batch,states_batch,actions_batch,advantages_batch,old_actions_log_prob_batch=x)
+                a_old_loss, old_logp = evaluate_policy(old_actions_log_prob_batch)
+                success, new_params = self.line_search(evaluate_policy, full_step, old_actions_log_prob_batch, flat_g,max_num_backtrack = self.max_num_backtrack,
                                                        accept_ratio = self.accept_ratio,step_fraction = self.step_fraction)
+
                 self.set_pi_flat_params(new_params)
-                a_new_loss, new_logp = evaluate_policy(None)
+                a_new_loss, new_logp = evaluate_policy(old_actions_log_prob_batch)
 
                 surrogate_loss = a_new_loss
 
@@ -364,7 +362,7 @@ class TRPO:
         :param nsteps: iterations
         :return: found v
         """
-        x = torch.zeros(b.size())
+        x = torch.zeros(b.size(), device=self.device)
         r = b.clone()
         p = b.clone()
         rdotr = torch.dot(r, r)
@@ -383,7 +381,7 @@ class TRPO:
 
         return x
 
-    def line_search(self, evaluate_policy, full_step, grad, max_num_backtrack=10, accept_ratio=0.1,step_fraction =1.0):
+    def line_search(self, evaluate_policy, full_step, old_actions_log_prob_batch, grad, max_num_backtrack=10, accept_ratio=0.1,step_fraction =1.0):
         """
         do backtracking line search
         ref: https://en.wikipedia.org/wiki/Backtracking_line_search
@@ -399,7 +397,7 @@ class TRPO:
         # initial point
         x0 = self.get_pi_flat_params()
         # initial loss
-        f0,olp = evaluate_policy(None)
+        f0,olp = evaluate_policy(old_actions_log_prob_batch)
         # step fraction
         alpha = step_fraction
         # expected maximum improvement, i.e. cm in wiki
@@ -408,11 +406,12 @@ class TRPO:
         for count in range(max_num_backtrack):
             xnew = x0 + alpha * full_step
             self.set_pi_flat_params(xnew)
-            fnew,olp = evaluate_policy(old_actions_log_prob_batch=olp)
+            fnew,olp = evaluate_policy(olp)
             actual_improve = f0 - fnew
             if actual_improve > 0 and actual_improve > alpha * expected_improve:
                 return True, xnew
             alpha *= 0.5
+        print("linear search fail")
         return False, x0
 
     def kl_hessian_times_vector(self,v, kl):
@@ -429,8 +428,8 @@ class TRPO:
         flat_grad_kl = torch.cat([grad.view(-1) for grad in grad_kl])
 
         grad_kl_v = (flat_grad_kl * v).sum()
-        grad_grad_kl_v = torch.autograd.grad(grad_kl_v, self.actor_critic.actor.parameters())
-        flat_grad_grad_kl_v = torch.cat([grad.contiguous().view(-1) for grad in grad_grad_kl_v])
+        grad_grad_kl_v = torch.autograd.grad(grad_kl_v, self.actor_critic.actor.parameters(), retain_graph=True)
+        flat_grad_grad_kl_v = torch.cat([grad.contiguous().view(-1) for grad in grad_grad_kl_v]).detach()
 
         return flat_grad_grad_kl_v + self.damping * v
 
@@ -462,7 +461,7 @@ class TRPO:
         # return flat_params.double().numpy()
         return flat_params
 
-    def get_aloss_logp(self,obs_batch,states_batch,actions_batch,advantages_batch,old_actions_log_prob_batch):
+    def get_aloss_logp(self,obs_batch,states_batch,actions_batch,advantages_batch,old_actions_log_prob_batch=None):
 
         """
 
@@ -473,7 +472,7 @@ class TRPO:
             states_batch,
             actions_batch)
 
-        a_loss = -torch.squeeze(advantages_batch) * torch.exp(actions_log_prob_batch - old_actions_log_prob_batch)
+        a_loss = -torch.squeeze(advantages_batch) * torch.exp(actions_log_prob_batch - torch.squeeze(old_actions_log_prob_batch))
         a_loss = a_loss.mean()
 
         return a_loss, actions_log_prob_batch
