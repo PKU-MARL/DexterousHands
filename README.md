@@ -38,6 +38,7 @@ Contents of this repo are as follows:
   - [Plotting](#Plotting)
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
+- [Offline RL Datasets](#Offline-RL-Datasets)
 - [Future Plan](#Future-Plan)
 - [Customizing your Environments](docs/customize-the-environment.md)
 - [How to change the type of dexterous hand](docs/Change-the-type-of-dexterous-hand.md)
@@ -424,7 +425,29 @@ You can then build the documentation by running `make <format>` from the
 If you get a katex error run `npm install katex`.  If it persists, try
 `npm install -g katex` -->
 
-### Known issue
+## Offline RL Datasets
+
+### Data Collection
+
+`ppo_collect` is the algo that collects offline data, which is basically the same as the mujoco data collection in d4rl. Firstly train the PPO for 5000 iterations, and collect and save the demonstration data in the first 2500 iterations:
+
+```bash
+python train.py --task=ShadowHandOver --algo=ppo_collection --num_envs=2048 --headless
+```
+
+Select model_5000.pt as the export policy to collect the expert dataset:
+
+```bash
+python3	train.py --task=ShadowHandOver --algo=ppo_collect --model_dir=./logs/shadow_hand_over/ppo_collect/ppo_collect_seed-1/model_5000.pt --test --num_envs=200 --headless
+```
+
+Similarly, select model.pt as the random policy, select a model as the medium policy, collect random data and medium data as above, and evenly sample the replay data set from the demonstration data before training to the medium policy. The size of each dataset is 10e6. Run merge.py to get the medium-expert dataset.
+
+### Offline Data
+
+The originally collected data in our paper is available at [PKU Cloud Disk](https://disk.pku.edu.cn/#/link/08150DA4D7A50C91083143319048911F).
+
+## Known issue
 
 It must be pointed out that Bi-DexHands is still under development, and there are some known issue: 
 - Some environments may report errors due to PhysX's collision calculation bugs in the later stage of program runtime.
