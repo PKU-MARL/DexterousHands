@@ -8,7 +8,7 @@
 [![Docs](https://img.shields.io/badge/Docs-In_development-red.svg "Author")](https://github.com/PKU-MARL "Docs")
 [![GitHub license](https://img.shields.io/github/license/PKU-MARL/DexterousHands)](https://github.com/PKU-MARL/DexterousHands/blob/main/LICENSE)
 
-**Bi-DexHands** provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
+**Bi-DexHands** ([click bi-dexhands.ai](https://bi-dexhands.ai)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
 - **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bi-dexhands/algorithms/marl/)
