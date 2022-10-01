@@ -1,7 +1,7 @@
 # if given, will override the device setting in gym. 
 env: 
   env_name: "shadow_hand_bottle_cap"
-  numEnvs: 512
+  numEnvs: 2048
   envSpacing: 1.5
   episodeLength: 125
   enableDebugVis: False

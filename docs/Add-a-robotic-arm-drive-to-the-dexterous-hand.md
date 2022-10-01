@@ -1,7 +1,7 @@
 # How to add a robotic arm drive to the dexterous hand 
 Using a robotic arm drive at the base of the dexterous hand not only makes the environment more realistic, but also an important step for sim2real transfer. Because the dynamics of the flying hand is not easy to match reality -- and attaching the robotic arm can minimize the reality gap by adjusting the dynamics physics parameters of the arm. 
 
-We provide an example of an allegro hand to add a X-Arm 6 to complete the Catch Underarm task. Pass `--task=AllegroHandCatchUnderarm`to use this environment.
+We provide an example of an allegro hand to add a X-Arm 6 to complete the Catch Underarm task. Pass `--task=AllegroHandCatchUnderarm --algo=ppo`to use this environment.
 
 <div align=center>
 <img src="../assets/image_folder/allegro_catch_underarm.gif" align="center" width="600"/>
