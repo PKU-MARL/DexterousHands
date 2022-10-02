@@ -10,7 +10,7 @@
 
 ### Update
 
-:star2: [2022/10/02] Now we support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games), check our README [below](#Use-rl-games-to-train-our-task).
+:star2: [2022/10/02] Now we support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games), check our README [below](#Use-rl_games-to-train-our-tasks).
 
 **Bi-DexHands** ([click bi-dexhands.ai](https://bi-dexhands.ai)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
@@ -43,7 +43,7 @@ Contents of this repo are as follows:
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
 - [Offline RL Datasets](#Offline-RL-Datasets)
-- [Use rl-games to train our task](#Use-rl-games-to-train-our-task)
+- [Use rl_games to train our tasks](#Use-rl_games-to-train-our-tasks)
 - [Future Plan](#Future-Plan)
 - [Customizing your Environments](docs/customize-the-environment.md)
 - [How to change the type of dexterous hand](docs/Change-the-type-of-dexterous-hand.md)
@@ -454,7 +454,7 @@ The originally collected data in our paper is available at:
 [Shadow Hand Over](https://disk.pku.edu.cn:443/link/ACCFC4006518E9797D7290861D0ED750), 
 [Shadow Hand Door Open Outward](https://disk.pku.edu.cn:443/link/A6D4813C2AFF6298092F4DECB336428F).
 
-### Use rl-games to train our tasks
+### Use rl_games to train our tasks
 
 For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
 
