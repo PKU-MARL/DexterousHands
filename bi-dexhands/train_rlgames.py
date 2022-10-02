@@ -41,7 +41,6 @@ if __name__ == '__main__':
         print("We don't support this config in RL-games now")
 
     args.task_type = "RLgames"
-    args.checkpoint = ""
     print('Loading config: ', config_name)
 
     args.cfg_train = config_name
