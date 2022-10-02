@@ -37,6 +37,7 @@ class VecTask():
         self.info = {}
         self.info['action_space'] = self.act_space
         self.info['observation_space'] = self.obs_space
+        self.info['state_space'] = self.state_space
         self.info['agents'] = 1
 
     def has_action_masks(self):
@@ -171,6 +172,7 @@ class RLgamesVecTaskPython(VecTask):
 
         # Clamp main obs buf and add it to obs dict
         obs_dict["obs"] = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
+        obs_dict["states"] = torch.clamp(self.task.states_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
 
         return obs_dict, self.task.rew_buf.to(self.rl_device), self.task.reset_buf.to(self.rl_device), self.task.extras
 
@@ -185,6 +187,7 @@ class RLgamesVecTaskPython(VecTask):
 
         # Clamp main obs buf and add it to obs dict
         obs_dict["obs"] = torch.clamp(self.task.obs_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
+        obs_dict["states"] = torch.clamp(self.task.states_buf, -self.clip_obs, self.clip_obs).to(self.rl_device)
 
         return obs_dict
     
