@@ -8,6 +8,10 @@
 [![Docs](https://img.shields.io/badge/Docs-In_development-red.svg "Author")](https://github.com/PKU-MARL "Docs")
 [![GitHub license](https://img.shields.io/github/license/PKU-MARL/DexterousHands)](https://github.com/PKU-MARL/DexterousHands/blob/main/LICENSE)
 
+### Update
+
+:star2: [2022/10/02] Now we support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games), check our README [below](#Use-rl-games-to-train-our-task).
+
 **Bi-DexHands** ([click bi-dexhands.ai](https://bi-dexhands.ai)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
@@ -39,6 +43,7 @@ Contents of this repo are as follows:
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
 - [Offline RL Datasets](#Offline-RL-Datasets)
+- [Use rl-games to train our task](#Use-rl-games-to-train-our-task)
 - [Future Plan](#Future-Plan)
 - [Customizing your Environments](docs/customize-the-environment.md)
 - [How to change the type of dexterous hand](docs/Change-the-type-of-dexterous-hand.md)
@@ -449,6 +454,22 @@ The originally collected data in our paper is available at:
 [Shadow Hand Over](https://disk.pku.edu.cn:443/link/ACCFC4006518E9797D7290861D0ED750), 
 [Shadow Hand Door Open Outward](https://disk.pku.edu.cn:443/link/A6D4813C2AFF6298092F4DECB336428F).
 
+### Use rl-games to train our tasks
+
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
+
+```bash
+python train_rlgames.py --task=ShadowHandOver --algo=ppo
+```
+
+Currently we only support PPO and PPO with LSTM methods in rl_games. If you want to use PPO with LSTM, run this line in `bi-dexhands` folder:
+
+```bash
+python train_rlgames.py --task=ShadowHandOver --algo=ppo_lstm
+``` 
+
+The log files using rl_games can be found in `bi-dexhands/runs` folder.
+
 ## Known issue
 
 It must be pointed out that Bi-DexHands is still under development, and there are some known issue: 
@@ -464,7 +485,7 @@ CUDA kernel errors might be asynchronously reported at some other API call,so th
  - [ ] Success Metric for all tasks
  - [ ] Benchmark other RL algorithms
  - [ ] Add fatory environment (see [this](https://sites.google.com/nvidia.com/factory))
- - [ ] Add support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games)
+ - [x] Add support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games)
 
 ## Citation
 Please cite as following if you think this work is helpful for you:

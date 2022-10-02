@@ -129,6 +129,7 @@ dmypy.json
 .pyre/
 
 bi-dexhands/logs/
+bi-dexhands/runs/
 # contact buffer and other info created in running
 bi-dexhands/runs
 # too large files in assets
