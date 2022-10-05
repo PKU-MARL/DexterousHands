@@ -490,11 +490,13 @@ CUDA kernel errors might be asynchronously reported at some other API call,so th
 ## Citation
 Please cite as following if you think this work is helpful for you:
 ```
-@misc{2206.08686,
-Author = {Yuanpei Chen and Yaodong Yang and Tianhao Wu and Shengjie Wang and Xidong Feng and Jiechuang Jiang and Stephen Marcus McAleer and Hao Dong and Zongqing Lu and Song-Chun Zhu},
-Title = {Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning},
-Year = {2022},
-Eprint = {arXiv:2206.08686},
+@inproceedings{
+chen2022towards,
+title={Towards Human-Level Bimanual Dexterous Manipulation with Reinforcement Learning},
+author={Yuanpei Chen and Yaodong Yang and Tianhao Wu and Shengjie Wang and Xidong Feng and Jiechuan Jiang and Zongqing Lu and Stephen Marcus McAleer and Hao Dong and Song-Chun Zhu},
+booktitle={Thirty-sixth Conference on Neural Information Processing Systems Datasets and Benchmarks Track},
+year={2022},
+url={https://openreview.net/forum?id=D29JbExncTP}
 }
 ```
 
