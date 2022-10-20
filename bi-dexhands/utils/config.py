@@ -209,7 +209,7 @@ def get_args(benchmark=False, use_rlg_config=False):
             "help": "Run trained policy, the same as test, can be used only by rl_games RL library"},
         {"name": "--resume", "type": int, "default": 0,
             "help": "Resume training or start testing from a checkpoint"},
-        {"name": "--checkpoint", "type": str, "default": "",
+        {"name": "--checkpoint", "type": str, "default": "Base",
             "help": "Path to the saved weights, only for rl_games RL library"},
         {"name": "--headless", "action": "store_true", "default": False,
             "help": "Force display off at all times"},
