@@ -32,6 +32,8 @@ os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 if __name__ == '__main__':
     set_np_formatting()
     args = get_args(use_rlg_config=True)
+    if args.checkpoint == "Base":
+        args.checkpoint = ""
 
     if args.algo == "ppo":
         config_name = "cfg/{}/ppo_continuous.yaml".format(args.algo)
