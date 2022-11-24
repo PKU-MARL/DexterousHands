@@ -121,15 +121,18 @@ class ShadowHandReOrientation(BaseTask):
         # can be "openai", "full_no_vel", "full", "full_state"
         self.obs_type = self.cfg["env"]["observationType"]
 
-        if not (self.obs_type in ["openai", "full_no_vel", "full", "full_state"]):
+        if not (self.obs_type in ["point_cloud", "full_state"]):
             raise Exception(
-                "Unknown type of observations!\nobservationType should be one of: [openai, full_no_vel, full, full_state]")
+                "Unknown type of observations!\nobservationType should be one of: [point_cloud, full_state]")
 
         print("Obs type:", self.obs_type)
 
+        self.num_point_cloud_feature_dim = 768
         self.num_obs_dict = {
+            "point_cloud": 422 + self.num_point_cloud_feature_dim * 3,
+            "point_cloud_for_distill": 422 + self.num_point_cloud_feature_dim * 3,
             "full_state": 422
-        } # full+state + another_hand_action + anothere_hand_state + another_hand_finger_state + moveable_hand + another_object
+        }
         self.num_hand_obs = 72 + 95 + 20
 
         self.up_axis = 'z'
@@ -161,6 +164,14 @@ class ShadowHandReOrientation(BaseTask):
         self.cfg["device_id"] = device_id
         self.cfg["headless"] = headless
 
+        if self.obs_type in ["point_cloud"]:
+            from PIL import Image as Im
+            from utils import o3dviewer
+            # from pointnet2_ops import pointnet2_utils
+
+        self.camera_debug = self.cfg["env"].get("cameraDebug", False)
+        self.point_cloud_debug = self.cfg["env"].get("pointCloudDebug", False)
+
         super().__init__(cfg=self.cfg)
 
         if self.viewer != None:
@@ -173,12 +184,11 @@ class ShadowHandReOrientation(BaseTask):
         dof_state_tensor = self.gym.acquire_dof_state_tensor(self.sim)
         rigid_body_tensor = self.gym.acquire_rigid_body_state_tensor(self.sim)
 
-        if self.obs_type == "full_state" or self.asymmetric_obs:
-            sensor_tensor = self.gym.acquire_force_sensor_tensor(self.sim)
-            self.vec_sensor_tensor = gymtorch.wrap_tensor(sensor_tensor).view(self.num_envs, self.num_fingertips * 6)
+        sensor_tensor = self.gym.acquire_force_sensor_tensor(self.sim)
+        self.vec_sensor_tensor = gymtorch.wrap_tensor(sensor_tensor).view(self.num_envs, self.num_fingertips * 6)
 
-            dof_force_tensor = self.gym.acquire_dof_force_tensor(self.sim)
-            self.dof_force_tensor = gymtorch.wrap_tensor(dof_force_tensor).view(self.num_envs, self.num_shadow_hand_dofs * 2)
+        dof_force_tensor = self.gym.acquire_dof_force_tensor(self.sim)
+        self.dof_force_tensor = gymtorch.wrap_tensor(dof_force_tensor).view(self.num_envs, self.num_shadow_hand_dofs * 2)
 
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_dof_state_tensor(self.sim)
@@ -410,13 +420,38 @@ class ShadowHandReOrientation(BaseTask):
         self.fingertip_handles = [self.gym.find_asset_rigid_body_index(shadow_hand_asset, name) for name in self.fingertips]
         self.fingertip_another_handles = [self.gym.find_asset_rigid_body_index(shadow_hand_another_asset, name) for name in self.a_fingertips]
         # create fingertip force sensors, if needed
-        if self.obs_type == "full_state" or self.asymmetric_obs:
-            sensor_pose = gymapi.Transform()
-            for ft_handle in self.fingertip_handles:
-                self.gym.create_asset_force_sensor(shadow_hand_asset, ft_handle, sensor_pose)
-            for ft_a_handle in self.fingertip_another_handles:
-                self.gym.create_asset_force_sensor(shadow_hand_another_asset, ft_a_handle, sensor_pose)
-        
+        sensor_pose = gymapi.Transform()
+        for ft_handle in self.fingertip_handles:
+            self.gym.create_asset_force_sensor(shadow_hand_asset, ft_handle, sensor_pose)
+        for ft_a_handle in self.fingertip_another_handles:
+            self.gym.create_asset_force_sensor(shadow_hand_another_asset, ft_a_handle, sensor_pose)
+
+        if self.obs_type in ["point_cloud"]:
+            self.cameras = []
+            self.camera_tensors = []
+            self.camera_view_matrixs = []
+            self.camera_proj_matrixs = []
+
+            self.camera_props = gymapi.CameraProperties()
+            self.camera_props.width = 256
+            self.camera_props.height = 256
+            self.camera_props.enable_tensors = True
+
+            self.env_origin = torch.zeros((self.num_envs, 3), device=self.device, dtype=torch.float)
+            self.pointCloudDownsampleNum = 768
+            self.camera_u = torch.arange(0, self.camera_props.width, device=self.device)
+            self.camera_v = torch.arange(0, self.camera_props.height, device=self.device)
+
+            self.camera_v2, self.camera_u2 = torch.meshgrid(self.camera_v, self.camera_u, indexing='ij')
+
+            if self.point_cloud_debug:
+                import open3d as o3d
+                from utils.o3dviewer import PointcloudVisualizer
+                self.pointCloudVisualizer = PointcloudVisualizer()
+                self.pointCloudVisualizerInitialized = False
+                self.o3d_pc = o3d.geometry.PointCloud()
+            else :
+                self.pointCloudVisualizer = None
         for i in range(self.num_envs):
             # create env instance
             env_ptr = self.gym.create_env(
@@ -466,9 +501,8 @@ class ShadowHandReOrientation(BaseTask):
                 #                            loaded_texture_handle_list[random.randint(0, len(loaded_texture_handle_list)-1)])
 
             # create fingertip force-torque sensors
-            if self.obs_type == "full_state" or self.asymmetric_obs:
-                self.gym.enable_actor_dof_force_sensors(env_ptr, shadow_hand_actor)
-                self.gym.enable_actor_dof_force_sensors(env_ptr, shadow_hand_another_actor)
+            self.gym.enable_actor_dof_force_sensors(env_ptr, shadow_hand_actor)
+            self.gym.enable_actor_dof_force_sensors(env_ptr, shadow_hand_another_actor)
             
             # add object
             object_handle = self.gym.create_actor(env_ptr, object_asset, object_start_pose, "object", i, 0, 0)
@@ -503,6 +537,22 @@ class ShadowHandReOrientation(BaseTask):
                     env_ptr, object_another_handle, 0, gymapi.MESH_VISUAL, gymapi.Vec3(0.98, 0.6, 0.72))
                 self.gym.set_rigid_body_color(
                     env_ptr, goal_another_handle, 0, gymapi.MESH_VISUAL, gymapi.Vec3(0.98, 0.6, 0.72))
+            if self.obs_type in ["point_cloud"]:
+                camera_handle = self.gym.create_camera_sensor(env_ptr, self.camera_props)
+                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.5, 0.75), gymapi.Vec3(-0.24, -0.5, 0))
+                camera_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, env_ptr, camera_handle, gymapi.IMAGE_DEPTH)
+                torch_cam_tensor = gymtorch.wrap_tensor(camera_tensor)
+                cam_vinv = torch.inverse((torch.tensor(self.gym.get_camera_view_matrix(self.sim, env_ptr, camera_handle)))).to(self.device)
+                cam_proj = torch.tensor(self.gym.get_camera_proj_matrix(self.sim, env_ptr, camera_handle), device=self.device)
+
+                origin = self.gym.get_env_origin(env_ptr)
+                self.env_origin[i][0] = origin.x
+                self.env_origin[i][1] = origin.y
+                self.env_origin[i][2] = origin.z
+                self.camera_tensors.append(torch_cam_tensor)
+                self.camera_view_matrixs.append(cam_vinv)
+                self.camera_proj_matrixs.append(cam_proj)
+                self.cameras.append(camera_handle)
 
             if self.aggregate_mode > 0:
                 self.gym.end_aggregate(env_ptr)
@@ -578,10 +628,12 @@ class ShadowHandReOrientation(BaseTask):
         self.gym.refresh_dof_state_tensor(self.sim)
         self.gym.refresh_actor_root_state_tensor(self.sim)
         self.gym.refresh_rigid_body_state_tensor(self.sim)
+        self.gym.refresh_force_sensor_tensor(self.sim)
+        self.gym.refresh_dof_force_tensor(self.sim)
 
-        if self.obs_type == "full_state" or self.asymmetric_obs:
-            self.gym.refresh_force_sensor_tensor(self.sim)
-            self.gym.refresh_dof_force_tensor(self.sim)
+        if self.obs_type in ["point_cloud"]:
+            self.gym.render_all_camera_sensors(self.sim)
+            self.gym.start_access_image_tensors(self.sim)
 
         self.object_pose = self.root_state_tensor[self.object_indices, 0:7]
         self.object_pos = self.root_state_tensor[self.object_indices, 0:3]
@@ -610,8 +662,8 @@ class ShadowHandReOrientation(BaseTask):
 
         if self.obs_type == "full_state":
             self.compute_full_state()
-        else:
-            print("Unkown observations type!")
+        elif self.obs_type == "point_cloud":
+            self.compute_point_cloud_observation()
 
         if self.asymmetric_obs:
             self.compute_full_state(True)
@@ -701,6 +753,129 @@ class ShadowHandReOrientation(BaseTask):
         another_goal_obs_start = another_obj_obs_start + 13  # 157 = 144 + 13
         self.obs_buf[:, another_goal_obs_start:another_goal_obs_start + 7] = self.goal_another_pose
         self.obs_buf[:, another_goal_obs_start + 7:another_goal_obs_start + 11] = quat_mul(self.object_another_rot, quat_conjugate(self.goal_another_rot))
+
+    def compute_point_cloud_observation(self, collect_demonstration=False):
+        """
+        Compute the observations of all environment. The observation is composed of three parts: 
+        the state values of the left and right hands, and the information of objects and target. 
+        The state values of the left and right hands were the same for each task, including hand 
+        joint and finger positions, velocity, and force information. The detail 446-dimensional 
+        observational space as shown in below:
+
+        Index       Description
+        0 - 23	    right shadow hand dof position
+        24 - 47	    right shadow hand dof velocity
+        48 - 71	    right shadow hand dof force
+        72 - 136	right shadow hand fingertip pose, linear velocity, angle velocity (5 x 13)
+        137 - 166	right shadow hand fingertip force, torque (5 x 6)
+        167 - 169	right shadow hand base position
+        170 - 172	right shadow hand base rotation
+        173 - 198	right shadow hand actions
+        199 - 222	left shadow hand dof position
+        223 - 246	left shadow hand dof velocity
+        247 - 270	left shadow hand dof force
+        271 - 335	left shadow hand fingertip pose, linear velocity, angle velocity (5 x 13)
+        336 - 365	left shadow hand fingertip force, torque (5 x 6)
+        366 - 368	left shadow hand base position
+        369 - 371	left shadow hand base rotation
+        372 - 397	left shadow hand actions
+        398 - 404	object1 pose
+        405 - 407	object1 linear velocity
+        408 - 410	object1 angle velocity
+        411 - 417	goal1 pose
+        418 - 421	goal1 rot - object rot
+        422 - 428	object2 pose
+        429 - 431	object2 linear velocity
+        432 - 434	object2 angle velocity
+        435 - 441	goal2 pose
+        442 - 445	goal2 rot - object2 rot
+        """
+        # fingertip observations, state(pose and vel) + force-torque sensors
+        num_ft_states = 13 * int(self.num_fingertips / 2)  # 65
+        num_ft_force_torques = 6 * int(self.num_fingertips / 2)  # 30
+
+        self.obs_buf[:, 0:self.num_shadow_hand_dofs] = unscale(self.shadow_hand_dof_pos,
+                                                            self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
+        self.obs_buf[:, self.num_shadow_hand_dofs:2*self.num_shadow_hand_dofs] = self.vel_obs_scale * self.shadow_hand_dof_vel
+        self.obs_buf[:, 2*self.num_shadow_hand_dofs:3*self.num_shadow_hand_dofs] = self.force_torque_obs_scale * self.dof_force_tensor[:, :24]
+
+        fingertip_obs_start = 72  # 168 = 157 + 11
+        self.obs_buf[:, fingertip_obs_start:fingertip_obs_start + num_ft_states] = self.fingertip_state.reshape(self.num_envs, num_ft_states)
+        self.obs_buf[:, fingertip_obs_start + num_ft_states:fingertip_obs_start + num_ft_states +
+                    num_ft_force_torques] = self.force_torque_obs_scale * self.vec_sensor_tensor[:, :30]
+
+        action_obs_start = fingertip_obs_start + 95
+        self.obs_buf[:, action_obs_start:action_obs_start + 20] = self.actions[:, :20]
+
+        # another_hand
+        another_hand_start = action_obs_start + 20
+        self.obs_buf[:, another_hand_start:self.num_shadow_hand_dofs + another_hand_start] = unscale(self.shadow_hand_another_dof_pos,
+                                                            self.shadow_hand_dof_lower_limits, self.shadow_hand_dof_upper_limits)
+        self.obs_buf[:, self.num_shadow_hand_dofs + another_hand_start:2*self.num_shadow_hand_dofs + another_hand_start] = self.vel_obs_scale * self.shadow_hand_another_dof_vel
+        self.obs_buf[:, 2*self.num_shadow_hand_dofs + another_hand_start:3*self.num_shadow_hand_dofs + another_hand_start] = self.force_torque_obs_scale * self.dof_force_tensor[:, 24:48]
+
+        fingertip_another_obs_start = another_hand_start + 72
+        self.obs_buf[:, fingertip_another_obs_start:fingertip_another_obs_start + num_ft_states] = self.fingertip_another_state.reshape(self.num_envs, num_ft_states)
+        self.obs_buf[:, fingertip_another_obs_start + num_ft_states:fingertip_another_obs_start + num_ft_states +
+                    num_ft_force_torques] = self.force_torque_obs_scale * self.vec_sensor_tensor[:, 30:]
+
+        action_another_obs_start = fingertip_another_obs_start + 95
+        self.obs_buf[:, action_another_obs_start:action_another_obs_start + 20] = self.actions[:, 20:]
+
+        obj_obs_start = action_another_obs_start + 20  # 144
+        self.obs_buf[:, obj_obs_start:obj_obs_start + 7] = self.object_pose
+        self.obs_buf[:, obj_obs_start + 7:obj_obs_start + 10] = self.object_linvel
+        self.obs_buf[:, obj_obs_start + 10:obj_obs_start + 13] = self.vel_obs_scale * self.object_angvel
+
+        goal_obs_start = obj_obs_start + 13  # 157 = 144 + 13
+        self.obs_buf[:, goal_obs_start:goal_obs_start + 7] = self.goal_pose
+        self.obs_buf[:, goal_obs_start + 7:goal_obs_start + 11] = quat_mul(self.object_rot, quat_conjugate(self.goal_rot))
+
+        another_obj_obs_start = goal_obs_start + 11  # 144
+        self.obs_buf[:, another_obj_obs_start:another_obj_obs_start + 7] = self.object_another_pose
+        self.obs_buf[:, another_obj_obs_start + 7:another_obj_obs_start + 10] = self.object_another_linvel
+        self.obs_buf[:, another_obj_obs_start + 10:another_obj_obs_start + 13] = self.vel_obs_scale * self.object_another_angvel
+
+        another_goal_obs_start = another_obj_obs_start + 13  # 157 = 144 + 13
+        self.obs_buf[:, another_goal_obs_start:another_goal_obs_start + 7] = self.goal_another_pose
+        self.obs_buf[:, another_goal_obs_start + 7:another_goal_obs_start + 11] = quat_mul(self.object_another_rot, quat_conjugate(self.goal_another_rot))
+        point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
+        
+        if self.camera_debug:
+            self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
+            camera_rgba_image = self.camera_visulization(is_depth_image=False)
+            plt.imshow(camera_rgba_image)
+            plt.pause(1e-9)
+
+        for i in range(self.num_envs):
+            # Here is an example. In practice, it's better not to convert tensor from GPU to CPU
+            points = depth_image_to_point_cloud_GPU(self.camera_tensors[i], self.camera_view_matrixs[i], self.camera_proj_matrixs[i], self.camera_u2, self.camera_v2, self.camera_props.width, self.camera_props.height, 10, self.device)
+            
+            if points.shape[0] > 0:
+                selected_points = self.sample_points(points, sample_num=self.pointCloudDownsampleNum, sample_mathed='random')
+            else:
+                selected_points = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
+            
+            point_clouds[i] = selected_points
+
+        if self.pointCloudVisualizer != None :
+            import open3d as o3d
+            points = point_clouds[0, :, :3].cpu().numpy()
+            # colors = plt.get_cmap()(point_clouds[0, :, 3].cpu().numpy())
+            self.o3d_pc.points = o3d.utility.Vector3dVector(points)
+            # self.o3d_pc.colors = o3d.utility.Vector3dVector(colors[..., :3])
+
+            if self.pointCloudVisualizerInitialized == False :
+                self.pointCloudVisualizer.add_geometry(self.o3d_pc)
+                self.pointCloudVisualizerInitialized = True
+            else :
+                self.pointCloudVisualizer.update(self.o3d_pc)
+
+        self.gym.end_access_image_tensors(self.sim)
+        point_clouds -= self.env_origin.view(self.num_envs, 1, 3)
+
+        point_clouds_start = another_goal_obs_start + 11
+        self.obs_buf[:, point_clouds_start:].copy_(point_clouds.view(self.num_envs, self.pointCloudDownsampleNum * 3))
 
     def reset_target_pose(self, env_ids, apply_reset=False):
         """
@@ -943,10 +1118,78 @@ class ShadowHandReOrientation(BaseTask):
         self.gym.add_lines(self.viewer, env, 1, [p0[0], p0[1], p0[2], posx[0], posx[1], posx[2]], [0.85, 0.1, 0.1])
         self.gym.add_lines(self.viewer, env, 1, [p0[0], p0[1], p0[2], posy[0], posy[1], posy[2]], [0.1, 0.85, 0.1])
         self.gym.add_lines(self.viewer, env, 1, [p0[0], p0[1], p0[2], posz[0], posz[1], posz[2]], [0.1, 0.1, 0.85])
+    
+    def rand_row(self, tensor, dim_needed):  
+        row_total = tensor.shape[0]
+        return tensor[torch.randint(low=0, high=row_total, size=(dim_needed,)),:]
+
+    def sample_points(self, points, sample_num=1000, sample_mathed='furthest'):
+        eff_points = points[points[:, 2]>0.04]
+        if eff_points.shape[0] < sample_num :
+            eff_points = points
+        if sample_mathed == 'random':
+            sampled_points = self.rand_row(eff_points, sample_num)
+        elif sample_mathed == 'furthest':
+            sampled_points_id = pointnet2_utils.furthest_point_sample(eff_points.reshape(1, *eff_points.shape), sample_num)
+            sampled_points = eff_points.index_select(0, sampled_points_id[0].long())
+        return sampled_points
+
+    def camera_visulization(self, is_depth_image=False):
+        if is_depth_image:
+            camera_depth_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, self.envs[0], self.cameras[0], gymapi.IMAGE_DEPTH)
+            torch_depth_tensor = gymtorch.wrap_tensor(camera_depth_tensor)
+            torch_depth_tensor = torch.clamp(torch_depth_tensor, -1, 1)
+            torch_depth_tensor = scale(torch_depth_tensor, to_torch([0], dtype=torch.float, device=self.device),
+                                                         to_torch([256], dtype=torch.float, device=self.device))
+            camera_image = torch_depth_tensor.cpu().numpy()
+            camera_image = Im.fromarray(camera_image)
+        
+        else:
+            camera_rgba_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, self.envs[0], self.cameras[0], gymapi.IMAGE_COLOR)
+            torch_rgba_tensor = gymtorch.wrap_tensor(camera_rgba_tensor)
+            camera_image = torch_rgba_tensor.cpu().numpy()
+            camera_image = Im.fromarray(camera_image)
+        
+        return camera_image
+        
 #####################################################################
 ###=========================jit functions=========================###
 #####################################################################
 
+@torch.jit.script
+def depth_image_to_point_cloud_GPU(camera_tensor, camera_view_matrix_inv, camera_proj_matrix, u, v, width:float, height:float, depth_bar:float, device:torch.device):
+    # time1 = time.time()
+    depth_buffer = camera_tensor.to(device)
+
+    # Get the camera view matrix and invert it to transform points from camera to world space
+    vinv = camera_view_matrix_inv
+
+    # Get the camera projection matrix and get the necessary scaling
+    # coefficients for deprojection
+    
+    proj = camera_proj_matrix
+    fu = 2/proj[0, 0]
+    fv = 2/proj[1, 1]
+
+    centerU = width/2
+    centerV = height/2
+
+    Z = depth_buffer
+    X = -(u-centerU)/width * Z * fu
+    Y = (v-centerV)/height * Z * fv
+
+    Z = Z.view(-1)
+    valid = Z > -depth_bar
+    X = X.view(-1)
+    Y = Y.view(-1)
+
+    position = torch.vstack((X, Y, Z, torch.ones(len(X), device=device)))[:, valid]
+    position = position.permute(1, 0)
+    position = position@vinv
+
+    points = position[:, 0:3]
+
+    return points
 
 @torch.jit.script
 def compute_hand_reward(

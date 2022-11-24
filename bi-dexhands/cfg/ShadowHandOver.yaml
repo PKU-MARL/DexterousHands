@@ -5,6 +5,8 @@ env:
   envSpacing: 0.75
   episodeLength: 75
   enableDebugVis: False
+  cameraDebug: False
+  pointCloudDebug: True
   aggregateMode: 1
 
   stiffnessScale: 1.0
@@ -31,7 +33,7 @@ env:
   fallPenalty: 0.0
 
   objectType: "egg" # can be block, egg or pen
-  observationType: "full_state" # 
+  observationType: "point_cloud" # full_state or point_cloud
   handAgentIndex: "[[0, 1, 2, 3, 4, 5]]"
   asymmetric_observations: False
   successTolerance: 0.1

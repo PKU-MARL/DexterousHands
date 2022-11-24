@@ -84,16 +84,16 @@ class AllegroHandCatchUnderarm(BaseTask):
         # can be "openai", "full_no_vel", "full", "full_state"
         self.obs_type = self.cfg["env"]["observationType"]
 
-        if not (self.obs_type in ["openai", "full_no_vel", "full", "full_state"]):
+        if not (self.obs_type in ["point_cloud", "full_state"]):
             raise Exception(
-                "Unknown type of observations!\nobservationType should be one of: [openai, full_no_vel, full, full_state]")
+                "Unknown type of observations!\nobservationType should be one of: [point_cloud, full_state]")
 
         print("Obs type:", self.obs_type)
 
+        self.num_point_cloud_feature_dim = 768
         self.num_obs_dict = {
-            "openai": 42,
-            "full_no_vel": 77,
-            "full": 157,
+            "point_cloud": 402 + self.num_point_cloud_feature_dim * 3,
+            "point_cloud_for_distill": 402 + self.num_point_cloud_feature_dim * 3,
             "full_state": 402
         }
         self.num_hand_obs = 72 + 95 + 22
