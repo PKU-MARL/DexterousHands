@@ -33,7 +33,7 @@ env:
   fallPenalty: 0.0
 
   objectType: "egg" # can be block, egg or pen
-  observationType: "point_cloud" # full_state or point_cloud
+  observationType: "full_state" # full_state or point_cloud
   handAgentIndex: "[[0, 1, 2, 3, 4, 5]]"
   asymmetric_observations: False
   successTolerance: 0.1
