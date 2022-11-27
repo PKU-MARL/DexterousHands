@@ -25,6 +25,7 @@ from tasks.shadow_hand_pen import ShadowHandPen
 from tasks.shadow_hand_re_orientation import ShadowHandReOrientation
 from tasks.shadow_hand_kettle import ShadowHandKettle
 from tasks.shadow_hand_block_stack import ShadowHandBlockStack
+from tasks.shadow_hand import ShadowHand
 
 # Allegro hand
 from tasks.allegro_hand_over import AllegroHandOver
