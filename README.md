@@ -483,9 +483,7 @@ CUDA kernel errors might be asynchronously reported at some other API call,so th
 - Although we provide the implementation, we did not tested **DDPG**, **TD3**, and **MADDPG** algorithms, they may still have bugs.
 
 ## Future Plan
- - [ ] Normalized reward function
- - [ ] Success Metric for all tasks
- - [ ] Benchmark other RL algorithms
+ - [x] Success Metric for all tasks
  - [ ] Add fatory environment (see [this](https://sites.google.com/nvidia.com/factory))
  - [x] Add support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games)
 

@@ -1399,8 +1399,8 @@ def compute_hand_reward(
 
     # Find out which envs hit the goal and update successes count
     successes = torch.where(successes == 0, 
-                    torch.where(torch.abs(left_goal_dist) <= 0.03, 
-                        torch.where(torch.abs(right_goal_dist) <= 0.03, torch.ones_like(successes), torch.ones_like(successes) * 0.5), successes), successes)
+                    torch.where(torch.abs(left_goal_dist) <= 0.1, 
+                        torch.where(torch.abs(right_goal_dist) <= 0.1, torch.ones_like(successes), torch.ones_like(successes) * 0.5), successes), successes)
 
     resets = torch.where(progress_buf >= max_episode_length, torch.ones_like(resets), resets)
 
@@ -1409,7 +1409,7 @@ def compute_hand_reward(
     num_resets = torch.sum(resets)
     finished_cons_successes = torch.sum(successes * resets.float())
 
-    cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
+    cons_successes = torch.where(resets > 0, successes * resets, consecutive_successes).mean()
 
     return reward, resets, goal_resets, progress_buf, successes, cons_successes
 

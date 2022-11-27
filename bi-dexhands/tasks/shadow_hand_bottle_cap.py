@@ -1410,7 +1410,7 @@ def compute_hand_reward(
 
     # Find out which envs hit the goal and update successes count
     successes = torch.where(successes == 0, 
-                    torch.where(torch.norm(bottle_cap_up - bottle_pos, p=2, dim=-1) > 0.05, torch.ones_like(successes), successes), successes)
+                    torch.where(torch.norm(bottle_cap_up - bottle_pos, p=2, dim=-1) > 0.03, torch.ones_like(successes), successes), successes)
 
     resets = torch.where(progress_buf >= max_episode_length, torch.ones_like(resets), resets)
 

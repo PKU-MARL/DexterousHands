@@ -177,7 +177,6 @@ class ShadowHandBlockStack(BaseTask):
         self.cfg["headless"] = headless
 
         if self.obs_type in ["point_cloud"]:
-            from PIL import Image as Im
             from utils import o3dviewer
             # from pointnet2_ops import pointnet2_utils
 
@@ -976,6 +975,8 @@ class ShadowHandBlockStack(BaseTask):
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
 
         if self.camera_debug:
+            import matplotlib.pyplot as plt
+
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)

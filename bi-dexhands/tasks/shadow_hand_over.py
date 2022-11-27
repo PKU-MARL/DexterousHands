@@ -1044,7 +1044,7 @@ class ShadowHandOver(BaseTask):
             camera_image = Im.fromarray(camera_image)
         
         return camera_image
-        
+
 #####################################################################
 ###=========================jit functions=========================###
 #####################################################################
@@ -1163,7 +1163,8 @@ def compute_hand_reward(
 
     # Find out which envs hit the goal and update successes count
     goal_resets = torch.where(torch.abs(goal_dist) <= 0, torch.ones_like(reset_goal_buf), reset_goal_buf)
-    successes = successes + goal_resets
+    successes = torch.where(successes == 0, 
+                    torch.where(goal_dist < 0.03, torch.ones_like(successes), successes), successes)
 
     # Success bonus: orientation is within `success_tolerance` of goal orientation
     reward = torch.where(goal_resets == 1, reward + reach_goal_bonus, reward)
@@ -1186,7 +1187,7 @@ def compute_hand_reward(
     num_resets = torch.sum(resets)
     finished_cons_successes = torch.sum(successes * resets.float())
 
-    cons_successes = torch.where(num_resets > 0, av_factor*finished_cons_successes/num_resets + (1.0 - av_factor)*consecutive_successes, consecutive_successes)
+    cons_successes = torch.where(resets > 0, successes * resets, consecutive_successes).mean()
 
     return reward, resets, goal_resets, progress_buf, successes, cons_successes
 
