@@ -7,6 +7,8 @@
 
 from unittest import TextTestRunner
 from matplotlib.pyplot import axis
+from PIL import Image as Im
+
 import numpy as np
 import os
 import random
@@ -134,9 +136,9 @@ class ShadowHandPushBlock(BaseTask):
 
         self.num_point_cloud_feature_dim = 768
         self.num_obs_dict = {
-            "point_cloud": 423 + self.num_point_cloud_feature_dim * 3,
-            "point_cloud_for_distill": 423 + self.num_point_cloud_feature_dim * 3,
-            "full_state": 423
+            "point_cloud": 428 + self.num_point_cloud_feature_dim * 3,
+            "point_cloud_for_distill": 428 + self.num_point_cloud_feature_dim * 3,
+            "full_state": 428
         }
         self.num_hand_obs = 72 + 95 + 26 + 6
         self.up_axis = 'z'
@@ -584,7 +586,7 @@ class ShadowHandPushBlock(BaseTask):
 
             if self.obs_type in ["point_cloud"]:
                 camera_handle = self.gym.create_camera_sensor(env_ptr, self.camera_props)
-                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.5, 0.75), gymapi.Vec3(-0.24, -0.5, 0))
+                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0., 1.0), gymapi.Vec3(-0.24, -0., 0))
                 camera_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, env_ptr, camera_handle, gymapi.IMAGE_DEPTH)
                 torch_cam_tensor = gymtorch.wrap_tensor(camera_tensor)
                 cam_vinv = torch.inverse((torch.tensor(self.gym.get_camera_view_matrix(self.sim, env_ptr, camera_handle)))).to(self.device)
@@ -937,6 +939,7 @@ class ShadowHandPushBlock(BaseTask):
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
         
         if self.camera_debug:
+            import matplotlib.pyplot as plt
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)

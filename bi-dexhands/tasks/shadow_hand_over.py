@@ -7,6 +7,8 @@
 
 from matplotlib.pyplot import axis
 import numpy as np
+from PIL import Image as Im
+ 
 import os
 import random
 import torch
@@ -770,6 +772,7 @@ class ShadowHandOver(BaseTask):
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
         
         if self.camera_debug:
+            import matplotlib.pyplot as plt
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)

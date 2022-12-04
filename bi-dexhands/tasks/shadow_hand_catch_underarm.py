@@ -6,6 +6,8 @@
 # license agreement from NVIDIA CORPORATION is strictly prohibited.
 
 from matplotlib.pyplot import axis
+from PIL import Image as Im
+
 import numpy as np
 import os
 import random
@@ -179,6 +181,9 @@ class ShadowHandCatchUnderarm(BaseTask):
         self.cfg["device_type"] = device_type
         self.cfg["device_id"] = device_id
         self.cfg["headless"] = headless
+
+        self.camera_debug = self.cfg["env"].get("cameraDebug", False)
+        self.point_cloud_debug = self.cfg["env"].get("pointCloudDebug", False)
 
         super().__init__(cfg=self.cfg)
 
@@ -545,7 +550,7 @@ class ShadowHandCatchUnderarm(BaseTask):
 
             if self.obs_type in ["point_cloud"]:
                 camera_handle = self.gym.create_camera_sensor(env_ptr, self.camera_props)
-                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.5, 0.75), gymapi.Vec3(-0.24, -0.5, 0))
+                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.57, 0.85), gymapi.Vec3(-0.24, -0.57, 0))
                 camera_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, env_ptr, camera_handle, gymapi.IMAGE_DEPTH)
                 torch_cam_tensor = gymtorch.wrap_tensor(camera_tensor)
                 cam_vinv = torch.inverse((torch.tensor(self.gym.get_camera_view_matrix(self.sim, env_ptr, camera_handle)))).to(self.device)
@@ -831,6 +836,7 @@ class ShadowHandCatchUnderarm(BaseTask):
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
         
         if self.camera_debug:
+            import matplotlib.pyplot as plt
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)

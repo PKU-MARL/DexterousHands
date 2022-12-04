@@ -5,7 +5,7 @@ env:
   envSpacing: 0.75
   episodeLength: 75
   enableDebugVis: False
-  cameraDebug: False
+  cameraDebug: True
   pointCloudDebug: True
   aggregateMode: 1
 

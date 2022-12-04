@@ -7,6 +7,8 @@
 
 from matplotlib.pyplot import axis
 import numpy as np
+from PIL import Image as Im
+
 import os
 import random
 import torch
@@ -539,7 +541,7 @@ class ShadowHandReOrientation(BaseTask):
                     env_ptr, goal_another_handle, 0, gymapi.MESH_VISUAL, gymapi.Vec3(0.98, 0.6, 0.72))
             if self.obs_type in ["point_cloud"]:
                 camera_handle = self.gym.create_camera_sensor(env_ptr, self.camera_props)
-                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.5, 0.75), gymapi.Vec3(-0.24, -0.5, 0))
+                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.575, 0.75), gymapi.Vec3(-0.24, -0.575, 0))
                 camera_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, env_ptr, camera_handle, gymapi.IMAGE_DEPTH)
                 torch_cam_tensor = gymtorch.wrap_tensor(camera_tensor)
                 cam_vinv = torch.inverse((torch.tensor(self.gym.get_camera_view_matrix(self.sim, env_ptr, camera_handle)))).to(self.device)
@@ -842,6 +844,7 @@ class ShadowHandReOrientation(BaseTask):
         point_clouds = torch.zeros((self.num_envs, self.pointCloudDownsampleNum, 3), device=self.device)
         
         if self.camera_debug:
+            import matplotlib.pyplot as plt
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)

@@ -1,7 +1,7 @@
 # if given, will override the device setting in gym. 
 env: 
   env_name: "shadow_hand_block_stack"
-  numEnvs: 1024
+  numEnvs: 256
   envSpacing: 1.5
   episodeLength: 250
   enableDebugVis: False
@@ -35,7 +35,7 @@ env:
   fallPenalty: 0.0
 
   objectType: "block" # can be block, egg or pen
-  observationType: "full_state" # 
+  observationType: "full_state" # point_cloud or full_state
   handAgentIndex: "[[0, 1, 2, 3, 4, 5]]"
   asymmetric_observations: False
   successTolerance: 0.1

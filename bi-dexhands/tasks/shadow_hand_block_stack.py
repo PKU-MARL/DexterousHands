@@ -7,6 +7,8 @@
 
 from unittest import TextTestRunner
 from matplotlib.pyplot import axis
+from PIL import Image as Im
+
 import numpy as np
 import os
 import random
@@ -506,7 +508,7 @@ class ShadowHandBlockStack(BaseTask):
                 self.pointCloudVisualizer = PointcloudVisualizer()
                 self.pointCloudVisualizerInitialized = False
                 self.o3d_pc = o3d.geometry.PointCloud()
-            else :
+            else:
                 self.pointCloudVisualizer = None
 
         for i in range(self.num_envs):
@@ -616,7 +618,7 @@ class ShadowHandBlockStack(BaseTask):
 
             if self.obs_type in ["point_cloud"]:
                 camera_handle = self.gym.create_camera_sensor(env_ptr, self.camera_props)
-                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, -0.5, 0.75), gymapi.Vec3(-0.24, -0.5, 0))
+                self.gym.set_camera_location(camera_handle, env_ptr, gymapi.Vec3(0.25, 0, 1.0), gymapi.Vec3(-0.25, 0, -0.5))
                 camera_tensor = self.gym.get_camera_image_gpu_tensor(self.sim, env_ptr, camera_handle, gymapi.IMAGE_DEPTH)
                 torch_cam_tensor = gymtorch.wrap_tensor(camera_tensor)
                 cam_vinv = torch.inverse((torch.tensor(self.gym.get_camera_view_matrix(self.sim, env_ptr, camera_handle)))).to(self.device)
@@ -976,7 +978,6 @@ class ShadowHandBlockStack(BaseTask):
 
         if self.camera_debug:
             import matplotlib.pyplot as plt
-
             self.camera_rgba_debug_fig = plt.figure("CAMERA_RGBD_DEBUG")
             camera_rgba_image = self.camera_visulization(is_depth_image=False)
             plt.imshow(camera_rgba_image)
@@ -1010,7 +1011,7 @@ class ShadowHandBlockStack(BaseTask):
         point_clouds -= self.env_origin.view(self.num_envs, 1, 3)
 
         point_clouds_start = obj_obs_start + 13 + 13
-        self.obs_buf[:, point_clouds_start:].copy_(point_clouds.view(self.num_envs, self.pointCloudDownsampleNum * 3))
+        self.obs_buf[:, point_clouds_start:point_clouds_start + self.pointCloudDownsampleNum * 3].copy_(point_clouds.view(self.num_envs, self.pointCloudDownsampleNum * 3))
 
     def reset_target_pose(self, env_ids, apply_reset=False):
         """
