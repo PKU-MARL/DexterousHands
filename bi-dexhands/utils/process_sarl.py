@@ -13,6 +13,9 @@ def process_sarl(args, env, cfg_train, logdir):
         is_testing = True
         chkpt_path = args.model_dir
 
+    if args.max_iterations != -1:
+        cfg_train["learn"]["max_iterations"] = args.max_iterations
+
     logdir = logdir + "_seed{}".format(env.task.cfg["seed"])
 
     """Set up the algo system for training or inferencing."""

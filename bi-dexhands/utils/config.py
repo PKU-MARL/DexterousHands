@@ -240,7 +240,7 @@ def get_args(benchmark=False, use_rlg_config=False):
         {"name": "--episode_length", "type": int, "default": 0,
             "help": "Episode length, by default is read from yaml config"},
         {"name": "--seed", "type": int, "help": "Random seed"},
-        {"name": "--max_iterations", "type": int, "default": 0,
+        {"name": "--max_iterations", "type": int, "default": -1,
             "help": "Set a maximum number of training iterations"},
         {"name": "--steps_num", "type": int, "default": -1,
             "help": "Set number of simulation steps per 1 PPO iteration. Supported only by rl_games. If not -1 overrides the config settings."},
@@ -255,7 +255,7 @@ def get_args(benchmark=False, use_rlg_config=False):
         {"name": "--model_dir", "type": str, "default": "",
             "help": "Choose a model dir"},
         {"name": "--datatype", "type": str, "default": "random",
-            "help": "Choose an ffline datatype"}]
+            "help": "Choose an offline datatype"}]
 
     if benchmark:
         custom_parameters += [{"name": "--num_proc", "type": int, "default": 1, "help": "Number of child processes to launch"},
