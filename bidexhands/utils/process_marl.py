@@ -22,14 +22,14 @@ def process_MultiAgentRL(args,env, config, model_dir=""):
 
     if args.algo in ["mappo", "happo", "hatrpo"]:
         # on policy marl
-        from algorithms.marl.runner import Runner
+        from bidexhands.algorithms.marl.runner import Runner
         marl = Runner(vec_env=env,
                     config=config,
                     model_dir=model_dir
                     )
     elif args.algo == 'maddpg':
         # off policy marl
-        from algorithms.marl.maddpg.runner import Runner
+        from bidexhands.algorithms.marl.maddpg.runner import Runner
         marl = Runner(vec_env=env,
             config=config,
             model_dir=model_dir

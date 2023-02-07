@@ -1,8 +1,8 @@
-from algorithms.rl.ppo import PPO
-from algorithms.rl.sac import SAC
-from algorithms.rl.td3 import TD3
-from algorithms.rl.ddpg import DDPG
-from algorithms.rl.trpo import TRPO
+from bidexhands.algorithms.rl.ppo import PPO
+from bidexhands.algorithms.rl.sac import SAC
+from bidexhands.algorithms.rl.td3 import TD3
+from bidexhands.algorithms.rl.ddpg import DDPG
+from bidexhands.algorithms.rl.trpo import TRPO
 
 def process_sarl(args, env, cfg_train, logdir):
     learn_cfg = cfg_train["learn"]

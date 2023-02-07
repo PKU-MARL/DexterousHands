@@ -13,7 +13,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.offrl.ppo_collect import RolloutStorage
+from bidexhands.algorithms.offrl.ppo_collect import RolloutStorage
 
 
 class PPO:

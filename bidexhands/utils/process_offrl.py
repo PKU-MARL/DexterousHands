@@ -1,6 +1,6 @@
 
 def process_td3_bc(args, env, cfg_train, logdir):
-    from algorithms.offrl.td3_bc import TD3_BC
+    from bidexhands.algorithms.offrl.td3_bc import TD3_BC
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True
@@ -32,7 +32,7 @@ def process_td3_bc(args, env, cfg_train, logdir):
     return td3_bc
 
 def process_bcq(args, env, cfg_train, logdir):
-    from algorithms.offrl.bcq import BCQ
+    from bidexhands.algorithms.offrl.bcq import BCQ
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True
@@ -64,7 +64,7 @@ def process_bcq(args, env, cfg_train, logdir):
     return bcq
 
 def process_iql(args, env, cfg_train, logdir):
-    from algorithms.offrl.iql import IQL
+    from bidexhands.algorithms.offrl.iql import IQL
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True
@@ -97,7 +97,7 @@ def process_iql(args, env, cfg_train, logdir):
     return iql
 
 def process_ppo_collect(args, env, cfg_train, logdir):
-    from algorithms.offrl.ppo_collect import PPO, ActorCritic
+    from bidexhands.algorithms.offrl.ppo_collect import PPO, ActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True

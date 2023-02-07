@@ -10,12 +10,12 @@ from matplotlib.pyplot import get
 import numpy as np
 import random
 
-from utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
-from utils.parse_task import parse_task
-from utils.process_sarl import *
-from utils.process_marl import process_MultiAgentRL, get_AgentIndex
-from utils.process_mtrl import *
-from utils.process_metarl import *
+from bidexhands.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
+from bidexhands.utils.parse_task import parse_task
+from bidexhands.utils.process_sarl import *
+from bidexhands.utils.process_marl import process_MultiAgentRL, get_AgentIndex
+from bidexhands.utils.process_mtrl import *
+from bidexhands.utils.process_metarl import *
 import os
 
 from rl_games.common import env_configurations, experiment, vecenv
@@ -24,7 +24,7 @@ from rl_games.torch_runner import Runner
 from rl_games.algos_torch import torch_ext
 import yaml
 
-# from utils.rl_games_custom import 
+# from bidexhands.utils.rl_games_custom import 
 
 os.environ['CUDA_LAUNCH_BLOCKING'] = "1"
 

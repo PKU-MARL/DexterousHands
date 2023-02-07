@@ -8,10 +8,10 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from utils.util import get_gard_norm, huber_loss, mse_loss
-from algorithms.marl.utils.valuenorm import ValueNorm
-from algorithms.marl.utils.popart import PopArt
-from algorithms.utils.util import check
+from bidexhands.utils.util import get_gard_norm, huber_loss, mse_loss
+from bidexhands.algorithms.marl.utils.valuenorm import ValueNorm
+from bidexhands.algorithms.marl.utils.popart import PopArt
+from bidexhands.algorithms.utils.util import check
 
 
 class MAPPO():

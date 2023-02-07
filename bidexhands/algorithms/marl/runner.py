@@ -15,8 +15,8 @@ import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
 from itertools import chain
-from algorithms.marl.utils.separated_buffer import SeparatedReplayBuffer
-from utils.util import update_linear_schedule
+from bidexhands.algorithms.marl.utils.separated_buffer import SeparatedReplayBuffer
+from bidexhands.utils.util import update_linear_schedule
 
 def _t2n(x):
     return x.detach().cpu().numpy()
@@ -72,14 +72,14 @@ class Runner:
             os.makedirs(self.save_dir)
 
         if self.algorithm_name == "happo":
-            from algorithms.marl.happo_trainer import HAPPO as TrainAlgo
-            from algorithms.marl.happo_policy import HAPPO_Policy as Policy
+            from bidexhands.algorithms.marl.happo_trainer import HAPPO as TrainAlgo
+            from bidexhands.algorithms.marl.happo_policy import HAPPO_Policy as Policy
         if self.algorithm_name == "hatrpo":
-            from algorithms.marl.hatrpo_trainer import HATRPO as TrainAlgo
-            from algorithms.marl.hatrpo_policy import HATRPO_Policy as Policy
+            from bidexhands.algorithms.marl.hatrpo_trainer import HATRPO as TrainAlgo
+            from bidexhands.algorithms.marl.hatrpo_policy import HATRPO_Policy as Policy
         if self.algorithm_name == "mappo":
-            from algorithms.marl.mappo_trainer import MAPPO as TrainAlgo
-            from algorithms.marl.mappo_policy import MAPPO_Policy as Policy
+            from bidexhands.algorithms.marl.mappo_trainer import MAPPO as TrainAlgo
+            from bidexhands.algorithms.marl.mappo_policy import MAPPO_Policy as Policy
 
         self.policy = []
         for agent_id in range(self.num_agents):

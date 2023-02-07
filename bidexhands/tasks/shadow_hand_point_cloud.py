@@ -35,8 +35,8 @@ import os
 import random
 import torch
 
-from utils.torch_jit_utils import *
-from utils import o3dviewer
+from bidexhands.utils.torch_jit_utils import *
+from bidexhands.utils import o3dviewer
 from bidexhands.tasks.hand_base.base_task import BaseTask
 from isaacgym import gymtorch
 from isaacgym import gymapi
@@ -390,7 +390,7 @@ class ShadowHandPointCloud(BaseTask):
 
         if True:
             import open3d as o3d
-            from utils.o3dviewer import PointcloudVisualizer
+            from bidexhands.utils.o3dviewer import PointcloudVisualizer
             self.pointCloudVisualizer = PointcloudVisualizer()
             self.pointCloudVisualizerInitialized = False
             self.o3d_pc = o3d.geometry.PointCloud()

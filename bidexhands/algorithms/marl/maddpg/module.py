@@ -1,7 +1,7 @@
 import torch
 import torch.nn as nn
 from copy import deepcopy
-from utils.util import get_gard_norm
+from bidexhands.utils.util import get_gard_norm
 
 
 def get_activation(act_name):

@@ -20,8 +20,8 @@ from torch.distributions import kl_divergence
 
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.rl.trpo import RolloutStorage
-from algorithms.rl.trpo import ActorCritic
+from bidexhands.algorithms.rl.trpo import RolloutStorage
+from bidexhands.algorithms.rl.trpo import ActorCritic
 
 import copy
 

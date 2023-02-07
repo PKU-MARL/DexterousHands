@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from algorithms.offrl.iql import IQL_Model
-from algorithms.offrl.iql import ReplayBuffer
+from bidexhands.algorithms.offrl.iql import IQL_Model
+from bidexhands.algorithms.offrl.iql import ReplayBuffer
 
 class IQL:
 

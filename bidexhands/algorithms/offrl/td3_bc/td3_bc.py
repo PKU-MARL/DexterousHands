@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from algorithms.offrl.td3_bc import TD3_BC_Model
-from algorithms.offrl.td3_bc import ReplayBuffer
+from bidexhands.algorithms.offrl.td3_bc import TD3_BC_Model
+from bidexhands.algorithms.offrl.td3_bc import ReplayBuffer
 
 class TD3_BC:
 

@@ -41,7 +41,7 @@ from bidexhands.tasks.hand_base.multi_task_vec_task import MultiTaskVecTaskPytho
 from bidexhands.tasks.hand_base.meta_vec_task import MetaVecTaskPython
 from bidexhands.tasks.hand_base.vec_task_rlgames import RLgamesVecTaskPython
 
-from utils.config import warn_task_name
+from bidexhands.utils.config import warn_task_name
 
 import json
 

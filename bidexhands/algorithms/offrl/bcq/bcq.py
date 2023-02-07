@@ -6,8 +6,8 @@ import torch
 import torch.nn as nn
 import torch.optim as optim
 
-from algorithms.offrl.bcq import BCQ_Model
-from algorithms.offrl.bcq import ReplayBuffer
+from bidexhands.algorithms.offrl.bcq import BCQ_Model
+from bidexhands.algorithms.offrl.bcq import ReplayBuffer
 
 class BCQ:
 
