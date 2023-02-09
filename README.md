@@ -10,7 +10,7 @@
 
 ### Update
 
-[2023/02/09] We re-package the Bi-DexHands. Now you can call the Bi-DexHands' environments not only on the command line, but also in your Python script. check our README [Gym-like API](#gym-like-api) below.
+[2023/02/09] We re-package the Bi-DexHands. Now you can call the Bi-DexHands' environments not only on the command line, but also in your Python script. check our README [Use Bi-DexHands in Python scripts](#Use-Bi-DexHands-in-Python-scripts) below.
 
 [2022/11/24] Now we support visual observation for all the tasks, check this [document for visual input](#./docs/visual-in.md).
 
@@ -44,7 +44,7 @@ Contents of this repo are as follows:
   - [Training](#Training)
   - [Testing](#Testing)
   - [Plotting](#Plotting)
-  - [Gym-like API](#Gym-like-API)
+  - [Use Bi-DexHands in Python scripts](#Use-Bi-DexHands-in-Python-scripts)
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
 - [Offline RL Datasets](#Offline-RL-Datasets)
@@ -311,7 +311,8 @@ $ python ./utils/logger/tools.py --alg-name <marl algorithm> --alg-type marl --e
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
 ```
 
-### Gym-like API
+### Use Bi-DexHands in Python scripts
+
 ```python
 import bidexhands as bi
 import torch
