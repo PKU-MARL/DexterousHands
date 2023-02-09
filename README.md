@@ -19,7 +19,7 @@
 **Bi-DexHands** ([click bi-dexhands.ai](https://bi-dexhands.ai)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
-- **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bi-dexhands/algorithms/marl/)
+- **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bidexhands/algorithms/marl/)
 - **Heterogeneous-agents Cooperation**: Agents in Bi-DexHands (i.e., joints, fingers, hands,...) are genuinely heterogeneous; this is very different from common multi-agent environments such as [SMAC](https://github.com/oxwhirl/smac)  where agents can simply share parameters to solve the task. 
 - **Task Generalization**: we introduce a variety of dexterous manipulation tasks (e.g., handover, lift up, throw, place, put...) as well as enormous target objects from the [YCB](https://rse-lab.cs.washington.edu/projects/posecnn/) and [SAPIEN](https://sapien.ucsd.edu/) dataset (>2,000 objects); this allows meta-RL and multi-task RL algorithms to be tested on the task generalization front. 
 - **Point Cloud**: We provide the ability to use point clouds as observations. We used the depth camera in Isaacc Gym to get the depth image and then convert it to partial point cloud. We can customize the pose and numbers of depth cameras to get point cloud from difference angles. The density of generated point cloud depends on the number of the camera pixels. See the [visual input docs](./docs/point-cloud.md). 
@@ -34,7 +34,7 @@ Contents of this repo are as follows:
 
 - [Installation](#Installation)
   - [Pre-requisites](#Installation)
-  - [Install from PyPI](#Install-from-PyPI)
+  <!-- - [Install from PyPI](#Install-from-PyPI) -->
   - [Install from source code](#Install-from-source-code)
 - [Introduction to Bi-DexHands](#Introduction-to-Bi-DexHands)
 - [Overview of Environments](./docs/environments.md)
@@ -78,13 +78,14 @@ install instructions if you have any trouble running the samples.
 
 Once Isaac Gym is installed and samples work within your current python environment, install this repo:
 
-#### Install from PyPI
+<!-- #### Install from PyPI
 Bi-DexHands is hosted on PyPI. It requires Python >= 3.7.
 You can simply install Bi-DexHands from PyPI with the following command:
 
 ```bash
 pip install bidexhands
-```
+``` -->
+
 #### Install from source code
 You can also install this repo from the source code:
 
@@ -129,14 +130,14 @@ So far, we release the following tasks (with many more to come):
 #### Training Examples
 
 ##### RL/MARL Examples
-For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bidexhands` folder:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=ppo
 ```
 
 To select an algorithm, pass `--algo=ppo/mappo/happo/hatrpo/...` 
-as an argument. For example, if you want to use happo algorithm, run this line in `bi-dexhands` folder:
+as an argument. For example, if you want to use happo algorithm, run this line in `bidexhands` folder:
 
 ```bash
 python train.py --task=ShadowHandOver --algo=happo
@@ -160,7 +161,7 @@ Supported Multi-Agent RL algorithms are listed below:
 
 ##### Multi-task/Meta RL Examples
 
-The training method of multi-task/meta RL is similar to the RL/MARL, it is only need to select the multi-task/meta categories and the corresponding algorithm. For example, if you want to train a policy for the ShadowHandMT4 categories by the MTPPO algorithm, run this line in `bi-dexhands` folder:
+The training method of multi-task/meta RL is similar to the RL/MARL, it is only need to select the multi-task/meta categories and the corresponding algorithm. For example, if you want to train a policy for the ShadowHandMT4 categories by the MTPPO algorithm, run this line in `bidexhands` folder:
 
 ```bash
 python train.py --task=ShadowHandMetaMT4 --algo=mtppo
@@ -479,19 +480,19 @@ The originally collected data in our paper is available at:
 
 ### Use rl_games to train our tasks
 
-For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bi-dexhands` folder:
+For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bidexhands` folder:
 
 ```bash
 python train_rlgames.py --task=ShadowHandOver --algo=ppo
 ```
 
-Currently we only support PPO and PPO with LSTM methods in rl_games. If you want to use PPO with LSTM, run this line in `bi-dexhands` folder:
+Currently we only support PPO and PPO with LSTM methods in rl_games. If you want to use PPO with LSTM, run this line in `bidexhands` folder:
 
 ```bash
 python train_rlgames.py --task=ShadowHandOver --algo=ppo_lstm
 ``` 
 
-The log files using rl_games can be found in `bi-dexhands/runs` folder.
+The log files using rl_games can be found in `bidexhands/runs` folder.
 
 ## Known issue
 
