@@ -10,6 +10,8 @@
 
 ### Update
 
+[2023/02/09] We re-package the Bi-DexHands. Now you can call the Bi-DexHands' environments not only on the command line, but also in your Python script. check our README [Gym-like API](#gym-like-api) below.
+
 [2022/11/24] Now we support visual observation for all the tasks, check this [document for visual input](#./docs/visual-in.md).
 
 [2022/10/02] Now we support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games), check our README [below](#Use-rl_games-to-train-our-tasks).
@@ -42,6 +44,7 @@ Contents of this repo are as follows:
   - [Training](#Training)
   - [Testing](#Testing)
   - [Plotting](#Plotting)
+  - [Gym-like API](#Gym-like-API)
 - [Enviroments Performance](#Enviroments-Performance)
   - [Figures](#Figures)
 - [Offline RL Datasets](#Offline-RL-Datasets)
@@ -306,6 +309,23 @@ $ python ./utils/logger/tools.py --alg-name <sarl algorithm> --alg-type sarl --e
 $ python ./utils/logger/tools.py --alg-name <marl algorithm> --alg-type marl --env-num 2048 --env-step 8 --root-dir ./logs/shadow_hand_over --refresh 
 # generate figures
 $ python ./utils/logger/plotter.py --root-dir ./logs/shadow_hand_over --shaded-std --legend-pattern "\\w+"  --output-path=./logs/shadow_hand_over/figure.png
+```
+
+### Gym-like API
+```python
+import bidexhands as bi
+import torch
+
+env_name = 'ShadowHandOver'
+algo = "ppo"
+env = bi.make(env_name, algo)
+
+obs = env.reset()
+terminated = False
+
+while not terminated:
+    act = torch.tensor(env.action_space.sample()).repeat((env.num_envs, 1))
+    obs, reward, done, info = env.step(act)
 ```
 
 ## Enviroment Performance

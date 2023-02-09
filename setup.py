@@ -25,7 +25,7 @@ INSTALL_REQUIRES = [
 setup(
     name="bidexhands",
     author="cypypccpy",
-    version="0.1.1",
+    version="0.1.2",
     description="Benchmark environments for Dexterous Hand in NVIDIA IsaacGym.",
     keywords=["robotics", "rl"],
     include_package_data=True,
