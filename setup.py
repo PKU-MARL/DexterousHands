@@ -29,7 +29,7 @@ setup(
     description="Benchmark environments for Dexterous Hand in NVIDIA IsaacGym.",
     keywords=["robotics", "rl"],
     include_package_data=True,
-    python_requires=">=3.6.*",
+    python_requires=">=3.6",
     install_requires=INSTALL_REQUIRES,
     packages=find_packages("."),
     classifiers=["Natural Language :: English", "Programming Language :: Python :: 3.7"],

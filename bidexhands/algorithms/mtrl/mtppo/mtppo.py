@@ -14,7 +14,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.mtrl.mtppo import RolloutStorage
+from bidexhands.algorithms.mtrl.mtppo import RolloutStorage
 
 
 class PPO:

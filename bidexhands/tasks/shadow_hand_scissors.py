@@ -14,7 +14,7 @@ import os
 import random
 import torch
 
-from utils.torch_jit_utils import *
+from bidexhands.utils.torch_jit_utils import *
 from bidexhands.tasks.hand_base.base_task import BaseTask
 from isaacgym import gymtorch
 from isaacgym import gymapi
@@ -173,7 +173,7 @@ class ShadowHandScissors(BaseTask):
 
         if self.obs_type in ["point_cloud"]:
             from PIL import Image as Im
-            from utils import o3dviewer
+            from bidexhands.utils import o3dviewer
             # from pointnet2_ops import pointnet2_utils
 
         self.camera_debug = self.cfg["env"].get("cameraDebug", False)
@@ -501,7 +501,7 @@ class ShadowHandScissors(BaseTask):
 
             if self.point_cloud_debug:
                 import open3d as o3d
-                from utils.o3dviewer import PointcloudVisualizer
+                from bidexhands.utils.o3dviewer import PointcloudVisualizer
                 self.pointCloudVisualizer = PointcloudVisualizer()
                 self.pointCloudVisualizerInitialized = False
                 self.o3d_pc = o3d.geometry.PointCloud()

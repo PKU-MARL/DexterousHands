@@ -5,9 +5,9 @@ import numpy as np
 import torch
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.maddpg import MADDPG as TrainAlgo
-from algorithms.maddpg import MADDPG_policy as Policy
-from algorithms.maddpg import ReplayBuffer
+from bidexhands.algorithms.marl.maddpg import MADDPG as TrainAlgo
+from bidexhands.algorithms.marl.maddpg import MADDPG_policy as Policy
+from bidexhands.algorithms.marl.maddpg import ReplayBuffer
 
 def _t2n(x):
     return x.detach().cpu().numpy()

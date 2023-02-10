@@ -1,7 +1,7 @@
 import torch
 import numpy as np
 from collections import defaultdict
-from utils.util import check, get_shape_from_obs_space, get_shape_from_act_space
+from bidexhands.utils.util import check, get_shape_from_obs_space, get_shape_from_act_space
 
 def _flatten(T, N, x):
     return x.reshape(T * N, *x.shape[2:])

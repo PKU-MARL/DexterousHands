@@ -2,7 +2,7 @@
 
 
 def process_mtppo(args, env, cfg_train, logdir):
-    from algorithms.mtrl.mtppo import PPO, ActorCritic
+    from bidexhands.algorithms.mtrl.mtppo import PPO, ActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True
@@ -51,7 +51,7 @@ def process_mtppo(args, env, cfg_train, logdir):
     return ppo
 
 def process_random(args, env, cfg_train, logdir):
-    from algorithms.mtrl.mtppo import PPO, ActorCritic
+    from bidexhands.algorithms.mtrl.mtppo import PPO, ActorCritic
     learn_cfg = cfg_train["learn"]
     is_testing = learn_cfg["test"]
     # is_testing = True

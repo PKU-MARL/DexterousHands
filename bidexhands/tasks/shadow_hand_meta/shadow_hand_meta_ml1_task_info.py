@@ -4,7 +4,7 @@ import os
 import random
 import torch
 
-from utils.torch_jit_utils import *
+from bidexhands.utils.torch_jit_utils import *
 from bidexhands.tasks.hand_base.base_task import BaseTask
 
 from isaacgym import gymtorch
@@ -275,7 +275,7 @@ def compute_hand_reward(
 # import random
 # import torch
 
-# from utils.torch_jit_utils import *
+# from bidexhands.utils.torch_jit_utils import *
 # from bidexhands.tasks.hand_base.base_task import BaseTask
 
 # from isaacgym import gymtorch

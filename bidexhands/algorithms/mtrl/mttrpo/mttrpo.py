@@ -20,7 +20,7 @@ from torch.distributions import kl_divergence
 
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.mtrl.mttrpo import RolloutStorage
+from bidexhands.algorithms.mtrl.mttrpo import RolloutStorage
 
 
 class TRPO:

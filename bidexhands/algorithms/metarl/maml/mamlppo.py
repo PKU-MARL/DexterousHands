@@ -16,7 +16,7 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.metarl.maml import RolloutStorage
+from bidexhands.algorithms.metarl.maml import RolloutStorage
 
 class MAMLPPO:
 

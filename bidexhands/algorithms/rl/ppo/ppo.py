@@ -13,8 +13,8 @@ import torch.nn as nn
 import torch.optim as optim
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.rl.ppo import RolloutStorage
-from algorithms.rl.ppo import ActorCritic
+from bidexhands.algorithms.rl.ppo import RolloutStorage
+from bidexhands.algorithms.rl.ppo import ActorCritic
 
 import copy
 
