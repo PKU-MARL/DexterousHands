@@ -129,6 +129,6 @@ if args.task in ["ShadowHandOver", "ShadowHandCatchUnderarm", "ShadowHandTwoCatc
 ```
 Finally, retrieve the task class in `bi-dexhands/utils/parse_task.py`:
 ```python
-from tasks.shadow_hand_over import ShadowHandOver
+from bidexhands.tasks.shadow_hand_over import ShadowHandOver
 ```
 Regarding how to design the content of the task, you can mainly refer to the methods [mentioned above](#ycb). After learning about isaacgym and RL, I believe that you can easily design your own tasks. If there is still something you don't understand, welcome to submit an issue to discuss with us :-).

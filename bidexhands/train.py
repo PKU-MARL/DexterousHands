@@ -9,13 +9,13 @@ from ast import arg
 import numpy as np
 import random
 
-from utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
-from utils.parse_task import parse_task
-from utils.process_sarl import process_sarl
-from utils.process_marl import process_MultiAgentRL, get_AgentIndex
-from utils.process_mtrl import *
-from utils.process_metarl import *
-from utils.process_offrl import *
+from bidexhands.utils.config import set_np_formatting, set_seed, get_args, parse_sim_params, load_cfg
+from bidexhands.utils.parse_task import parse_task
+from bidexhands.utils.process_sarl import process_sarl
+from bidexhands.utils.process_marl import process_MultiAgentRL, get_AgentIndex
+from bidexhands.utils.process_mtrl import *
+from bidexhands.utils.process_metarl import *
+from bidexhands.utils.process_offrl import *
 
 def train():
     print("Algorithm: ", args.algo)

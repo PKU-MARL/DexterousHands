@@ -1,10 +1,10 @@
 import numpy as np
 import torch
 import torch.nn as nn
-from utils.util import get_gard_norm, huber_loss, mse_loss
-from algorithms.marl.utils.popart import PopArt
-from algorithms.marl.actor_critic import Actor, Critic
-from algorithms.utils.util import check
+from bidexhands.utils.util import get_gard_norm, huber_loss, mse_loss
+from bidexhands.algorithms.marl.utils.popart import PopArt
+from bidexhands.algorithms.marl.actor_critic import Actor, Critic
+from bidexhands.algorithms.utils.util import check
 
 class HAPPO():
     """

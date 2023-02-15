@@ -7,8 +7,8 @@ refer to .....
 """
 
 import torch
-from algorithms.marl.actor_critic import Actor, Critic
-from utils.util import update_linear_schedule
+from bidexhands.algorithms.marl.actor_critic import Actor, Critic
+from bidexhands.utils.util import update_linear_schedule
 
 
 class IPPO_Policy:

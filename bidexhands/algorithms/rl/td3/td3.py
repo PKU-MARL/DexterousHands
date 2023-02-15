@@ -12,8 +12,8 @@ from torch import Tensor
 from gym.spaces import Space
 from torch.utils.tensorboard import SummaryWriter
 
-from algorithms.rl.td3 import ReplayBuffer
-from algorithms.rl.td3 import MLPActorCritic
+from bidexhands.algorithms.rl.td3 import ReplayBuffer
+from bidexhands.algorithms.rl.td3 import MLPActorCritic
 
 
 def count_vars(module):

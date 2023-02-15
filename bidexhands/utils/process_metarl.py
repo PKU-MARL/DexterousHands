@@ -9,7 +9,7 @@ from copy import deepcopy
 
 def process_mamlppo(args, env, cfg_train, logdir):
     if args.algo in ["mamlppo"]:
-        from algorithms.metarl.maml import Trainer, MAMLPPO, ActorCritic
+        from bidexhands.algorithms.metarl.maml import Trainer, MAMLPPO, ActorCritic
         learn_cfg = cfg_train["learn"]
         is_testing = learn_cfg["test"]
         # is_testing = True
