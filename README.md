@@ -480,6 +480,8 @@ The originally collected data in our paper is available at:
 
 ### Use rl_games to train our tasks
 
+**Please note that we have only test to support rl-games==1.5.2. Higher or lower version may cause an error.**
+
 For example, if you want to train a policy for the ShadowHandOver task by the PPO algorithm, run this line in `bidexhands` folder:
 
 ```bash

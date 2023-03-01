@@ -19,7 +19,7 @@ from bidexhands.utils.process_metarl import *
 import os
 
 from rl_games.common import env_configurations, experiment, vecenv
-from rl_games.common.algo_observer import AlgoObserver
+from rl_games.common.algo_observer import AlgoObserver, IsaacAlgoObserver
 from rl_games.torch_runner import Runner
 from rl_games.algos_torch import torch_ext
 import yaml
@@ -65,7 +65,8 @@ if __name__ == '__main__':
         rlgames_cfg['params']['config']['minibatch_size'] = rlgames_cfg['params']['config']['minibatch_size'] * env.num_environments
 
     vargs = vars(args)
-    runner = Runner()
+    algo_observer = IsaacAlgoObserver()
+    runner = Runner(algo_observer=algo_observer)
     runner.load(rlgames_cfg)
     runner.reset()
     runner.run(vargs)
