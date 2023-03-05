@@ -74,7 +74,13 @@ def retrieve_cfg(args, use_rlg_config=False):
         return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/stack_block_config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
 
     elif args.task in ["ShadowHand", "ShadowHandReOrientation"]:
-        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/re_orientation_config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/{}.yaml".format(args.task)
+
+    elif args.task in ["ShadowHandMetaMT4", "ShadowHandMetaMT1"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/{}.yaml".format(args.task)
+
+    elif args.task in ["ShadowHandMetaMT1"]:
+        return os.path.join(args.logdir, "{}/{}/{}".format(args.task, args.algo, args.algo)), "cfg/{}/config.yaml".format(args.algo), "cfg/meta_env_cfg/{}.yaml".format(args.task)
 
     else:
         warn_task_name()
