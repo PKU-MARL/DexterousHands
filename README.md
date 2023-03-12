@@ -475,8 +475,8 @@ Similarly, select model.pt as the random policy, select a model as the medium po
 ### Offline Data
 
 The originally collected data in our paper is available at: 
-[Shadow Hand Over](https://disk.pku.edu.cn:443/link/ACCFC4006518E9797D7290861D0ED750), 
-[Shadow Hand Door Open Outward](https://disk.pku.edu.cn:443/link/A6D4813C2AFF6298092F4DECB336428F).
+[Shadow Hand Over](https://disk.pku.edu.cn:443/link/74F68A12FFE4A12048604CFC37A54F9C), 
+[Shadow Hand Door Open Outward](https://disk.pku.edu.cn:443/link/A696D1FF69D60AC2E3E033C4567C108E).
 
 ### Use rl_games to train our tasks
 
