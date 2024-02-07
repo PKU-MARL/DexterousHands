@@ -17,75 +17,48 @@ from bidexhands.utils.process_mtrl import *
 from bidexhands.utils.process_metarl import *
 from bidexhands.utils.process_offrl import *
 
+MARL_ALGOS = ["mappo", "happo", "hatrpo","maddpg","ippo"]
+SARL_ALGOS = ["ppo","ddpg","sac","td3","trpo"]
+MTRL_ALGOS = ["mtppo", "random"]
+META_ALGOS = ["mamlppo"]
+OFFRL_ALGOS = ["td3_bc", "bcq", "iql", "ppo_collect"]
+
 def train():
     print("Algorithm: ", args.algo)
     agent_index = get_AgentIndex(cfg)
-
-    if args.algo in ["mappo", "happo", "hatrpo","maddpg","ippo"]: 
+    assert args.algo in MARL_ALGOS + SARL_ALGOS + MTRL_ALGOS + META_ALGOS + OFFRL_ALGOS, \
+        "Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo, \
+            maddpg,sac,td3,trpo,ppo,ddpg, mtppo, random, mamlppo, td3_bc, bcq, iql, ppo_collect]"
+    algo = args.algo
+    if args.algo in MARL_ALGOS: 
         # maddpg exists a bug now 
         args.task_type = "MultiAgent"
-
+        algo = "MultiAgentRL"
         task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
-
-        runner = process_MultiAgentRL(args,env=env, config=cfg_train, model_dir=args.model_dir)
-        
-        # test
+        runner = eval('process_{}'.format(algo))(args, env, cfg_train, args.model_dir)
         if args.model_dir != "":
             runner.eval(1000)
         else:
             runner.run()
-
-    elif args.algo in ["ppo","ddpg","sac","td3","trpo"]:
-        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
-
-        sarl = eval('process_sarl')(args, env, cfg_train, logdir)
-
-        iterations = cfg_train["learn"]["max_iterations"]
-        if args.max_iterations > 0:
-            iterations = args.max_iterations
-
-        sarl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
-    
-    elif args.algo in ["mtppo", "random"]:
+        return
+    elif args.algo in SARL_ALGOS:
+        algo = "sarl"
+    elif args.algo in MTRL_ALGOS:
         args.task_type = "MultiTask"
-
-        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
-
-        mtrl = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
-
-        iterations = cfg_train["learn"]["max_iterations"]
-        if args.max_iterations > 0:
-            iterations = args.max_iterations
-
-        mtrl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
-
-    elif args.algo in ["mamlppo"]:
+    elif args.algo in META_ALGOS:
         args.task_type = "Meta"
-        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
+    elif args.algo in OFFRL_ALGOS:
+        pass 
 
-        trainer = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
+    task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
+    runner = eval('process_{}'.format(algo))(args, env, cfg_train, logdir)
+    iterations = cfg_train["learn"]["max_iterations"]
+    if args.max_iterations > 0:
+        iterations = args.max_iterations
 
-        iterations = cfg_train["learn"]["max_iterations"]
-        if args.max_iterations > 0:
-            iterations = args.max_iterations
-
-        trainer.train(train_epoch=iterations)
-
-    elif args.algo in ["td3_bc", "bcq", "iql", "ppo_collect"]:
-        task, env = parse_task(args, cfg, cfg_train, sim_params, agent_index)
-
-        offrl = eval('process_{}'.format(args.algo))(args, env, cfg_train, logdir)
-
-        iterations = cfg_train["learn"]["max_iterations"]
-        if args.max_iterations > 0:
-            iterations = args.max_iterations
-
-        offrl.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
-
-    else:
-        print("Unrecognized algorithm!\nAlgorithm should be one of: [happo, hatrpo, mappo,ippo,maddpg,sac,td3,trpo,ppo,ddpg, mtppo, random, mamlppo, td3_bc, bcq, iql, ppo_collect]")
-
-
+    runner.train(train_epoch=iterations) if args.algo in META_ALGOS else \
+        runner.run(num_learning_iterations=iterations, log_interval=cfg_train["learn"]["save_interval"])
+        
 if __name__ == '__main__':
     set_np_formatting()
     args = get_args()
