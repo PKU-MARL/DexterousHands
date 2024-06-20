@@ -2,6 +2,5 @@
 gym
 torch==1.8.1
 matplotlib==3.5.1
-tb-nightly
 tqdm
 ipdb

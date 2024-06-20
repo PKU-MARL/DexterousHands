@@ -16,9 +16,10 @@ INSTALL_REQUIRES = [
     # RL
     "gym",
     "matplotlib==3.5.1",
-    "tb-nightly",
     "tqdm",
-    "ipdb"
+    "ipdb",
+    "numpy==1.23.0",
+    "rl-games==1.5.2",
 ]
 
 # Installation operation
