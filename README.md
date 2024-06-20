@@ -16,7 +16,7 @@
 
 [2022/10/02] Now we support for the default IsaacGymEnvs RL library [rl-games](https://github.com/Denys88/rl_games), check our README [below](#Use-rl_games-to-train-our-tasks).
 
-**Bi-DexHands** ([click bi-dexhands.ai](https://bi-dexhands.ai)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
+**Bi-DexHands** ([click bi-dexhands.ai](https://pku-marl.github.io/DexterousHands/)) provides a collection of bimanual dexterous manipulations tasks and reinforcement learning algorithms. 
 Reaching human-level sophistication of hand dexterity and bimanual coordination remains an open challenge for modern robotics researchers. To better help the community study this problem, Bi-DexHands are developed with the following key features:
 - **Isaac Efficiency**: Bi-DexHands is built within [Isaac Gym](https://developer.nvidia.com/isaac-gym); it supports running thousands of environments simultaneously. For example, on one NVIDIA RTX 3090 GPU, Bi-DexHands can reach **40,000+ mean FPS** by running  2,048  environments in parallel. 
 - **Comprehensive RL Benchmark**: we provide the first bimanual manipulation task environment for RL, MARL, Multi-task RL, Meta RL, and Offline RL practitioners, along with a comprehensive benchmark for SOTA continuous control model-free RL/MARL methods. See [example](./bidexhands/algorithms/marl/)
