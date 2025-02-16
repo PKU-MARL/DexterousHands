@@ -35,8 +35,8 @@ class BaseTask():
 
         # double check!
         self.graphics_device_id = self.device_id
-        if enable_camera_sensors == False and self.headless == True:
-            self.graphics_device_id = -1
+        # if enable_camera_sensors == False and self.headless == True:
+        #     self.graphics_device_id = -1
 
         self.num_envs = cfg["env"]["numEnvs"]
         if is_meta:
