@@ -989,7 +989,7 @@ class ShadowHandCatchOver2Underarm(BaseTask):
 
         self.actions = actions.clone().to(self.device)
         if self.use_relative_control:
-            targets = self.prev_targets[:, self.actuated_dof_indices] + self.shadow_hand_dof_speed_scale * self.dt * self.actions[:, 6:26]
+            targets = self.prev_targets[:, self.actuated_dof_indices] + self.shadow_hand_dof_speed_scale * self.dt * self.actions[:, :20][:, 6:26]
             self.cur_targets[:, self.actuated_dof_indices] = tensor_clamp(targets,
                                                                           self.shadow_hand_dof_lower_limits[self.actuated_dof_indices], self.shadow_hand_dof_upper_limits[self.actuated_dof_indices])
             targets = self.prev_targets[:, self.actuated_dof_indices + 24] + self.shadow_hand_dof_speed_scale * self.dt * self.actions[:, 32:52]
